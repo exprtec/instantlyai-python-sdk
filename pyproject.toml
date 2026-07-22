@@ -4,25 +4,84 @@ build-backend = "hatchling.build"
 
 [project]
 name = "instantlyai"
-version = "0.0.1"
+dynamic = ["version"]
 description = "Python SDK for the Instantly.ai API"
 readme = "README.md"
-requires-python = ">=3.9"
+requires-python = ">=3.10"
 license = "MIT"
 authors = [
     { name = "Abdul Hadi Bharara", email = "abdul.hadi.bharara@gmail.com" },
 ]
+keywords = ["instantly", "instantly.ai", "email", "cold-email", "sdk", "api-client"]
 classifiers = [
-    "Development Status :: 2 - Pre-Alpha",
+    "Development Status :: 3 - Alpha",
     "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
     "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
     "Programming Language :: Python :: 3.13",
+    "Typing :: Typed",
 ]
-dependencies = []
+dependencies = [
+    "httpx>=0.27,<1.0",
+    "pydantic>=2.7,<3.0",
+    "email-validator>=2.0,<3.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/exprtec/instantlyai-python-sdk"
+Repository = "https://github.com/exprtec/instantlyai-python-sdk"
+Documentation = "https://exprtec.github.io/instantlyai-python-sdk"
+Issues = "https://github.com/exprtec/instantlyai-python-sdk/issues"
+Changelog = "https://github.com/exprtec/instantlyai-python-sdk/blob/main/CHANGELOG.md"
+
+[dependency-groups]
+dev = [
+    "ruff>=0.8",
+    "ty==0.0.62",  # pinned: ty is Beta, bump deliberately alongside .pre-commit-config.yaml
+    "pytest>=8.0",
+    "pytest-asyncio>=0.24",
+    "pytest-cov>=5.0",
+    "respx>=0.21",
+    "pre-commit>=4.0",
+]
+codegen = [
+    "datamodel-code-generator>=0.26",
+]
+docs = [
+    "mkdocs>=1.6",
+    "mkdocs-material>=9.5",
+    "mkdocstrings[python]>=0.26",
+    "mike>=2.1",
+]
+
+[tool.hatch.version]
+path = "src/instantlyai/_version.py"
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/instantlyai"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"
+extend-exclude = ["src/instantlyai/models/_generated.py"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "SIM", "RUF"]
+ignore = ["E501"]
+
+[tool.ruff.lint.isort]
+known-first-party = ["instantlyai"]
+
+[tool.ty.src]
+exclude = ["src/instantlyai/models/_generated.py"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+asyncio_mode = "auto"
+
+[tool.uv]
+default-groups = ["dev", "codegen", "docs"]

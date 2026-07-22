@@ -1,3 +1,5 @@
+<!-- This file is generated from README.md by scripts/docs.py -- edit that instead. -->
+
 # instantlyai
 
 [![PyPI version](https://img.shields.io/pypi/v/instantlyai.svg)](https://pypi.org/project/instantlyai/)

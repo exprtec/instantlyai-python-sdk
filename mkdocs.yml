@@ -1,0 +1,72 @@
+site_name: instantlyai
+site_description: A typed Python client for the Instantly.ai V2 API
+site_url: https://exprtec.github.io/instantlyai-python-sdk
+repo_url: https://github.com/exprtec/instantlyai-python-sdk
+repo_name: exprtec/instantlyai-python-sdk
+edit_uri: edit/main/docs/
+
+theme:
+  name: material
+  palette:
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: indigo
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: indigo
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+  features:
+    - navigation.instant
+    - navigation.tracking
+    - navigation.top
+    - content.code.copy
+    - content.action.edit
+
+nav:
+  - Home: index.md
+  - Tutorial:
+      - Authenticate: tutorial/authenticate.md
+      - Run a campaign: tutorial/run-a-campaign.md
+      - Handle rate limits: tutorial/handle-rate-limits.md
+      - Async usage: tutorial/async-usage.md
+  - Reference:
+      - Client: reference/client.md
+      - Resources: reference/resources.md
+      - Models: reference/models.md
+      - Exceptions: reference/exceptions.md
+      - Pagination: reference/pagination.md
+  - Changelog: changelog.md
+
+plugins:
+  - search
+  - mkdocstrings:
+      handlers:
+        python:
+          options:
+            docstring_style: google
+            show_source: false
+            show_signature_annotations: true
+            separate_signature: true
+            merge_init_into_class: true
+            show_bases: false
+            heading_level: 3
+
+markdown_extensions:
+  - admonition
+  - pymdownx.highlight
+  - pymdownx.superfences
+  - pymdownx.inlinehilite
+  - pymdownx.snippets:
+      base_path: ["."]
+      check_paths: true
+  - toc:
+      permalink: true
+
+extra:
+  version:
+    provider: mike

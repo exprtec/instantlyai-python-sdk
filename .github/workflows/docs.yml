@@ -1,0 +1,53 @@
+name: docs
+
+on:
+  push:
+    branches: [main]
+    tags: ["v*.*.*"]
+  pull_request:
+    paths:
+      - "docs/**"
+      - "docs_src/**"
+      - "mkdocs.yml"
+      - "README.md"
+      - "src/**"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+      - run: uv run python scripts/docs.py sync --check
+      - run: uv run mkdocs build --strict
+
+  deploy:
+    if: github.event_name == 'push'
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+      - run: git config user.name "github-actions[bot]"
+      - run: git config user.email "github-actions[bot]@users.noreply.github.com"
+      - name: Deploy versioned docs (tag push)
+        if: startsWith(github.ref, 'refs/tags/')
+        run: |
+          VERSION="${GITHUB_REF_NAME#v}"
+          uv run mike deploy --push --update-aliases "$VERSION" latest
+          uv run mike set-default --push latest
+      - name: Deploy dev docs (main push)
+        if: github.ref == 'refs/heads/main'
+        run: uv run mike deploy --push dev

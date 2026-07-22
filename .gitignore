@@ -9,3 +9,10 @@ venv/
 .mypy_cache/
 .pytest_cache/
 .ruff_cache/
+.ty_cache/
+src/instantlyai/models/.openapi-spec.json
+site/
+.python-version
+
+.coverage
+coverage.xml

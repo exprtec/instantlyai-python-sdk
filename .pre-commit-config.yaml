@@ -1,0 +1,21 @@
+repos:
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.15.22
+    hooks:
+      - id: ruff-check
+        args: [--fix]
+      - id: ruff-format
+
+  - repo: https://github.com/astral-sh/ty-pre-commit
+    rev: v0.0.62
+    hooks:
+      - id: ty-check
+
+  - repo: local
+    hooks:
+      - id: docs-sync-check
+        name: docs sync check (README <-> docs/index.md, docs_src <-> tutorial)
+        entry: uv run python scripts/docs.py sync --check
+        language: system
+        pass_filenames: false
+        files: ^(README\.md|docs_src/|docs/tutorial/)

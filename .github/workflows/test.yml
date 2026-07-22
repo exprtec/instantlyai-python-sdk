@@ -1,0 +1,58 @@
+name: test
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+concurrency:
+  group: test-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+      - run: uv run ruff format --check .
+      - run: uv run ruff check .
+      - run: uv run ty check
+
+  test:
+    needs: lint
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+        python-version: ["3.10", "3.11", "3.12", "3.13"]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+          python-version: ${{ matrix.python-version }}
+      - run: uv run pytest --cov=instantlyai --cov-report=xml
+      - uses: codecov/codecov-action@v4
+        if: matrix.os == 'ubuntu-latest' && matrix.python-version == '3.13'
+        with:
+          files: coverage.xml
+          fail_ci_if_error: false
+
+  typed-install:
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v5
+      - run: uv build
+      - run: uv venv /tmp/typed-install-check
+      - run: uv pip install --python /tmp/typed-install-check dist/*.whl mypy
+      - run: /tmp/typed-install-check/bin/python -c "import instantlyai; print(instantlyai.__version__)"
+      - name: fresh install type-checks downstream
+        run: |
+          echo "import instantlyai; c: instantlyai.Instantly = instantlyai.Instantly(api_key='x')" > /tmp/check.py
+          /tmp/typed-install-check/bin/python -m mypy --python-executable /tmp/typed-install-check/bin/python /tmp/check.py
