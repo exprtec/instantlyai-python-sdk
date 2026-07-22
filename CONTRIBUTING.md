@@ -6,7 +6,7 @@
 git clone https://github.com/exprtec/instantlyai-python-sdk.git
 cd instantlyai-python-sdk
 uv sync                    # installs the package + dev/codegen/docs dependency groups
-uv run pre-commit install  # runs ruff + ty on every commit
+uv run pre-commit install  # runs ruff, ty, and the docs sync check on every commit
 ```
 
 `uv sync` installs everything needed for development, tests, and docs (see
@@ -14,13 +14,18 @@ uv run pre-commit install  # runs ruff + ty on every commit
 
 ## Running checks locally
 
-These are exactly what CI runs:
+`pre-commit install` (from Setup, above) runs lint/format/type-check automatically
+on every commit. To run them on demand, or to run what CI runs exactly:
 
 ```bash
-scripts/lint.sh   # ruff format --check, ruff check, ty check
-scripts/test.sh   # pytest (extra args forwarded, e.g. scripts/test.sh -k campaigns)
-uv run python scripts/docs.py build   # sync docs, then `mkdocs build --strict`
+uv run pre-commit run --all-files   # ruff check --fix, ruff format, ty check, docs sync check
+uv run pytest                       # extra args forwarded, e.g. uv run pytest -k campaigns
+uv run python scripts/docs.py build # sync docs, then `mkdocs build --strict`
 ```
+
+`.pre-commit-config.yaml` is the single source of truth for lint/format/type-check --
+CI's `lint` job runs `pre-commit run --all-files` too, so there's nothing to keep in
+sync by hand.
 
 ## Project layout
 
@@ -51,7 +56,7 @@ uv run python scripts/docs.py build   # sync docs, then `mkdocs build --strict`
    resource file) to avoid a real static-analysis gotcha where `list` as a method name
    shadows the builtin for every other annotation in that class body.
 4. Add or update tests in `tests/test_resources.py`.
-5. Run `scripts/lint.sh` and `scripts/test.sh` before opening a PR.
+5. Run `uv run pre-commit run --all-files` and `uv run pytest` before opening a PR.
 
 ## Docs
 
@@ -63,11 +68,22 @@ uv run python scripts/docs.py build   # sync docs, then `mkdocs build --strict`
   immediately above a fenced code block. Run `uv run python scripts/docs.py sync`
   after editing a `docs_src` file to update the embedded copies.
 
-## Versioning
+## Versioning and releasing
 
-Single source of truth: `src/instantlyai/_version.py`. Bump it, update
-`CHANGELOG.md`, and open a PR -- tagging `vX.Y.Z` on `main` triggers the release
-pipeline (build, publish to PyPI via Trusted Publishing, deploy docs).
+Single source of truth: `src/instantlyai/_version.py`. Releases are cut locally, not
+via CI (see `scripts/release.sh`):
+
+1. Bump `src/instantlyai/_version.py`.
+2. Move the relevant `[Unreleased]` entries in `CHANGELOG.md` under a new
+   `## [X.Y.Z] - YYYY-MM-DD` heading.
+3. Commit and merge that bump via a normal PR.
+4. From `main`, locally: `scripts/release.sh` -- runs lint/tests, builds, publishes
+   to TestPyPI, waits for you to confirm the TestPyPI install works, publishes to
+   PyPI, then tags `vX.Y.Z` and pushes the tag (which triggers `docs.yml` to deploy
+   versioned docs via `mike`).
+
+Requires `TESTPYPI_TOKEN` / `PYPI_TOKEN` API tokens (scoped to the `instantlyai`
+project) exported in your shell -- never committed.
 
 ## Pull requests
 
