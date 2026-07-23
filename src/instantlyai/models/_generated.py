@@ -135,6 +135,27 @@ class ProviderCode(Enum):
     number_8 = 8
 
 
+class TagsItem(BaseModel):
+    model_config = ConfigDict(
+        extra="forbid",
+    )
+    id: str | None = Field(
+        None,
+        description="Unique identifier for the custom tag",
+        examples=["019f8c44-f5cf-74e9-b3e4-2b4151efd79b"],
+    )
+    label: str | None = Field(
+        None,
+        description="Display label for the custom tag",
+        examples=["Important tag"],
+    )
+    description: str | None = Field(
+        None,
+        description="Detailed description of the custom tag purpose",
+        examples=[None],
+    )
+
+
 class Account(BaseModel):
     """
     An email account that can be used to send campaigns
@@ -256,6 +277,10 @@ class Account(BaseModel):
         None,
         description="Whether automatic reconnection attempts have failed. null = in progress, true = failed, false = succeeded.",
         examples=[False],
+    )
+    tags: list[TagsItem] | None = Field(
+        None,
+        description="Tags associated with the account, set to `include_tags` to populate",
     )
 
 
@@ -2453,7 +2478,7 @@ class CustomTag(BaseModel):
 
 class ResourceType(Enum):
     """
-    Resource type of custom tag, can be 1 for campaigns or 2 for accounts
+    Resource type of custom tag, can be 1 for accounts or 2 for campaigns
     """
 
     number_1 = 1
@@ -2485,7 +2510,7 @@ class CustomTagMapping(BaseModel):
     )
     resource_type: ResourceType = Field(
         ...,
-        description="Resource type of custom tag, can be 1 for campaigns or 2 for accounts",
+        description="Resource type of custom tag, can be 1 for accounts or 2 for campaigns",
         examples=[1],
     )
     timestamp_created: AwareDatetime = Field(

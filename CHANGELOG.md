@@ -7,6 +7,21 @@ All notable changes to this project are documented here. Format follows
 
 ## [Unreleased]
 
+## [0.1.2] - 2026-07-23
+
+### Fixed
+
+- `Account.model_validate()` no longer raises on `client.accounts.list(include_tags=True)`.
+  The generated `Account` model was missing the `tags` field the API embeds per account
+  when `include_tags=true` is set, so every call crashed against real data
+  (`extra="forbid"` rejected the extra `tags` array).
+- Corrected the reversed `resource_type` mapping in the generated `CustomTagMapping` /
+  `ResourceType` docs. It previously read "1 for campaigns or 2 for accounts", the
+  opposite of what the API and `custom_tags.py` actually use (`1` = Account, `2` =
+  Campaign) -- purely a doc/docstring fix, the underlying values were never wrong.
+- `scripts/generate_models.py` now patches both gaps in the upstream OpenAPI spec
+  before codegen runs, so future regenerations don't silently reintroduce them.
+
 ## [0.1.0] - 2026-07-22
 
 ### Added

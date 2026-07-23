@@ -14,6 +14,7 @@ The generated file is never hand-edited -- re-run this script instead.
 from __future__ import annotations
 
 import ast
+import json
 import subprocess
 import sys
 import urllib.request
@@ -45,12 +46,63 @@ CODEGEN_ARGS = [
 
 
 def fetch_spec(source: str) -> Path:
+    dest = MODELS_DIR / ".openapi-spec.json"
     if source.startswith("http://") or source.startswith("https://"):
-        dest = MODELS_DIR / ".openapi-spec.json"
         with urllib.request.urlopen(source) as response:
             dest.write_bytes(response.read())
-        return dest
-    return Path(source)
+    else:
+        dest.write_bytes(Path(source).read_bytes())
+    return dest
+
+
+def patch_spec(spec_path: Path) -> None:
+    """Correct known gaps/bugs in the upstream spec before codegen sees it.
+
+    Both patches below are tracked as issues against Instantly's published
+    OpenAPI document; they live here (rather than as post-codegen edits to
+    ``_generated.py``) so they survive the next regeneration.
+    """
+    spec = json.loads(spec_path.read_text())
+    schemas = spec["components"]["schemas"]
+
+    # `GET /accounts?include_tags=true` embeds a `tags` array per account, but
+    # the spec only declares that on an anonymous inline extension of the
+    # `Account` schema used by that one response, not on `Account` itself.
+    # datamodel-code-generator drops the inline extension, so the generated
+    # `Account` model (which has `extra="forbid"`) has no `tags` field and
+    # raises a `ValidationError` on every `include_tags=True` call. Move the
+    # property onto `Account` directly, matching what the API actually sends.
+    schemas["Account"]["properties"]["tags"] = {
+        "type": ["array", "null"],
+        "description": "Tags associated with the account, set to `include_tags` to populate",
+        "items": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "string",
+                    "description": "Unique identifier for the custom tag",
+                },
+                "label": {
+                    "type": "string",
+                    "description": "Display label for the custom tag",
+                },
+                "description": {
+                    "type": ["string", "null"],
+                    "description": "Detailed description of the custom tag purpose",
+                },
+            },
+        },
+    }
+
+    # `CustomTagMapping.resource_type`'s free-text description has the
+    # account/campaign mapping backwards relative to its own
+    # `x-enumDescriptions` (1: Account, 2: Campaign) and relative to the
+    # `toggle-resource` endpoint, which agrees with `x-enumDescriptions`.
+    schemas["CustomTagMapping"]["properties"]["resource_type"]["description"] = (
+        "Resource type of custom tag, can be 1 for accounts or 2 for campaigns"
+    )
+
+    spec_path.write_text(json.dumps(spec))
 
 
 def run_codegen(spec_path: Path) -> None:
@@ -99,6 +151,7 @@ def write_init(names: list[str]) -> None:
 def main() -> None:
     source = sys.argv[1] if len(sys.argv) > 1 else DEFAULT_SPEC_URL
     spec_path = fetch_spec(source)
+    patch_spec(spec_path)
     run_codegen(spec_path)
     names = top_level_names(GENERATED_FILE.read_text())
     write_init(names)
