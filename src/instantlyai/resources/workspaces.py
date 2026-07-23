@@ -19,7 +19,7 @@ class Workspaces(SyncAPIResource):
         self,
         *,
         name: str | NotGiven = NOT_GIVEN,
-        org_logo_url: str | NotGiven = NOT_GIVEN,
+        org_logo_url: str | None | NotGiven = NOT_GIVEN,
     ) -> Workspace:
         """Partially update the current workspace. Omitted fields are left unchanged."""
         body = {"name": name, "org_logo_url": org_logo_url}
@@ -69,7 +69,7 @@ class AsyncWorkspaces(AsyncAPIResource):
         self,
         *,
         name: str | NotGiven = NOT_GIVEN,
-        org_logo_url: str | NotGiven = NOT_GIVEN,
+        org_logo_url: str | None | NotGiven = NOT_GIVEN,
     ) -> Workspace:
         """Partially update the current workspace. Omitted fields are left unchanged."""
         body = {"name": name, "org_logo_url": org_logo_url}

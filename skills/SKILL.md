@@ -85,6 +85,8 @@ Keep retry, auth, serialization, pagination, and error mapping in shared infrast
 
 Use `NOT_GIVEN` for omitted optional arguments. Omit a kwarg to leave a field unchanged. Pass `None` only when the API intentionally distinguishes explicit null from omission.
 
+If the corresponding model field is typed `T | None` (nullable in the read model), the parameter must be typed `T | None | NotGiven`, not just `T | NotGiven` — otherwise callers clearing the field with `None` get a static type error even though it works at runtime.
+
 ## Use the Project Tooling
 
 Run local checks before finishing SDK changes:

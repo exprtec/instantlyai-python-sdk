@@ -36,7 +36,7 @@ class CustomTags(SyncAPIResource):
         id: str,
         *,
         label: str | NotGiven = NOT_GIVEN,
-        description: str | NotGiven = NOT_GIVEN,
+        description: str | None | NotGiven = NOT_GIVEN,
     ) -> CustomTag:
         """Patch custom tag."""
         return CustomTag.model_validate(
@@ -118,7 +118,7 @@ class AsyncCustomTags(AsyncAPIResource):
         id: str,
         *,
         label: str | NotGiven = NOT_GIVEN,
-        description: str | NotGiven = NOT_GIVEN,
+        description: str | None | NotGiven = NOT_GIVEN,
     ) -> CustomTag:
         """Patch custom tag."""
         return CustomTag.model_validate(

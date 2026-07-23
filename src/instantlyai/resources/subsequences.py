@@ -55,9 +55,9 @@ class CampaignSubsequences(SyncAPIResource):
         id: str,
         *,
         name: str | NotGiven = NOT_GIVEN,
-        daily_limit_mode: _DailyLimitMode | NotGiven = NOT_GIVEN,
-        daily_limit: float | NotGiven = NOT_GIVEN,
-        ignore_account_daily_limit: bool | NotGiven = NOT_GIVEN,
+        daily_limit_mode: _DailyLimitMode | None | NotGiven = NOT_GIVEN,
+        daily_limit: float | None | NotGiven = NOT_GIVEN,
+        ignore_account_daily_limit: bool | None | NotGiven = NOT_GIVEN,
     ) -> CampaignSubsequence:
         """Patch campaign subsequence."""
         body = {
@@ -160,9 +160,9 @@ class AsyncCampaignSubsequences(AsyncAPIResource):
         id: str,
         *,
         name: str | NotGiven = NOT_GIVEN,
-        daily_limit_mode: _DailyLimitMode | NotGiven = NOT_GIVEN,
-        daily_limit: float | NotGiven = NOT_GIVEN,
-        ignore_account_daily_limit: bool | NotGiven = NOT_GIVEN,
+        daily_limit_mode: _DailyLimitMode | None | NotGiven = NOT_GIVEN,
+        daily_limit: float | None | NotGiven = NOT_GIVEN,
+        ignore_account_daily_limit: bool | None | NotGiven = NOT_GIVEN,
     ) -> CampaignSubsequence:
         """Patch campaign subsequence."""
         body = {

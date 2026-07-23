@@ -52,8 +52,8 @@ class LeadLabels(SyncAPIResource):
         *,
         label: str | NotGiven = NOT_GIVEN,
         interest_status_label: _InterestStatusLabel | NotGiven = NOT_GIVEN,
-        description: str | NotGiven = NOT_GIVEN,
-        use_with_ai: bool | NotGiven = NOT_GIVEN,
+        description: str | None | NotGiven = NOT_GIVEN,
+        use_with_ai: bool | None | NotGiven = NOT_GIVEN,
     ) -> LeadLabel:
         """Patch lead label. Omitted fields are left unchanged."""
         return LeadLabel.model_validate(
@@ -134,8 +134,8 @@ class AsyncLeadLabels(AsyncAPIResource):
         *,
         label: str | NotGiven = NOT_GIVEN,
         interest_status_label: _InterestStatusLabel | NotGiven = NOT_GIVEN,
-        description: str | NotGiven = NOT_GIVEN,
-        use_with_ai: bool | NotGiven = NOT_GIVEN,
+        description: str | None | NotGiven = NOT_GIVEN,
+        use_with_ai: bool | None | NotGiven = NOT_GIVEN,
     ) -> LeadLabel:
         """Patch lead label. Omitted fields are left unchanged."""
         return LeadLabel.model_validate(

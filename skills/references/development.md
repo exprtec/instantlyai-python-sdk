@@ -43,7 +43,7 @@ For create/update methods:
 
 1. Prefer keyword-only arguments.
 2. Use generated model types for nested request bodies.
-3. Default optional omitted fields to `NOT_GIVEN`.
+3. Default optional omitted fields to `NOT_GIVEN`. If the field is nullable on the generated model (`T | None`), type the parameter `T | None | NotGiven`, not just `T | NotGiven`, so callers can pass `None` to clear it without a type error.
 4. Build a body mapping.
 5. Let `_base.py` and `_transport.py` omit `NOT_GIVEN` and serialize models/enums.
 

@@ -70,12 +70,12 @@ class Webhooks(SyncAPIResource):
         self,
         id: str,
         *,
-        campaign: str | NotGiven = NOT_GIVEN,
-        name: str | NotGiven = NOT_GIVEN,
+        campaign: str | None | NotGiven = NOT_GIVEN,
+        name: str | None | NotGiven = NOT_GIVEN,
         target_hook_url: str | NotGiven = NOT_GIVEN,
-        event_type: EventType | NotGiven = NOT_GIVEN,
-        custom_interest_value: float | NotGiven = NOT_GIVEN,
-        headers: JSONObject | NotGiven = NOT_GIVEN,
+        event_type: EventType | None | NotGiven = NOT_GIVEN,
+        custom_interest_value: float | None | NotGiven = NOT_GIVEN,
+        headers: JSONObject | None | NotGiven = NOT_GIVEN,
     ) -> Webhook:
         """Partially update a webhook. Omitted fields are left unchanged."""
         body = {
@@ -158,12 +158,12 @@ class AsyncWebhooks(AsyncAPIResource):
         self,
         id: str,
         *,
-        campaign: str | NotGiven = NOT_GIVEN,
-        name: str | NotGiven = NOT_GIVEN,
+        campaign: str | None | NotGiven = NOT_GIVEN,
+        name: str | None | NotGiven = NOT_GIVEN,
         target_hook_url: str | NotGiven = NOT_GIVEN,
-        event_type: EventType | NotGiven = NOT_GIVEN,
-        custom_interest_value: float | NotGiven = NOT_GIVEN,
-        headers: JSONObject | NotGiven = NOT_GIVEN,
+        event_type: EventType | None | NotGiven = NOT_GIVEN,
+        custom_interest_value: float | None | NotGiven = NOT_GIVEN,
+        headers: JSONObject | None | NotGiven = NOT_GIVEN,
     ) -> Webhook:
         """Partially update a webhook. Omitted fields are left unchanged."""
         body = {

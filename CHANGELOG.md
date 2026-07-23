@@ -7,6 +7,19 @@ All notable changes to this project are documented here. Format follows
 
 ## [Unreleased]
 
+## [0.1.3] - 2026-07-23
+
+### Fixed
+
+- `update()` parameters that correspond to nullable (`T | None`) model fields were typed
+  as `T | NotGiven`, dropping the `None` branch the model itself allows. This didn't
+  affect runtime behavior (`None` already passed through and serialized as JSON `null`,
+  correctly clearing the field), but callers who legitimately wanted to clear a nullable
+  field (e.g. `accounts.update(..., signature=None)`, `campaigns.update(..., daily_limit=None)`)
+  got a static type error. Corrected across every resource's `update()` (sync and async):
+  `accounts`, `campaigns`, `custom_tags`, `emails`, `inbox_placement_tests`, `lead_labels`,
+  `lead_lists`, `leads`, `subsequences`, `webhooks`, `workspace_members`, `workspaces`.
+
 ## [0.1.2] - 2026-07-23
 
 ### Fixed

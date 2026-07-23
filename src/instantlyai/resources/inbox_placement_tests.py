@@ -86,9 +86,9 @@ class InboxPlacementTests(SyncAPIResource):
         id: str,
         *,
         name: str | NotGiven = NOT_GIVEN,
-        schedule: Schedule1 | NotGiven = NOT_GIVEN,
-        automations: _list[Automation] | NotGiven = NOT_GIVEN,
-        status: _TestStatus | NotGiven = NOT_GIVEN,
+        schedule: Schedule1 | None | NotGiven = NOT_GIVEN,
+        automations: _list[Automation] | None | NotGiven = NOT_GIVEN,
+        status: _TestStatus | None | NotGiven = NOT_GIVEN,
     ) -> InboxPlacementTest:
         """Partially update an inbox placement test. Omitted fields are left unchanged."""
         body = {"name": name, "schedule": schedule, "automations": automations, "status": status}
@@ -193,9 +193,9 @@ class AsyncInboxPlacementTests(AsyncAPIResource):
         id: str,
         *,
         name: str | NotGiven = NOT_GIVEN,
-        schedule: Schedule1 | NotGiven = NOT_GIVEN,
-        automations: _list[Automation] | NotGiven = NOT_GIVEN,
-        status: _TestStatus | NotGiven = NOT_GIVEN,
+        schedule: Schedule1 | None | NotGiven = NOT_GIVEN,
+        automations: _list[Automation] | None | NotGiven = NOT_GIVEN,
+        status: _TestStatus | None | NotGiven = NOT_GIVEN,
     ) -> InboxPlacementTest:
         """Partially update an inbox placement test. Omitted fields are left unchanged."""
         body = {"name": name, "schedule": schedule, "automations": automations, "status": status}

@@ -111,8 +111,8 @@ class Emails(SyncAPIResource):
         self,
         id: str,
         *,
-        is_unread: float | NotGiven = NOT_GIVEN,
-        reminder_ts: str | NotGiven = NOT_GIVEN,
+        is_unread: float | None | NotGiven = NOT_GIVEN,
+        reminder_ts: str | None | NotGiven = NOT_GIVEN,
     ) -> Email:
         """Patch email."""
         return Email.model_validate(
@@ -280,8 +280,8 @@ class AsyncEmails(AsyncAPIResource):
         self,
         id: str,
         *,
-        is_unread: float | NotGiven = NOT_GIVEN,
-        reminder_ts: str | NotGiven = NOT_GIVEN,
+        is_unread: float | None | NotGiven = NOT_GIVEN,
+        reminder_ts: str | None | NotGiven = NOT_GIVEN,
     ) -> Email:
         """Patch email."""
         return Email.model_validate(

@@ -46,8 +46,8 @@ class LeadLists(SyncAPIResource):
         self,
         id: str,
         *,
-        has_enrichment_task: bool | NotGiven = NOT_GIVEN,
-        owned_by: str | NotGiven = NOT_GIVEN,
+        has_enrichment_task: bool | None | NotGiven = NOT_GIVEN,
+        owned_by: str | None | NotGiven = NOT_GIVEN,
         name: str | NotGiven = NOT_GIVEN,
     ) -> LeadList:
         """Patch lead list. Omitted fields are left unchanged."""
@@ -122,8 +122,8 @@ class AsyncLeadLists(AsyncAPIResource):
         self,
         id: str,
         *,
-        has_enrichment_task: bool | NotGiven = NOT_GIVEN,
-        owned_by: str | NotGiven = NOT_GIVEN,
+        has_enrichment_task: bool | None | NotGiven = NOT_GIVEN,
+        owned_by: str | None | NotGiven = NOT_GIVEN,
         name: str | NotGiven = NOT_GIVEN,
     ) -> LeadList:
         """Patch lead list. Omitted fields are left unchanged."""

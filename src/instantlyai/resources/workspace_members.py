@@ -78,7 +78,7 @@ class WorkspaceMembers(SyncAPIResource):
         self,
         id: str,
         *,
-        nickname: str | NotGiven = NOT_GIVEN,
+        nickname: str | None | NotGiven = NOT_GIVEN,
         role: _WorkspaceMemberRole | NotGiven = NOT_GIVEN,
     ) -> WorkspaceMember:
         """Partially update a workspace member. Omitted fields are left unchanged."""
@@ -145,7 +145,7 @@ class AsyncWorkspaceMembers(AsyncAPIResource):
         self,
         id: str,
         *,
-        nickname: str | NotGiven = NOT_GIVEN,
+        nickname: str | None | NotGiven = NOT_GIVEN,
         role: _WorkspaceMemberRole | NotGiven = NOT_GIVEN,
     ) -> WorkspaceMember:
         """Partially update a workspace member. Omitted fields are left unchanged."""
