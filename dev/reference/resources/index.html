@@ -12318,17 +12318,19 @@ method surface -- the async class is always named <code>AsyncX</code> for sync c
     <span class="o">*</span><span class="p">,</span>
     <span class="n">first_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">NotGiven</span> <span class="o">=</span> <span class="n">NOT_GIVEN</span><span class="p">,</span>
     <span class="n">last_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">NotGiven</span> <span class="o">=</span> <span class="n">NOT_GIVEN</span><span class="p">,</span>
-    <span class="n">warmup</span><span class="p">:</span> <span class="n">Warmup</span> <span class="o">|</span> <span class="n">NotGiven</span> <span class="o">=</span> <span class="n">NOT_GIVEN</span><span class="p">,</span>
-    <span class="n">daily_limit</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="n">NotGiven</span> <span class="o">=</span> <span class="n">NOT_GIVEN</span><span class="p">,</span>
-    <span class="n">tracking_domain_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">NotGiven</span> <span class="o">=</span> <span class="n">NOT_GIVEN</span><span class="p">,</span>
-    <span class="n">tracking_domain_status</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">NotGiven</span> <span class="o">=</span> <span class="n">NOT_GIVEN</span><span class="p">,</span>
-    <span class="n">enable_slow_ramp</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="n">NotGiven</span> <span class="o">=</span> <span class="n">NOT_GIVEN</span><span class="p">,</span>
-    <span class="n">inbox_placement_test_limit</span><span class="p">:</span> <span class="p">(</span>
-        <span class="nb">float</span> <span class="o">|</span> <span class="n">NotGiven</span>
+    <span class="n">warmup</span><span class="p">:</span> <span class="n">Warmup</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">|</span> <span class="n">NotGiven</span> <span class="o">=</span> <span class="n">NOT_GIVEN</span><span class="p">,</span>
+    <span class="n">daily_limit</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">|</span> <span class="n">NotGiven</span> <span class="o">=</span> <span class="n">NOT_GIVEN</span><span class="p">,</span>
+    <span class="n">tracking_domain_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">|</span> <span class="n">NotGiven</span> <span class="o">=</span> <span class="n">NOT_GIVEN</span><span class="p">,</span>
+    <span class="n">tracking_domain_status</span><span class="p">:</span> <span class="p">(</span>
+        <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">|</span> <span class="n">NotGiven</span>
     <span class="p">)</span> <span class="o">=</span> <span class="n">NOT_GIVEN</span><span class="p">,</span>
-    <span class="n">sending_gap</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="n">NotGiven</span> <span class="o">=</span> <span class="n">NOT_GIVEN</span><span class="p">,</span>
-    <span class="n">signature</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">NotGiven</span> <span class="o">=</span> <span class="n">NOT_GIVEN</span><span class="p">,</span>
-    <span class="n">reply_to</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">NotGiven</span> <span class="o">=</span> <span class="n">NOT_GIVEN</span><span class="p">,</span>
+    <span class="n">enable_slow_ramp</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">|</span> <span class="n">NotGiven</span> <span class="o">=</span> <span class="n">NOT_GIVEN</span><span class="p">,</span>
+    <span class="n">inbox_placement_test_limit</span><span class="p">:</span> <span class="p">(</span>
+        <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">|</span> <span class="n">NotGiven</span>
+    <span class="p">)</span> <span class="o">=</span> <span class="n">NOT_GIVEN</span><span class="p">,</span>
+    <span class="n">sending_gap</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">|</span> <span class="n">NotGiven</span> <span class="o">=</span> <span class="n">NOT_GIVEN</span><span class="p">,</span>
+    <span class="n">signature</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">|</span> <span class="n">NotGiven</span> <span class="o">=</span> <span class="n">NOT_GIVEN</span><span class="p">,</span>
+    <span class="n">reply_to</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">|</span> <span class="n">NotGiven</span> <span class="o">=</span> <span class="n">NOT_GIVEN</span><span class="p">,</span>
     <span class="n">skip_cname_check</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="n">NotGiven</span> <span class="o">=</span> <span class="n">NOT_GIVEN</span><span class="p">,</span>
     <span class="n">remove_tracking_domain</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="n">NotGiven</span> <span class="o">=</span> <span class="n">NOT_GIVEN</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Account</span>
@@ -12804,17 +12806,19 @@ method surface -- the async class is always named <code>AsyncX</code> for sync c
     <span class="o">*</span><span class="p">,</span>
     <span class="n">first_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">NotGiven</span> <span class="o">=</span> <span class="n">NOT_GIVEN</span><span class="p">,</span>
     <span class="n">last_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">NotGiven</span> <span class="o">=</span> <span class="n">NOT_GIVEN</span><span class="p">,</span>
-    <span class="n">warmup</span><span class="p">:</span> <span class="n">Warmup</span> <span class="o">|</span> <span class="n">NotGiven</span> <span class="o">=</span> <span class="n">NOT_GIVEN</span><span class="p">,</span>
-    <span class="n">daily_limit</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="n">NotGiven</span> <span class="o">=</span> <span class="n">NOT_GIVEN</span><span class="p">,</span>
-    <span class="n">tracking_domain_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">NotGiven</span> <span class="o">=</span> <span class="n">NOT_GIVEN</span><span class="p">,</span>
-    <span class="n">tracking_domain_status</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">NotGiven</span> <span class="o">=</span> <span class="n">NOT_GIVEN</span><span class="p">,</span>
-    <span class="n">enable_slow_ramp</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="n">NotGiven</span> <span class="o">=</span> <span class="n">NOT_GIVEN</span><span class="p">,</span>
-    <span class="n">inbox_placement_test_limit</span><span class="p">:</span> <span class="p">(</span>
-        <span class="nb">float</span> <span class="o">|</span> <span class="n">NotGiven</span>
+    <span class="n">warmup</span><span class="p">:</span> <span class="n">Warmup</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">|</span> <span class="n">NotGiven</span> <span class="o">=</span> <span class="n">NOT_GIVEN</span><span class="p">,</span>
+    <span class="n">daily_limit</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">|</span> <span class="n">NotGiven</span> <span class="o">=</span> <span class="n">NOT_GIVEN</span><span class="p">,</span>
+    <span class="n">tracking_domain_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">|</span> <span class="n">NotGiven</span> <span class="o">=</span> <span class="n">NOT_GIVEN</span><span class="p">,</span>
+    <span class="n">tracking_domain_status</span><span class="p">:</span> <span class="p">(</span>
+        <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">|</span> <span class="n">NotGiven</span>
     <span class="p">)</span> <span class="o">=</span> <span class="n">NOT_GIVEN</span><span class="p">,</span>
-    <span class="n">sending_gap</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="n">NotGiven</span> <span class="o">=</span> <span class="n">NOT_GIVEN</span><span class="p">,</span>
-    <span class="n">signature</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">NotGiven</span> <span class="o">=</span> <span class="n">NOT_GIVEN</span><span class="p">,</span>
-    <span class="n">reply_to</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">NotGiven</span> <span class="o">=</span> <span class="n">NOT_GIVEN</span><span class="p">,</span>
+    <span class="n">enable_slow_ramp</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">|</span> <span class="n">NotGiven</span> <span class="o">=</span> <span class="n">NOT_GIVEN</span><span class="p">,</span>
+    <span class="n">inbox_placement_test_limit</span><span class="p">:</span> <span class="p">(</span>
+        <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">|</span> <span class="n">NotGiven</span>
+    <span class="p">)</span> <span class="o">=</span> <span class="n">NOT_GIVEN</span><span class="p">,</span>
+    <span class="n">sending_gap</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">|</span> <span class="n">NotGiven</span> <span class="o">=</span> <span class="n">NOT_GIVEN</span><span class="p">,</span>
+    <span class="n">signature</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">|</span> <span class="n">NotGiven</span> <span class="o">=</span> <span class="n">NOT_GIVEN</span><span class="p">,</span>
+    <span class="n">reply_to</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">|</span> <span class="n">NotGiven</span> <span class="o">=</span> <span class="n">NOT_GIVEN</span><span class="p">,</span>
     <span class="n">skip_cname_check</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="n">NotGiven</span> <span class="o">=</span> <span class="n">NOT_GIVEN</span><span class="p">,</span>
     <span class="n">remove_tracking_domain</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="n">NotGiven</span> <span class="o">=</span> <span class="n">NOT_GIVEN</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Account</span>
@@ -14730,41 +14734,55 @@ method surface -- the async class is always named <code>AsyncX</code> for sync c
     <span class="nb">id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
     <span class="o">*</span><span class="p">,</span>
     <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">NotGiven</span> <span class="o">=</span> <span class="n">NOT_GIVEN</span><span class="p">,</span>
-    <span class="n">pl_value</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="n">NotGiven</span> <span class="o">=</span> <span class="n">NOT_GIVEN</span><span class="p">,</span>
-    <span class="n">is_evergreen</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="n">NotGiven</span> <span class="o">=</span> <span class="n">NOT_GIVEN</span><span class="p">,</span>
+    <span class="n">pl_value</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">|</span> <span class="n">NotGiven</span> <span class="o">=</span> <span class="n">NOT_GIVEN</span><span class="p">,</span>
+    <span class="n">is_evergreen</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">|</span> <span class="n">NotGiven</span> <span class="o">=</span> <span class="n">NOT_GIVEN</span><span class="p">,</span>
     <span class="n">campaign_schedule</span><span class="p">:</span> <span class="p">(</span>
         <span class="n">CampaignSchedule</span> <span class="o">|</span> <span class="n">NotGiven</span>
     <span class="p">)</span> <span class="o">=</span> <span class="n">NOT_GIVEN</span><span class="p">,</span>
-    <span class="n">sequences</span><span class="p">:</span> <span class="n">_list</span><span class="p">[</span><span class="n">Sequence</span><span class="p">]</span> <span class="o">|</span> <span class="n">NotGiven</span> <span class="o">=</span> <span class="n">NOT_GIVEN</span><span class="p">,</span>
-    <span class="n">email_gap</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="n">NotGiven</span> <span class="o">=</span> <span class="n">NOT_GIVEN</span><span class="p">,</span>
-    <span class="n">random_wait_max</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="n">NotGiven</span> <span class="o">=</span> <span class="n">NOT_GIVEN</span><span class="p">,</span>
-    <span class="n">text_only</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="n">NotGiven</span> <span class="o">=</span> <span class="n">NOT_GIVEN</span><span class="p">,</span>
-    <span class="n">first_email_text_only</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="n">NotGiven</span> <span class="o">=</span> <span class="n">NOT_GIVEN</span><span class="p">,</span>
-    <span class="n">email_list</span><span class="p">:</span> <span class="n">_list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="n">NotGiven</span> <span class="o">=</span> <span class="n">NOT_GIVEN</span><span class="p">,</span>
-    <span class="n">daily_limit</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="n">NotGiven</span> <span class="o">=</span> <span class="n">NOT_GIVEN</span><span class="p">,</span>
-    <span class="n">stop_on_reply</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="n">NotGiven</span> <span class="o">=</span> <span class="n">NOT_GIVEN</span><span class="p">,</span>
-    <span class="n">email_tag_list</span><span class="p">:</span> <span class="n">_list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="n">NotGiven</span> <span class="o">=</span> <span class="n">NOT_GIVEN</span><span class="p">,</span>
-    <span class="n">link_tracking</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="n">NotGiven</span> <span class="o">=</span> <span class="n">NOT_GIVEN</span><span class="p">,</span>
-    <span class="n">open_tracking</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="n">NotGiven</span> <span class="o">=</span> <span class="n">NOT_GIVEN</span><span class="p">,</span>
-    <span class="n">stop_on_auto_reply</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="n">NotGiven</span> <span class="o">=</span> <span class="n">NOT_GIVEN</span><span class="p">,</span>
-    <span class="n">daily_max_leads</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="n">NotGiven</span> <span class="o">=</span> <span class="n">NOT_GIVEN</span><span class="p">,</span>
-    <span class="n">prioritize_new_leads</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="n">NotGiven</span> <span class="o">=</span> <span class="n">NOT_GIVEN</span><span class="p">,</span>
+    <span class="n">sequences</span><span class="p">:</span> <span class="p">(</span>
+        <span class="n">_list</span><span class="p">[</span><span class="n">Sequence</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">|</span> <span class="n">NotGiven</span>
+    <span class="p">)</span> <span class="o">=</span> <span class="n">NOT_GIVEN</span><span class="p">,</span>
+    <span class="n">email_gap</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">|</span> <span class="n">NotGiven</span> <span class="o">=</span> <span class="n">NOT_GIVEN</span><span class="p">,</span>
+    <span class="n">random_wait_max</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">|</span> <span class="n">NotGiven</span> <span class="o">=</span> <span class="n">NOT_GIVEN</span><span class="p">,</span>
+    <span class="n">text_only</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">|</span> <span class="n">NotGiven</span> <span class="o">=</span> <span class="n">NOT_GIVEN</span><span class="p">,</span>
+    <span class="n">first_email_text_only</span><span class="p">:</span> <span class="p">(</span>
+        <span class="nb">bool</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">|</span> <span class="n">NotGiven</span>
+    <span class="p">)</span> <span class="o">=</span> <span class="n">NOT_GIVEN</span><span class="p">,</span>
+    <span class="n">email_list</span><span class="p">:</span> <span class="n">_list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">|</span> <span class="n">NotGiven</span> <span class="o">=</span> <span class="n">NOT_GIVEN</span><span class="p">,</span>
+    <span class="n">daily_limit</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">|</span> <span class="n">NotGiven</span> <span class="o">=</span> <span class="n">NOT_GIVEN</span><span class="p">,</span>
+    <span class="n">stop_on_reply</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">|</span> <span class="n">NotGiven</span> <span class="o">=</span> <span class="n">NOT_GIVEN</span><span class="p">,</span>
+    <span class="n">email_tag_list</span><span class="p">:</span> <span class="p">(</span>
+        <span class="n">_list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">|</span> <span class="n">NotGiven</span>
+    <span class="p">)</span> <span class="o">=</span> <span class="n">NOT_GIVEN</span><span class="p">,</span>
+    <span class="n">link_tracking</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">|</span> <span class="n">NotGiven</span> <span class="o">=</span> <span class="n">NOT_GIVEN</span><span class="p">,</span>
+    <span class="n">open_tracking</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">|</span> <span class="n">NotGiven</span> <span class="o">=</span> <span class="n">NOT_GIVEN</span><span class="p">,</span>
+    <span class="n">stop_on_auto_reply</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">|</span> <span class="n">NotGiven</span> <span class="o">=</span> <span class="n">NOT_GIVEN</span><span class="p">,</span>
+    <span class="n">daily_max_leads</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">|</span> <span class="n">NotGiven</span> <span class="o">=</span> <span class="n">NOT_GIVEN</span><span class="p">,</span>
+    <span class="n">prioritize_new_leads</span><span class="p">:</span> <span class="p">(</span>
+        <span class="nb">bool</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">|</span> <span class="n">NotGiven</span>
+    <span class="p">)</span> <span class="o">=</span> <span class="n">NOT_GIVEN</span><span class="p">,</span>
     <span class="n">auto_variant_select</span><span class="p">:</span> <span class="p">(</span>
-        <span class="n">AutoVariantSelect</span> <span class="o">|</span> <span class="n">NotGiven</span>
+        <span class="n">AutoVariantSelect</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">|</span> <span class="n">NotGiven</span>
     <span class="p">)</span> <span class="o">=</span> <span class="n">NOT_GIVEN</span><span class="p">,</span>
-    <span class="n">match_lead_esp</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="n">NotGiven</span> <span class="o">=</span> <span class="n">NOT_GIVEN</span><span class="p">,</span>
-    <span class="n">stop_for_company</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="n">NotGiven</span> <span class="o">=</span> <span class="n">NOT_GIVEN</span><span class="p">,</span>
-    <span class="n">insert_unsubscribe_header</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="n">NotGiven</span> <span class="o">=</span> <span class="n">NOT_GIVEN</span><span class="p">,</span>
-    <span class="n">allow_risky_contacts</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="n">NotGiven</span> <span class="o">=</span> <span class="n">NOT_GIVEN</span><span class="p">,</span>
-    <span class="n">disable_bounce_protect</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="n">NotGiven</span> <span class="o">=</span> <span class="n">NOT_GIVEN</span><span class="p">,</span>
+    <span class="n">match_lead_esp</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">|</span> <span class="n">NotGiven</span> <span class="o">=</span> <span class="n">NOT_GIVEN</span><span class="p">,</span>
+    <span class="n">stop_for_company</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">|</span> <span class="n">NotGiven</span> <span class="o">=</span> <span class="n">NOT_GIVEN</span><span class="p">,</span>
+    <span class="n">insert_unsubscribe_header</span><span class="p">:</span> <span class="p">(</span>
+        <span class="nb">bool</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">|</span> <span class="n">NotGiven</span>
+    <span class="p">)</span> <span class="o">=</span> <span class="n">NOT_GIVEN</span><span class="p">,</span>
+    <span class="n">allow_risky_contacts</span><span class="p">:</span> <span class="p">(</span>
+        <span class="nb">bool</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">|</span> <span class="n">NotGiven</span>
+    <span class="p">)</span> <span class="o">=</span> <span class="n">NOT_GIVEN</span><span class="p">,</span>
+    <span class="n">disable_bounce_protect</span><span class="p">:</span> <span class="p">(</span>
+        <span class="nb">bool</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">|</span> <span class="n">NotGiven</span>
+    <span class="p">)</span> <span class="o">=</span> <span class="n">NOT_GIVEN</span><span class="p">,</span>
     <span class="n">limit_emails_per_company_override</span><span class="p">:</span> <span class="p">(</span>
-        <span class="n">LimitEmailsPerCompanyOverride</span> <span class="o">|</span> <span class="n">NotGiven</span>
+        <span class="n">LimitEmailsPerCompanyOverride</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">|</span> <span class="n">NotGiven</span>
     <span class="p">)</span> <span class="o">=</span> <span class="n">NOT_GIVEN</span><span class="p">,</span>
-    <span class="n">cc_list</span><span class="p">:</span> <span class="n">_list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="n">NotGiven</span> <span class="o">=</span> <span class="n">NOT_GIVEN</span><span class="p">,</span>
-    <span class="n">bcc_list</span><span class="p">:</span> <span class="n">_list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="n">NotGiven</span> <span class="o">=</span> <span class="n">NOT_GIVEN</span><span class="p">,</span>
-    <span class="n">owned_by</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">NotGiven</span> <span class="o">=</span> <span class="n">NOT_GIVEN</span><span class="p">,</span>
+    <span class="n">cc_list</span><span class="p">:</span> <span class="n">_list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">|</span> <span class="n">NotGiven</span> <span class="o">=</span> <span class="n">NOT_GIVEN</span><span class="p">,</span>
+    <span class="n">bcc_list</span><span class="p">:</span> <span class="n">_list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">|</span> <span class="n">NotGiven</span> <span class="o">=</span> <span class="n">NOT_GIVEN</span><span class="p">,</span>
+    <span class="n">owned_by</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">|</span> <span class="n">NotGiven</span> <span class="o">=</span> <span class="n">NOT_GIVEN</span><span class="p">,</span>
     <span class="n">provider_routing_rules</span><span class="p">:</span> <span class="p">(</span>
-        <span class="n">_list</span><span class="p">[</span><span class="n">ProviderRoutingRule</span><span class="p">]</span> <span class="o">|</span> <span class="n">NotGiven</span>
+        <span class="n">_list</span><span class="p">[</span><span class="n">ProviderRoutingRule</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">|</span> <span class="n">NotGiven</span>
     <span class="p">)</span> <span class="o">=</span> <span class="n">NOT_GIVEN</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Campaign</span>
 </code></pre></div>
@@ -15279,41 +15297,55 @@ method surface -- the async class is always named <code>AsyncX</code> for sync c
     <span class="nb">id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
     <span class="o">*</span><span class="p">,</span>
     <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">NotGiven</span> <span class="o">=</span> <span class="n">NOT_GIVEN</span><span class="p">,</span>
-    <span class="n">pl_value</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="n">NotGiven</span> <span class="o">=</span> <span class="n">NOT_GIVEN</span><span class="p">,</span>
-    <span class="n">is_evergreen</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="n">NotGiven</span> <span class="o">=</span> <span class="n">NOT_GIVEN</span><span class="p">,</span>
+    <span class="n">pl_value</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">|</span> <span class="n">NotGiven</span> <span class="o">=</span> <span class="n">NOT_GIVEN</span><span class="p">,</span>
+    <span class="n">is_evergreen</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">|</span> <span class="n">NotGiven</span> <span class="o">=</span> <span class="n">NOT_GIVEN</span><span class="p">,</span>
     <span class="n">campaign_schedule</span><span class="p">:</span> <span class="p">(</span>
         <span class="n">CampaignSchedule</span> <span class="o">|</span> <span class="n">NotGiven</span>
     <span class="p">)</span> <span class="o">=</span> <span class="n">NOT_GIVEN</span><span class="p">,</span>
-    <span class="n">sequences</span><span class="p">:</span> <span class="n">_list</span><span class="p">[</span><span class="n">Sequence</span><span class="p">]</span> <span class="o">|</span> <span class="n">NotGiven</span> <span class="o">=</span> <span class="n">NOT_GIVEN</span><span class="p">,</span>
-    <span class="n">email_gap</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="n">NotGiven</span> <span class="o">=</span> <span class="n">NOT_GIVEN</span><span class="p">,</span>
-    <span class="n">random_wait_max</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="n">NotGiven</span> <span class="o">=</span> <span class="n">NOT_GIVEN</span><span class="p">,</span>
-    <span class="n">text_only</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="n">NotGiven</span> <span class="o">=</span> <span class="n">NOT_GIVEN</span><span class="p">,</span>
-    <span class="n">first_email_text_only</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="n">NotGiven</span> <span class="o">=</span> <span class="n">NOT_GIVEN</span><span class="p">,</span>
-    <span class="n">email_list</span><span class="p">:</span> <span class="n">_list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="n">NotGiven</span> <span class="o">=</span> <span class="n">NOT_GIVEN</span><span class="p">,</span>
-    <span class="n">daily_limit</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="n">NotGiven</span> <span class="o">=</span> <span class="n">NOT_GIVEN</span><span class="p">,</span>
-    <span class="n">stop_on_reply</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="n">NotGiven</span> <span class="o">=</span> <span class="n">NOT_GIVEN</span><span class="p">,</span>
-    <span class="n">email_tag_list</span><span class="p">:</span> <span class="n">_list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="n">NotGiven</span> <span class="o">=</span> <span class="n">NOT_GIVEN</span><span class="p">,</span>
-    <span class="n">link_tracking</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="n">NotGiven</span> <span class="o">=</span> <span class="n">NOT_GIVEN</span><span class="p">,</span>
-    <span class="n">open_tracking</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="n">NotGiven</span> <span class="o">=</span> <span class="n">NOT_GIVEN</span><span class="p">,</span>
-    <span class="n">stop_on_auto_reply</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="n">NotGiven</span> <span class="o">=</span> <span class="n">NOT_GIVEN</span><span class="p">,</span>
-    <span class="n">daily_max_leads</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="n">NotGiven</span> <span class="o">=</span> <span class="n">NOT_GIVEN</span><span class="p">,</span>
-    <span class="n">prioritize_new_leads</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="n">NotGiven</span> <span class="o">=</span> <span class="n">NOT_GIVEN</span><span class="p">,</span>
+    <span class="n">sequences</span><span class="p">:</span> <span class="p">(</span>
+        <span class="n">_list</span><span class="p">[</span><span class="n">Sequence</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">|</span> <span class="n">NotGiven</span>
+    <span class="p">)</span> <span class="o">=</span> <span class="n">NOT_GIVEN</span><span class="p">,</span>
+    <span class="n">email_gap</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">|</span> <span class="n">NotGiven</span> <span class="o">=</span> <span class="n">NOT_GIVEN</span><span class="p">,</span>
+    <span class="n">random_wait_max</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">|</span> <span class="n">NotGiven</span> <span class="o">=</span> <span class="n">NOT_GIVEN</span><span class="p">,</span>
+    <span class="n">text_only</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">|</span> <span class="n">NotGiven</span> <span class="o">=</span> <span class="n">NOT_GIVEN</span><span class="p">,</span>
+    <span class="n">first_email_text_only</span><span class="p">:</span> <span class="p">(</span>
+        <span class="nb">bool</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">|</span> <span class="n">NotGiven</span>
+    <span class="p">)</span> <span class="o">=</span> <span class="n">NOT_GIVEN</span><span class="p">,</span>
+    <span class="n">email_list</span><span class="p">:</span> <span class="n">_list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">|</span> <span class="n">NotGiven</span> <span class="o">=</span> <span class="n">NOT_GIVEN</span><span class="p">,</span>
+    <span class="n">daily_limit</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">|</span> <span class="n">NotGiven</span> <span class="o">=</span> <span class="n">NOT_GIVEN</span><span class="p">,</span>
+    <span class="n">stop_on_reply</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">|</span> <span class="n">NotGiven</span> <span class="o">=</span> <span class="n">NOT_GIVEN</span><span class="p">,</span>
+    <span class="n">email_tag_list</span><span class="p">:</span> <span class="p">(</span>
+        <span class="n">_list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">|</span> <span class="n">NotGiven</span>
+    <span class="p">)</span> <span class="o">=</span> <span class="n">NOT_GIVEN</span><span class="p">,</span>
+    <span class="n">link_tracking</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">|</span> <span class="n">NotGiven</span> <span class="o">=</span> <span class="n">NOT_GIVEN</span><span class="p">,</span>
+    <span class="n">open_tracking</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">|</span> <span class="n">NotGiven</span> <span class="o">=</span> <span class="n">NOT_GIVEN</span><span class="p">,</span>
+    <span class="n">stop_on_auto_reply</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">|</span> <span class="n">NotGiven</span> <span class="o">=</span> <span class="n">NOT_GIVEN</span><span class="p">,</span>
+    <span class="n">daily_max_leads</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">|</span> <span class="n">NotGiven</span> <span class="o">=</span> <span class="n">NOT_GIVEN</span><span class="p">,</span>
+    <span class="n">prioritize_new_leads</span><span class="p">:</span> <span class="p">(</span>
+        <span class="nb">bool</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">|</span> <span class="n">NotGiven</span>
+    <span class="p">)</span> <span class="o">=</span> <span class="n">NOT_GIVEN</span><span class="p">,</span>
     <span class="n">auto_variant_select</span><span class="p">:</span> <span class="p">(</span>
-        <span class="n">AutoVariantSelect</span> <span class="o">|</span> <span class="n">NotGiven</span>
+        <span class="n">AutoVariantSelect</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">|</span> <span class="n">NotGiven</span>
     <span class="p">)</span> <span class="o">=</span> <span class="n">NOT_GIVEN</span><span class="p">,</span>
-    <span class="n">match_lead_esp</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="n">NotGiven</span> <span class="o">=</span> <span class="n">NOT_GIVEN</span><span class="p">,</span>
-    <span class="n">stop_for_company</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="n">NotGiven</span> <span class="o">=</span> <span class="n">NOT_GIVEN</span><span class="p">,</span>
-    <span class="n">insert_unsubscribe_header</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="n">NotGiven</span> <span class="o">=</span> <span class="n">NOT_GIVEN</span><span class="p">,</span>
-    <span class="n">allow_risky_contacts</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="n">NotGiven</span> <span class="o">=</span> <span class="n">NOT_GIVEN</span><span class="p">,</span>
-    <span class="n">disable_bounce_protect</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="n">NotGiven</span> <span class="o">=</span> <span class="n">NOT_GIVEN</span><span class="p">,</span>
+    <span class="n">match_lead_esp</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">|</span> <span class="n">NotGiven</span> <span class="o">=</span> <span class="n">NOT_GIVEN</span><span class="p">,</span>
+    <span class="n">stop_for_company</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">|</span> <span class="n">NotGiven</span> <span class="o">=</span> <span class="n">NOT_GIVEN</span><span class="p">,</span>
+    <span class="n">insert_unsubscribe_header</span><span class="p">:</span> <span class="p">(</span>
+        <span class="nb">bool</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">|</span> <span class="n">NotGiven</span>
+    <span class="p">)</span> <span class="o">=</span> <span class="n">NOT_GIVEN</span><span class="p">,</span>
+    <span class="n">allow_risky_contacts</span><span class="p">:</span> <span class="p">(</span>
+        <span class="nb">bool</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">|</span> <span class="n">NotGiven</span>
+    <span class="p">)</span> <span class="o">=</span> <span class="n">NOT_GIVEN</span><span class="p">,</span>
+    <span class="n">disable_bounce_protect</span><span class="p">:</span> <span class="p">(</span>
+        <span class="nb">bool</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">|</span> <span class="n">NotGiven</span>
+    <span class="p">)</span> <span class="o">=</span> <span class="n">NOT_GIVEN</span><span class="p">,</span>
     <span class="n">limit_emails_per_company_override</span><span class="p">:</span> <span class="p">(</span>
-        <span class="n">LimitEmailsPerCompanyOverride</span> <span class="o">|</span> <span class="n">NotGiven</span>
+        <span class="n">LimitEmailsPerCompanyOverride</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">|</span> <span class="n">NotGiven</span>
     <span class="p">)</span> <span class="o">=</span> <span class="n">NOT_GIVEN</span><span class="p">,</span>
-    <span class="n">cc_list</span><span class="p">:</span> <span class="n">_list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="n">NotGiven</span> <span class="o">=</span> <span class="n">NOT_GIVEN</span><span class="p">,</span>
-    <span class="n">bcc_list</span><span class="p">:</span> <span class="n">_list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="n">NotGiven</span> <span class="o">=</span> <span class="n">NOT_GIVEN</span><span class="p">,</span>
-    <span class="n">owned_by</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">NotGiven</span> <span class="o">=</span> <span class="n">NOT_GIVEN</span><span class="p">,</span>
+    <span class="n">cc_list</span><span class="p">:</span> <span class="n">_list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">|</span> <span class="n">NotGiven</span> <span class="o">=</span> <span class="n">NOT_GIVEN</span><span class="p">,</span>
+    <span class="n">bcc_list</span><span class="p">:</span> <span class="n">_list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">|</span> <span class="n">NotGiven</span> <span class="o">=</span> <span class="n">NOT_GIVEN</span><span class="p">,</span>
+    <span class="n">owned_by</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">|</span> <span class="n">NotGiven</span> <span class="o">=</span> <span class="n">NOT_GIVEN</span><span class="p">,</span>
     <span class="n">provider_routing_rules</span><span class="p">:</span> <span class="p">(</span>
-        <span class="n">_list</span><span class="p">[</span><span class="n">ProviderRoutingRule</span><span class="p">]</span> <span class="o">|</span> <span class="n">NotGiven</span>
+        <span class="n">_list</span><span class="p">[</span><span class="n">ProviderRoutingRule</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">|</span> <span class="n">NotGiven</span>
     <span class="p">)</span> <span class="o">=</span> <span class="n">NOT_GIVEN</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Campaign</span>
 </code></pre></div>
@@ -15965,7 +15997,7 @@ method surface -- the async class is always named <code>AsyncX</code> for sync c
     <span class="nb">id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
     <span class="o">*</span><span class="p">,</span>
     <span class="n">label</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">NotGiven</span> <span class="o">=</span> <span class="n">NOT_GIVEN</span><span class="p">,</span>
-    <span class="n">description</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">NotGiven</span> <span class="o">=</span> <span class="n">NOT_GIVEN</span>
+    <span class="n">description</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">|</span> <span class="n">NotGiven</span> <span class="o">=</span> <span class="n">NOT_GIVEN</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">CustomTag</span>
 </code></pre></div>
 
@@ -16156,7 +16188,7 @@ method surface -- the async class is always named <code>AsyncX</code> for sync c
     <span class="nb">id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
     <span class="o">*</span><span class="p">,</span>
     <span class="n">label</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">NotGiven</span> <span class="o">=</span> <span class="n">NOT_GIVEN</span><span class="p">,</span>
-    <span class="n">description</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">NotGiven</span> <span class="o">=</span> <span class="n">NOT_GIVEN</span>
+    <span class="n">description</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">|</span> <span class="n">NotGiven</span> <span class="o">=</span> <span class="n">NOT_GIVEN</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">CustomTag</span>
 </code></pre></div>
 
@@ -17222,8 +17254,8 @@ method surface -- the async class is always named <code>AsyncX</code> for sync c
 <div class="doc-signature highlight"><pre><span></span><code><span class="nf">update</span><span class="p">(</span>
     <span class="nb">id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
     <span class="o">*</span><span class="p">,</span>
-    <span class="n">is_unread</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="n">NotGiven</span> <span class="o">=</span> <span class="n">NOT_GIVEN</span><span class="p">,</span>
-    <span class="n">reminder_ts</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">NotGiven</span> <span class="o">=</span> <span class="n">NOT_GIVEN</span>
+    <span class="n">is_unread</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">|</span> <span class="n">NotGiven</span> <span class="o">=</span> <span class="n">NOT_GIVEN</span><span class="p">,</span>
+    <span class="n">reminder_ts</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">|</span> <span class="n">NotGiven</span> <span class="o">=</span> <span class="n">NOT_GIVEN</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Email</span>
 </code></pre></div>
 
@@ -17507,8 +17539,8 @@ method surface -- the async class is always named <code>AsyncX</code> for sync c
 <div class="doc-signature highlight"><pre><span></span><code><span class="nf">update</span><span class="p">(</span>
     <span class="nb">id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
     <span class="o">*</span><span class="p">,</span>
-    <span class="n">is_unread</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="n">NotGiven</span> <span class="o">=</span> <span class="n">NOT_GIVEN</span><span class="p">,</span>
-    <span class="n">reminder_ts</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">NotGiven</span> <span class="o">=</span> <span class="n">NOT_GIVEN</span>
+    <span class="n">is_unread</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">|</span> <span class="n">NotGiven</span> <span class="o">=</span> <span class="n">NOT_GIVEN</span><span class="p">,</span>
+    <span class="n">reminder_ts</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">|</span> <span class="n">NotGiven</span> <span class="o">=</span> <span class="n">NOT_GIVEN</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Email</span>
 </code></pre></div>
 
@@ -18480,9 +18512,11 @@ method surface -- the async class is always named <code>AsyncX</code> for sync c
     <span class="nb">id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
     <span class="o">*</span><span class="p">,</span>
     <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">NotGiven</span> <span class="o">=</span> <span class="n">NOT_GIVEN</span><span class="p">,</span>
-    <span class="n">schedule</span><span class="p">:</span> <span class="n">Schedule1</span> <span class="o">|</span> <span class="n">NotGiven</span> <span class="o">=</span> <span class="n">NOT_GIVEN</span><span class="p">,</span>
-    <span class="n">automations</span><span class="p">:</span> <span class="n">_list</span><span class="p">[</span><span class="n">Automation</span><span class="p">]</span> <span class="o">|</span> <span class="n">NotGiven</span> <span class="o">=</span> <span class="n">NOT_GIVEN</span><span class="p">,</span>
-    <span class="n">status</span><span class="p">:</span> <span class="n">_TestStatus</span> <span class="o">|</span> <span class="n">NotGiven</span> <span class="o">=</span> <span class="n">NOT_GIVEN</span>
+    <span class="n">schedule</span><span class="p">:</span> <span class="n">Schedule1</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">|</span> <span class="n">NotGiven</span> <span class="o">=</span> <span class="n">NOT_GIVEN</span><span class="p">,</span>
+    <span class="n">automations</span><span class="p">:</span> <span class="p">(</span>
+        <span class="n">_list</span><span class="p">[</span><span class="n">Automation</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">|</span> <span class="n">NotGiven</span>
+    <span class="p">)</span> <span class="o">=</span> <span class="n">NOT_GIVEN</span><span class="p">,</span>
+    <span class="n">status</span><span class="p">:</span> <span class="n">_TestStatus</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">|</span> <span class="n">NotGiven</span> <span class="o">=</span> <span class="n">NOT_GIVEN</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">InboxPlacementTest</span>
 </code></pre></div>
 
@@ -18686,9 +18720,11 @@ method surface -- the async class is always named <code>AsyncX</code> for sync c
     <span class="nb">id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
     <span class="o">*</span><span class="p">,</span>
     <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">NotGiven</span> <span class="o">=</span> <span class="n">NOT_GIVEN</span><span class="p">,</span>
-    <span class="n">schedule</span><span class="p">:</span> <span class="n">Schedule1</span> <span class="o">|</span> <span class="n">NotGiven</span> <span class="o">=</span> <span class="n">NOT_GIVEN</span><span class="p">,</span>
-    <span class="n">automations</span><span class="p">:</span> <span class="n">_list</span><span class="p">[</span><span class="n">Automation</span><span class="p">]</span> <span class="o">|</span> <span class="n">NotGiven</span> <span class="o">=</span> <span class="n">NOT_GIVEN</span><span class="p">,</span>
-    <span class="n">status</span><span class="p">:</span> <span class="n">_TestStatus</span> <span class="o">|</span> <span class="n">NotGiven</span> <span class="o">=</span> <span class="n">NOT_GIVEN</span>
+    <span class="n">schedule</span><span class="p">:</span> <span class="n">Schedule1</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">|</span> <span class="n">NotGiven</span> <span class="o">=</span> <span class="n">NOT_GIVEN</span><span class="p">,</span>
+    <span class="n">automations</span><span class="p">:</span> <span class="p">(</span>
+        <span class="n">_list</span><span class="p">[</span><span class="n">Automation</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">|</span> <span class="n">NotGiven</span>
+    <span class="p">)</span> <span class="o">=</span> <span class="n">NOT_GIVEN</span><span class="p">,</span>
+    <span class="n">status</span><span class="p">:</span> <span class="n">_TestStatus</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">|</span> <span class="n">NotGiven</span> <span class="o">=</span> <span class="n">NOT_GIVEN</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">InboxPlacementTest</span>
 </code></pre></div>
 
@@ -18941,8 +18977,8 @@ method surface -- the async class is always named <code>AsyncX</code> for sync c
     <span class="n">interest_status_label</span><span class="p">:</span> <span class="p">(</span>
         <span class="n">_InterestStatusLabel</span> <span class="o">|</span> <span class="n">NotGiven</span>
     <span class="p">)</span> <span class="o">=</span> <span class="n">NOT_GIVEN</span><span class="p">,</span>
-    <span class="n">description</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">NotGiven</span> <span class="o">=</span> <span class="n">NOT_GIVEN</span><span class="p">,</span>
-    <span class="n">use_with_ai</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="n">NotGiven</span> <span class="o">=</span> <span class="n">NOT_GIVEN</span>
+    <span class="n">description</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">|</span> <span class="n">NotGiven</span> <span class="o">=</span> <span class="n">NOT_GIVEN</span><span class="p">,</span>
+    <span class="n">use_with_ai</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">|</span> <span class="n">NotGiven</span> <span class="o">=</span> <span class="n">NOT_GIVEN</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">LeadLabel</span>
 </code></pre></div>
 
@@ -19133,8 +19169,8 @@ method surface -- the async class is always named <code>AsyncX</code> for sync c
     <span class="n">interest_status_label</span><span class="p">:</span> <span class="p">(</span>
         <span class="n">_InterestStatusLabel</span> <span class="o">|</span> <span class="n">NotGiven</span>
     <span class="p">)</span> <span class="o">=</span> <span class="n">NOT_GIVEN</span><span class="p">,</span>
-    <span class="n">description</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">NotGiven</span> <span class="o">=</span> <span class="n">NOT_GIVEN</span><span class="p">,</span>
-    <span class="n">use_with_ai</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="n">NotGiven</span> <span class="o">=</span> <span class="n">NOT_GIVEN</span>
+    <span class="n">description</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">|</span> <span class="n">NotGiven</span> <span class="o">=</span> <span class="n">NOT_GIVEN</span><span class="p">,</span>
+    <span class="n">use_with_ai</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">|</span> <span class="n">NotGiven</span> <span class="o">=</span> <span class="n">NOT_GIVEN</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">LeadLabel</span>
 </code></pre></div>
 
@@ -19352,8 +19388,8 @@ method surface -- the async class is always named <code>AsyncX</code> for sync c
 <div class="doc-signature highlight"><pre><span></span><code><span class="nf">update</span><span class="p">(</span>
     <span class="nb">id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
     <span class="o">*</span><span class="p">,</span>
-    <span class="n">has_enrichment_task</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="n">NotGiven</span> <span class="o">=</span> <span class="n">NOT_GIVEN</span><span class="p">,</span>
-    <span class="n">owned_by</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">NotGiven</span> <span class="o">=</span> <span class="n">NOT_GIVEN</span><span class="p">,</span>
+    <span class="n">has_enrichment_task</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">|</span> <span class="n">NotGiven</span> <span class="o">=</span> <span class="n">NOT_GIVEN</span><span class="p">,</span>
+    <span class="n">owned_by</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">|</span> <span class="n">NotGiven</span> <span class="o">=</span> <span class="n">NOT_GIVEN</span><span class="p">,</span>
     <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">NotGiven</span> <span class="o">=</span> <span class="n">NOT_GIVEN</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">LeadList</span>
 </code></pre></div>
@@ -19538,8 +19574,8 @@ method surface -- the async class is always named <code>AsyncX</code> for sync c
 <div class="doc-signature highlight"><pre><span></span><code><span class="nf">update</span><span class="p">(</span>
     <span class="nb">id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
     <span class="o">*</span><span class="p">,</span>
-    <span class="n">has_enrichment_task</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="n">NotGiven</span> <span class="o">=</span> <span class="n">NOT_GIVEN</span><span class="p">,</span>
-    <span class="n">owned_by</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">NotGiven</span> <span class="o">=</span> <span class="n">NOT_GIVEN</span><span class="p">,</span>
+    <span class="n">has_enrichment_task</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">|</span> <span class="n">NotGiven</span> <span class="o">=</span> <span class="n">NOT_GIVEN</span><span class="p">,</span>
+    <span class="n">owned_by</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">|</span> <span class="n">NotGiven</span> <span class="o">=</span> <span class="n">NOT_GIVEN</span><span class="p">,</span>
     <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">NotGiven</span> <span class="o">=</span> <span class="n">NOT_GIVEN</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">LeadList</span>
 </code></pre></div>
@@ -20044,16 +20080,16 @@ method surface -- the async class is always named <code>AsyncX</code> for sync c
 <div class="doc-signature highlight"><pre><span></span><code><span class="nf">update</span><span class="p">(</span>
     <span class="nb">id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
     <span class="o">*</span><span class="p">,</span>
-    <span class="n">personalization</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">NotGiven</span> <span class="o">=</span> <span class="n">NOT_GIVEN</span><span class="p">,</span>
-    <span class="n">website</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">NotGiven</span> <span class="o">=</span> <span class="n">NOT_GIVEN</span><span class="p">,</span>
-    <span class="n">last_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">NotGiven</span> <span class="o">=</span> <span class="n">NOT_GIVEN</span><span class="p">,</span>
-    <span class="n">first_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">NotGiven</span> <span class="o">=</span> <span class="n">NOT_GIVEN</span><span class="p">,</span>
-    <span class="n">company_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">NotGiven</span> <span class="o">=</span> <span class="n">NOT_GIVEN</span><span class="p">,</span>
-    <span class="n">job_title</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">NotGiven</span> <span class="o">=</span> <span class="n">NOT_GIVEN</span><span class="p">,</span>
-    <span class="n">phone</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">NotGiven</span> <span class="o">=</span> <span class="n">NOT_GIVEN</span><span class="p">,</span>
-    <span class="n">lt_interest_status</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="n">NotGiven</span> <span class="o">=</span> <span class="n">NOT_GIVEN</span><span class="p">,</span>
-    <span class="n">pl_value_lead</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">NotGiven</span> <span class="o">=</span> <span class="n">NOT_GIVEN</span><span class="p">,</span>
-    <span class="n">assigned_to</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">NotGiven</span> <span class="o">=</span> <span class="n">NOT_GIVEN</span><span class="p">,</span>
+    <span class="n">personalization</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">|</span> <span class="n">NotGiven</span> <span class="o">=</span> <span class="n">NOT_GIVEN</span><span class="p">,</span>
+    <span class="n">website</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">|</span> <span class="n">NotGiven</span> <span class="o">=</span> <span class="n">NOT_GIVEN</span><span class="p">,</span>
+    <span class="n">last_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">|</span> <span class="n">NotGiven</span> <span class="o">=</span> <span class="n">NOT_GIVEN</span><span class="p">,</span>
+    <span class="n">first_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">|</span> <span class="n">NotGiven</span> <span class="o">=</span> <span class="n">NOT_GIVEN</span><span class="p">,</span>
+    <span class="n">company_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">|</span> <span class="n">NotGiven</span> <span class="o">=</span> <span class="n">NOT_GIVEN</span><span class="p">,</span>
+    <span class="n">job_title</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">|</span> <span class="n">NotGiven</span> <span class="o">=</span> <span class="n">NOT_GIVEN</span><span class="p">,</span>
+    <span class="n">phone</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">|</span> <span class="n">NotGiven</span> <span class="o">=</span> <span class="n">NOT_GIVEN</span><span class="p">,</span>
+    <span class="n">lt_interest_status</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">|</span> <span class="n">NotGiven</span> <span class="o">=</span> <span class="n">NOT_GIVEN</span><span class="p">,</span>
+    <span class="n">pl_value_lead</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">|</span> <span class="n">NotGiven</span> <span class="o">=</span> <span class="n">NOT_GIVEN</span><span class="p">,</span>
+    <span class="n">assigned_to</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">|</span> <span class="n">NotGiven</span> <span class="o">=</span> <span class="n">NOT_GIVEN</span><span class="p">,</span>
     <span class="n">custom_variables</span><span class="p">:</span> <span class="n">Payload</span> <span class="o">|</span> <span class="n">NotGiven</span> <span class="o">=</span> <span class="n">NOT_GIVEN</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Lead</span>
 </code></pre></div>
@@ -20484,16 +20520,16 @@ method surface -- the async class is always named <code>AsyncX</code> for sync c
 <div class="doc-signature highlight"><pre><span></span><code><span class="nf">update</span><span class="p">(</span>
     <span class="nb">id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
     <span class="o">*</span><span class="p">,</span>
-    <span class="n">personalization</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">NotGiven</span> <span class="o">=</span> <span class="n">NOT_GIVEN</span><span class="p">,</span>
-    <span class="n">website</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">NotGiven</span> <span class="o">=</span> <span class="n">NOT_GIVEN</span><span class="p">,</span>
-    <span class="n">last_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">NotGiven</span> <span class="o">=</span> <span class="n">NOT_GIVEN</span><span class="p">,</span>
-    <span class="n">first_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">NotGiven</span> <span class="o">=</span> <span class="n">NOT_GIVEN</span><span class="p">,</span>
-    <span class="n">company_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">NotGiven</span> <span class="o">=</span> <span class="n">NOT_GIVEN</span><span class="p">,</span>
-    <span class="n">job_title</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">NotGiven</span> <span class="o">=</span> <span class="n">NOT_GIVEN</span><span class="p">,</span>
-    <span class="n">phone</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">NotGiven</span> <span class="o">=</span> <span class="n">NOT_GIVEN</span><span class="p">,</span>
-    <span class="n">lt_interest_status</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="n">NotGiven</span> <span class="o">=</span> <span class="n">NOT_GIVEN</span><span class="p">,</span>
-    <span class="n">pl_value_lead</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">NotGiven</span> <span class="o">=</span> <span class="n">NOT_GIVEN</span><span class="p">,</span>
-    <span class="n">assigned_to</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">NotGiven</span> <span class="o">=</span> <span class="n">NOT_GIVEN</span><span class="p">,</span>
+    <span class="n">personalization</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">|</span> <span class="n">NotGiven</span> <span class="o">=</span> <span class="n">NOT_GIVEN</span><span class="p">,</span>
+    <span class="n">website</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">|</span> <span class="n">NotGiven</span> <span class="o">=</span> <span class="n">NOT_GIVEN</span><span class="p">,</span>
+    <span class="n">last_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">|</span> <span class="n">NotGiven</span> <span class="o">=</span> <span class="n">NOT_GIVEN</span><span class="p">,</span>
+    <span class="n">first_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">|</span> <span class="n">NotGiven</span> <span class="o">=</span> <span class="n">NOT_GIVEN</span><span class="p">,</span>
+    <span class="n">company_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">|</span> <span class="n">NotGiven</span> <span class="o">=</span> <span class="n">NOT_GIVEN</span><span class="p">,</span>
+    <span class="n">job_title</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">|</span> <span class="n">NotGiven</span> <span class="o">=</span> <span class="n">NOT_GIVEN</span><span class="p">,</span>
+    <span class="n">phone</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">|</span> <span class="n">NotGiven</span> <span class="o">=</span> <span class="n">NOT_GIVEN</span><span class="p">,</span>
+    <span class="n">lt_interest_status</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">|</span> <span class="n">NotGiven</span> <span class="o">=</span> <span class="n">NOT_GIVEN</span><span class="p">,</span>
+    <span class="n">pl_value_lead</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">|</span> <span class="n">NotGiven</span> <span class="o">=</span> <span class="n">NOT_GIVEN</span><span class="p">,</span>
+    <span class="n">assigned_to</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">|</span> <span class="n">NotGiven</span> <span class="o">=</span> <span class="n">NOT_GIVEN</span><span class="p">,</span>
     <span class="n">custom_variables</span><span class="p">:</span> <span class="n">Payload</span> <span class="o">|</span> <span class="n">NotGiven</span> <span class="o">=</span> <span class="n">NOT_GIVEN</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Lead</span>
 </code></pre></div>
@@ -21109,10 +21145,12 @@ method surface -- the async class is always named <code>AsyncX</code> for sync c
     <span class="o">*</span><span class="p">,</span>
     <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">NotGiven</span> <span class="o">=</span> <span class="n">NOT_GIVEN</span><span class="p">,</span>
     <span class="n">daily_limit_mode</span><span class="p">:</span> <span class="p">(</span>
-        <span class="n">_DailyLimitMode</span> <span class="o">|</span> <span class="n">NotGiven</span>
+        <span class="n">_DailyLimitMode</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">|</span> <span class="n">NotGiven</span>
     <span class="p">)</span> <span class="o">=</span> <span class="n">NOT_GIVEN</span><span class="p">,</span>
-    <span class="n">daily_limit</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="n">NotGiven</span> <span class="o">=</span> <span class="n">NOT_GIVEN</span><span class="p">,</span>
-    <span class="n">ignore_account_daily_limit</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="n">NotGiven</span> <span class="o">=</span> <span class="n">NOT_GIVEN</span>
+    <span class="n">daily_limit</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">|</span> <span class="n">NotGiven</span> <span class="o">=</span> <span class="n">NOT_GIVEN</span><span class="p">,</span>
+    <span class="n">ignore_account_daily_limit</span><span class="p">:</span> <span class="p">(</span>
+        <span class="nb">bool</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">|</span> <span class="n">NotGiven</span>
+    <span class="p">)</span> <span class="o">=</span> <span class="n">NOT_GIVEN</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">CampaignSubsequence</span>
 </code></pre></div>
 
@@ -21365,10 +21403,12 @@ method surface -- the async class is always named <code>AsyncX</code> for sync c
     <span class="o">*</span><span class="p">,</span>
     <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">NotGiven</span> <span class="o">=</span> <span class="n">NOT_GIVEN</span><span class="p">,</span>
     <span class="n">daily_limit_mode</span><span class="p">:</span> <span class="p">(</span>
-        <span class="n">_DailyLimitMode</span> <span class="o">|</span> <span class="n">NotGiven</span>
+        <span class="n">_DailyLimitMode</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">|</span> <span class="n">NotGiven</span>
     <span class="p">)</span> <span class="o">=</span> <span class="n">NOT_GIVEN</span><span class="p">,</span>
-    <span class="n">daily_limit</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="n">NotGiven</span> <span class="o">=</span> <span class="n">NOT_GIVEN</span><span class="p">,</span>
-    <span class="n">ignore_account_daily_limit</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="n">NotGiven</span> <span class="o">=</span> <span class="n">NOT_GIVEN</span>
+    <span class="n">daily_limit</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">|</span> <span class="n">NotGiven</span> <span class="o">=</span> <span class="n">NOT_GIVEN</span><span class="p">,</span>
+    <span class="n">ignore_account_daily_limit</span><span class="p">:</span> <span class="p">(</span>
+        <span class="nb">bool</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">|</span> <span class="n">NotGiven</span>
+    <span class="p">)</span> <span class="o">=</span> <span class="n">NOT_GIVEN</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">CampaignSubsequence</span>
 </code></pre></div>
 
@@ -22767,12 +22807,14 @@ method surface -- the async class is always named <code>AsyncX</code> for sync c
 <div class="doc-signature highlight"><pre><span></span><code><span class="nf">update</span><span class="p">(</span>
     <span class="nb">id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
     <span class="o">*</span><span class="p">,</span>
-    <span class="n">campaign</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">NotGiven</span> <span class="o">=</span> <span class="n">NOT_GIVEN</span><span class="p">,</span>
-    <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">NotGiven</span> <span class="o">=</span> <span class="n">NOT_GIVEN</span><span class="p">,</span>
+    <span class="n">campaign</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">|</span> <span class="n">NotGiven</span> <span class="o">=</span> <span class="n">NOT_GIVEN</span><span class="p">,</span>
+    <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">|</span> <span class="n">NotGiven</span> <span class="o">=</span> <span class="n">NOT_GIVEN</span><span class="p">,</span>
     <span class="n">target_hook_url</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">NotGiven</span> <span class="o">=</span> <span class="n">NOT_GIVEN</span><span class="p">,</span>
-    <span class="n">event_type</span><span class="p">:</span> <span class="n">EventType</span> <span class="o">|</span> <span class="n">NotGiven</span> <span class="o">=</span> <span class="n">NOT_GIVEN</span><span class="p">,</span>
-    <span class="n">custom_interest_value</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="n">NotGiven</span> <span class="o">=</span> <span class="n">NOT_GIVEN</span><span class="p">,</span>
-    <span class="n">headers</span><span class="p">:</span> <span class="n">JSONObject</span> <span class="o">|</span> <span class="n">NotGiven</span> <span class="o">=</span> <span class="n">NOT_GIVEN</span>
+    <span class="n">event_type</span><span class="p">:</span> <span class="n">EventType</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">|</span> <span class="n">NotGiven</span> <span class="o">=</span> <span class="n">NOT_GIVEN</span><span class="p">,</span>
+    <span class="n">custom_interest_value</span><span class="p">:</span> <span class="p">(</span>
+        <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">|</span> <span class="n">NotGiven</span>
+    <span class="p">)</span> <span class="o">=</span> <span class="n">NOT_GIVEN</span><span class="p">,</span>
+    <span class="n">headers</span><span class="p">:</span> <span class="n">JSONObject</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">|</span> <span class="n">NotGiven</span> <span class="o">=</span> <span class="n">NOT_GIVEN</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Webhook</span>
 </code></pre></div>
 
@@ -22995,12 +23037,14 @@ method surface -- the async class is always named <code>AsyncX</code> for sync c
 <div class="doc-signature highlight"><pre><span></span><code><span class="nf">update</span><span class="p">(</span>
     <span class="nb">id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
     <span class="o">*</span><span class="p">,</span>
-    <span class="n">campaign</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">NotGiven</span> <span class="o">=</span> <span class="n">NOT_GIVEN</span><span class="p">,</span>
-    <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">NotGiven</span> <span class="o">=</span> <span class="n">NOT_GIVEN</span><span class="p">,</span>
+    <span class="n">campaign</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">|</span> <span class="n">NotGiven</span> <span class="o">=</span> <span class="n">NOT_GIVEN</span><span class="p">,</span>
+    <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">|</span> <span class="n">NotGiven</span> <span class="o">=</span> <span class="n">NOT_GIVEN</span><span class="p">,</span>
     <span class="n">target_hook_url</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">NotGiven</span> <span class="o">=</span> <span class="n">NOT_GIVEN</span><span class="p">,</span>
-    <span class="n">event_type</span><span class="p">:</span> <span class="n">EventType</span> <span class="o">|</span> <span class="n">NotGiven</span> <span class="o">=</span> <span class="n">NOT_GIVEN</span><span class="p">,</span>
-    <span class="n">custom_interest_value</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="n">NotGiven</span> <span class="o">=</span> <span class="n">NOT_GIVEN</span><span class="p">,</span>
-    <span class="n">headers</span><span class="p">:</span> <span class="n">JSONObject</span> <span class="o">|</span> <span class="n">NotGiven</span> <span class="o">=</span> <span class="n">NOT_GIVEN</span>
+    <span class="n">event_type</span><span class="p">:</span> <span class="n">EventType</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">|</span> <span class="n">NotGiven</span> <span class="o">=</span> <span class="n">NOT_GIVEN</span><span class="p">,</span>
+    <span class="n">custom_interest_value</span><span class="p">:</span> <span class="p">(</span>
+        <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">|</span> <span class="n">NotGiven</span>
+    <span class="p">)</span> <span class="o">=</span> <span class="n">NOT_GIVEN</span><span class="p">,</span>
+    <span class="n">headers</span><span class="p">:</span> <span class="n">JSONObject</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">|</span> <span class="n">NotGiven</span> <span class="o">=</span> <span class="n">NOT_GIVEN</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Webhook</span>
 </code></pre></div>
 
@@ -23794,7 +23838,7 @@ method surface -- the async class is always named <code>AsyncX</code> for sync c
 <div class="doc-signature highlight"><pre><span></span><code><span class="nf">update</span><span class="p">(</span>
     <span class="nb">id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
     <span class="o">*</span><span class="p">,</span>
-    <span class="n">nickname</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">NotGiven</span> <span class="o">=</span> <span class="n">NOT_GIVEN</span><span class="p">,</span>
+    <span class="n">nickname</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">|</span> <span class="n">NotGiven</span> <span class="o">=</span> <span class="n">NOT_GIVEN</span><span class="p">,</span>
     <span class="n">role</span><span class="p">:</span> <span class="n">_WorkspaceMemberRole</span> <span class="o">|</span> <span class="n">NotGiven</span> <span class="o">=</span> <span class="n">NOT_GIVEN</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">WorkspaceMember</span>
 </code></pre></div>
@@ -23959,7 +24003,7 @@ method surface -- the async class is always named <code>AsyncX</code> for sync c
 <div class="doc-signature highlight"><pre><span></span><code><span class="nf">update</span><span class="p">(</span>
     <span class="nb">id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
     <span class="o">*</span><span class="p">,</span>
-    <span class="n">nickname</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">NotGiven</span> <span class="o">=</span> <span class="n">NOT_GIVEN</span><span class="p">,</span>
+    <span class="n">nickname</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">|</span> <span class="n">NotGiven</span> <span class="o">=</span> <span class="n">NOT_GIVEN</span><span class="p">,</span>
     <span class="n">role</span><span class="p">:</span> <span class="n">_WorkspaceMemberRole</span> <span class="o">|</span> <span class="n">NotGiven</span> <span class="o">=</span> <span class="n">NOT_GIVEN</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">WorkspaceMember</span>
 </code></pre></div>
@@ -24239,7 +24283,7 @@ method surface -- the async class is always named <code>AsyncX</code> for sync c
 <div class="doc-signature highlight"><pre><span></span><code><span class="nf">update</span><span class="p">(</span>
     <span class="o">*</span><span class="p">,</span>
     <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">NotGiven</span> <span class="o">=</span> <span class="n">NOT_GIVEN</span><span class="p">,</span>
-    <span class="n">org_logo_url</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">NotGiven</span> <span class="o">=</span> <span class="n">NOT_GIVEN</span>
+    <span class="n">org_logo_url</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">|</span> <span class="n">NotGiven</span> <span class="o">=</span> <span class="n">NOT_GIVEN</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Workspace</span>
 </code></pre></div>
 
@@ -24448,7 +24492,7 @@ method surface -- the async class is always named <code>AsyncX</code> for sync c
 <div class="doc-signature highlight"><pre><span></span><code><span class="nf">update</span><span class="p">(</span>
     <span class="o">*</span><span class="p">,</span>
     <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">NotGiven</span> <span class="o">=</span> <span class="n">NOT_GIVEN</span><span class="p">,</span>
-    <span class="n">org_logo_url</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">NotGiven</span> <span class="o">=</span> <span class="n">NOT_GIVEN</span>
+    <span class="n">org_logo_url</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">|</span> <span class="n">NotGiven</span> <span class="o">=</span> <span class="n">NOT_GIVEN</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Workspace</span>
 </code></pre></div>
 

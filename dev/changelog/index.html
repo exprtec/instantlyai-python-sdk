@@ -731,8 +731,20 @@
 <a href="https://semver.org/">Semantic Versioning</a> (<code>0.x</code> -- minor bumps may break, see
 <a href="https://github.com/exprtec/instantlyai-python-sdk#readme">README</a>).</p>
 <h2 id="unreleased">[Unreleased]<a class="headerlink" href="#unreleased" title="Permanent link">&para;</a></h2>
-<h2 id="012-2026-07-23">[0.1.2] - 2026-07-23<a class="headerlink" href="#012-2026-07-23" title="Permanent link">&para;</a></h2>
+<h2 id="013-2026-07-23">[0.1.3] - 2026-07-23<a class="headerlink" href="#013-2026-07-23" title="Permanent link">&para;</a></h2>
 <h3 id="fixed">Fixed<a class="headerlink" href="#fixed" title="Permanent link">&para;</a></h3>
+<ul>
+<li><code>update()</code> parameters that correspond to nullable (<code>T | None</code>) model fields were typed
+  as <code>T | NotGiven</code>, dropping the <code>None</code> branch the model itself allows. This didn't
+  affect runtime behavior (<code>None</code> already passed through and serialized as JSON <code>null</code>,
+  correctly clearing the field), but callers who legitimately wanted to clear a nullable
+  field (e.g. <code>accounts.update(..., signature=None)</code>, <code>campaigns.update(..., daily_limit=None)</code>)
+  got a static type error. Corrected across every resource's <code>update()</code> (sync and async):
+  <code>accounts</code>, <code>campaigns</code>, <code>custom_tags</code>, <code>emails</code>, <code>inbox_placement_tests</code>, <code>lead_labels</code>,
+  <code>lead_lists</code>, <code>leads</code>, <code>subsequences</code>, <code>webhooks</code>, <code>workspace_members</code>, <code>workspaces</code>.</li>
+</ul>
+<h2 id="012-2026-07-23">[0.1.2] - 2026-07-23<a class="headerlink" href="#012-2026-07-23" title="Permanent link">&para;</a></h2>
+<h3 id="fixed_1">Fixed<a class="headerlink" href="#fixed_1" title="Permanent link">&para;</a></h3>
 <ul>
 <li><code>Account.model_validate()</code> no longer raises on <code>client.accounts.list(include_tags=True)</code>.
   The generated <code>Account</code> model was missing the <code>tags</code> field the API embeds per account
