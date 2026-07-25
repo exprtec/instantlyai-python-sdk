@@ -7,6 +7,18 @@ All notable changes to this project are documented here. Format follows
 
 ## [Unreleased]
 
+## [0.1.5] - 2026-07-25
+
+### Fixed
+
+- `SyncCursorPage`/`AsyncCursorPage` auto-pagination (`for x in client.x.list()`)
+  only treated `next_starting_after is None` as "no more pages". Some endpoints
+  (e.g. `dfy_email_account_orders.list()`) return `""` instead of `null` on their
+  last page, so re-requesting with `starting_after=""` returned the same page
+  forever -- an infinite loop, not just a missed termination. `has_next_page` and
+  both iterators now treat any falsy `next_starting_after` (`None` or `""`) as
+  "no more pages".
+
 ## [0.1.4] - 2026-07-25
 
 ### Fixed

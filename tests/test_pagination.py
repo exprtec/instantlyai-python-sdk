@@ -38,6 +38,16 @@ def test_sync_cursor_page_walks_multiple_pages_transparently() -> None:
     assert calls == ["cursor-a", "cursor-b"]
 
 
+def test_sync_cursor_page_treats_empty_string_cursor_as_no_next_page() -> None:
+    def get_next_page(cursor: str | None) -> SyncCursorPage[Item]:
+        raise AssertionError("should not be called: '' means no next page")
+
+    page = SyncCursorPage([Item(id="1"), Item(id="2")], "", get_next_page=get_next_page)
+
+    assert not page.has_next_page
+    assert [item.id for item in page] == ["1", "2"]
+
+
 def test_sync_cursor_page_manual_control_reads_items_without_iterating() -> None:
     def get_next_page(cursor: str | None) -> SyncCursorPage[Item]:
         raise AssertionError("manual control must not trigger auto-pagination")
@@ -65,3 +75,14 @@ async def test_async_cursor_page_walks_multiple_pages_transparently() -> None:
 
     collected = [item.id async for item in page]
     assert collected == ["1", "2", "3"]
+
+
+@pytest.mark.asyncio
+async def test_async_cursor_page_treats_empty_string_cursor_as_no_next_page() -> None:
+    async def get_next_page(cursor: str | None) -> AsyncCursorPage[Item]:
+        raise AssertionError("should not be called: '' means no next page")
+
+    page = AsyncCursorPage([Item(id="1"), Item(id="2")], "", get_next_page=get_next_page)
+
+    assert not page.has_next_page
+    assert [item.id async for item in page] == ["1", "2"]

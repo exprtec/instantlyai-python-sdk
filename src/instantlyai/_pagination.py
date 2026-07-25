@@ -12,7 +12,7 @@ For manual, one-page-at-a-time control, read ``.items`` and
 
     page = client.campaigns.list()
     page.items              # just this page
-    page.next_starting_after  # cursor for the next call, or None
+    page.next_starting_after  # cursor for the next call, or None/"" if exhausted
 """
 
 from __future__ import annotations
@@ -41,13 +41,13 @@ class SyncCursorPage(Generic[_T]):
 
     @property
     def has_next_page(self) -> bool:
-        return self.next_starting_after is not None
+        return bool(self.next_starting_after)
 
     def __iter__(self) -> Iterator[_T]:
         page: SyncCursorPage[_T] = self
         while True:
             yield from page.items
-            if page.next_starting_after is None:
+            if not page.next_starting_after:
                 return
             page = page._get_next_page(page.next_starting_after)
 
@@ -71,14 +71,14 @@ class AsyncCursorPage(Generic[_T]):
 
     @property
     def has_next_page(self) -> bool:
-        return self.next_starting_after is not None
+        return bool(self.next_starting_after)
 
     async def __aiter__(self) -> AsyncIterator[_T]:
         page: AsyncCursorPage[_T] = self
         while True:
             for item in page.items:
                 yield item
-            if page.next_starting_after is None:
+            if not page.next_starting_after:
                 return
             page = await page._get_next_page(page.next_starting_after)
 
