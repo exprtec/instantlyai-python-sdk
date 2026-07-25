@@ -731,8 +731,19 @@
 <a href="https://semver.org/">Semantic Versioning</a> (<code>0.x</code> -- minor bumps may break, see
 <a href="https://github.com/exprtec/instantlyai-python-sdk#readme">README</a>).</p>
 <h2 id="unreleased">[Unreleased]<a class="headerlink" href="#unreleased" title="Permanent link">&para;</a></h2>
-<h2 id="014-2026-07-25">[0.1.4] - 2026-07-25<a class="headerlink" href="#014-2026-07-25" title="Permanent link">&para;</a></h2>
+<h2 id="015-2026-07-25">[0.1.5] - 2026-07-25<a class="headerlink" href="#015-2026-07-25" title="Permanent link">&para;</a></h2>
 <h3 id="fixed">Fixed<a class="headerlink" href="#fixed" title="Permanent link">&para;</a></h3>
+<ul>
+<li><code>SyncCursorPage</code>/<code>AsyncCursorPage</code> auto-pagination (<code>for x in client.x.list()</code>)
+  only treated <code>next_starting_after is None</code> as "no more pages". Some endpoints
+  (e.g. <code>dfy_email_account_orders.list()</code>) return <code>""</code> instead of <code>null</code> on their
+  last page, so re-requesting with <code>starting_after=""</code> returned the same page
+  forever -- an infinite loop, not just a missed termination. <code>has_next_page</code> and
+  both iterators now treat any falsy <code>next_starting_after</code> (<code>None</code> or <code>""</code>) as
+  "no more pages".</li>
+</ul>
+<h2 id="014-2026-07-25">[0.1.4] - 2026-07-25<a class="headerlink" href="#014-2026-07-25" title="Permanent link">&para;</a></h2>
+<h3 id="fixed_1">Fixed<a class="headerlink" href="#fixed_1" title="Permanent link">&para;</a></h3>
 <ul>
 <li><code>compute_backoff()</code> honored the server's <code>Retry-After</code> header with no upper bound,
   so a rate-limited endpoint could stall a request for however long the server asked
@@ -743,7 +754,7 @@
   <code>AsyncInstantly</code>, alongside <code>timeout</code> and <code>max_retries</code>.</li>
 </ul>
 <h2 id="013-2026-07-23">[0.1.3] - 2026-07-23<a class="headerlink" href="#013-2026-07-23" title="Permanent link">&para;</a></h2>
-<h3 id="fixed_1">Fixed<a class="headerlink" href="#fixed_1" title="Permanent link">&para;</a></h3>
+<h3 id="fixed_2">Fixed<a class="headerlink" href="#fixed_2" title="Permanent link">&para;</a></h3>
 <ul>
 <li><code>update()</code> parameters that correspond to nullable (<code>T | None</code>) model fields were typed
   as <code>T | NotGiven</code>, dropping the <code>None</code> branch the model itself allows. This didn't
@@ -755,7 +766,7 @@
   <code>lead_lists</code>, <code>leads</code>, <code>subsequences</code>, <code>webhooks</code>, <code>workspace_members</code>, <code>workspaces</code>.</li>
 </ul>
 <h2 id="012-2026-07-23">[0.1.2] - 2026-07-23<a class="headerlink" href="#012-2026-07-23" title="Permanent link">&para;</a></h2>
-<h3 id="fixed_2">Fixed<a class="headerlink" href="#fixed_2" title="Permanent link">&para;</a></h3>
+<h3 id="fixed_3">Fixed<a class="headerlink" href="#fixed_3" title="Permanent link">&para;</a></h3>
 <ul>
 <li><code>Account.model_validate()</code> no longer raises on <code>client.accounts.list(include_tags=True)</code>.
   The generated <code>Account</code> model was missing the <code>tags</code> field the API embeds per account

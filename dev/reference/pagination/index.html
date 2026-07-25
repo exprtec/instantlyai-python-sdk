@@ -862,7 +862,7 @@ when iterated:</p>
 <code>.next_starting_after</code> directly instead of iterating:</p>
 <div class="highlight"><pre><span></span><code>page = client.campaigns.list()
 page.items              # just this page
-page.next_starting_after  # cursor for the next call, or None
+page.next_starting_after  # cursor for the next call, or None/&quot;&quot; if exhausted
 </code></pre></div>
 
 
