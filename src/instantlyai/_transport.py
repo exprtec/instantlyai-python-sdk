@@ -21,6 +21,7 @@ from ._exceptions import APIConnectionError, APITimeoutError, build_status_error
 from ._version import __version__
 
 __all__ = [
+    "DEFAULT_MAX_BACKOFF",
     "DEFAULT_MAX_RETRIES",
     "DEFAULT_TIMEOUT",
     "NOT_GIVEN",
@@ -31,6 +32,7 @@ __all__ = [
 
 DEFAULT_TIMEOUT = httpx.Timeout(30.0, connect=5.0)
 DEFAULT_MAX_RETRIES = 3
+DEFAULT_MAX_BACKOFF = 30.0
 DEFAULT_BASE_URL = "https://api.instantly.ai"
 
 _RETRYABLE_STATUS_CODES = frozenset({429, 500, 502, 503, 504})
@@ -102,16 +104,18 @@ def _queryable(value: object) -> _QueryParam | list[_QueryParam]:
     return _query_scalar(jsonable)
 
 
-def compute_backoff(attempt: int, *, retry_after: float | None) -> float:
+def compute_backoff(attempt: int, *, retry_after: float | None, max_backoff: float) -> float:
     """Seconds to wait before retry number ``attempt`` (0-indexed).
 
     Honours the server's ``Retry-After`` header when present; otherwise
-    exponential backoff with jitter: ~0.5s, ~1s, ~2s, ...
+    exponential backoff with jitter: ~0.5s, ~1s, ~2s, ... Either way, the
+    wait is capped at ``max_backoff`` so a caller-side deadline stays
+    meaningful regardless of what the server asks for.
     """
     if retry_after is not None:
-        return max(retry_after, 0.0)
+        return min(max(retry_after, 0.0), max_backoff)
     base = 0.5 * (2**attempt)
-    return base + random.uniform(0, base * 0.1)
+    return min(base + random.uniform(0, base * 0.1), max_backoff)
 
 
 def build_headers(api_key: str) -> dict[str, str]:
@@ -158,11 +162,13 @@ class _BaseTransport:
         base_url: str,
         timeout: httpx.Timeout,
         max_retries: int,
+        max_backoff: float,
     ) -> None:
         self.api_key = api_key
         self.base_url = base_url.rstrip("/")
         self.timeout = timeout
         self.max_retries = max_retries
+        self.max_backoff = max_backoff
 
     def _url(self, path: str) -> str:
         return f"{self.base_url}{path}"
@@ -182,10 +188,15 @@ class SyncTransport(_BaseTransport):
         base_url: str = DEFAULT_BASE_URL,
         timeout: httpx.Timeout = DEFAULT_TIMEOUT,
         max_retries: int = DEFAULT_MAX_RETRIES,
+        max_backoff: float = DEFAULT_MAX_BACKOFF,
         http_client: httpx.Client | None = None,
     ) -> None:
         super().__init__(
-            api_key=api_key, base_url=base_url, timeout=timeout, max_retries=max_retries
+            api_key=api_key,
+            base_url=base_url,
+            timeout=timeout,
+            max_retries=max_retries,
+            max_backoff=max_backoff,
         )
         self._client = http_client or httpx.Client(timeout=timeout)
 
@@ -209,13 +220,17 @@ class SyncTransport(_BaseTransport):
                 )
             except httpx.TimeoutException as exc:
                 if self._should_retry_exception(exc, attempt):
-                    time.sleep(compute_backoff(attempt, retry_after=None))
+                    time.sleep(
+                        compute_backoff(attempt, retry_after=None, max_backoff=self.max_backoff)
+                    )
                     attempt += 1
                     continue
                 raise APITimeoutError(exc.request) from exc
             except httpx.HTTPError as exc:
                 if self._should_retry_exception(exc, attempt):
-                    time.sleep(compute_backoff(attempt, retry_after=None))
+                    time.sleep(
+                        compute_backoff(attempt, retry_after=None, max_backoff=self.max_backoff)
+                    )
                     attempt += 1
                     continue
                 raise APIConnectionError(str(exc), request=exc.request) from exc
@@ -223,7 +238,13 @@ class SyncTransport(_BaseTransport):
             if response.is_success:
                 return parse_response_body(response)
             if self._should_retry_response(response, attempt):
-                time.sleep(compute_backoff(attempt, retry_after=_retry_after_seconds(response)))
+                time.sleep(
+                    compute_backoff(
+                        attempt,
+                        retry_after=_retry_after_seconds(response),
+                        max_backoff=self.max_backoff,
+                    )
+                )
                 attempt += 1
                 continue
             raise build_status_error(response, parse_response_body(response))
@@ -240,10 +261,15 @@ class AsyncTransport(_BaseTransport):
         base_url: str = DEFAULT_BASE_URL,
         timeout: httpx.Timeout = DEFAULT_TIMEOUT,
         max_retries: int = DEFAULT_MAX_RETRIES,
+        max_backoff: float = DEFAULT_MAX_BACKOFF,
         http_client: httpx.AsyncClient | None = None,
     ) -> None:
         super().__init__(
-            api_key=api_key, base_url=base_url, timeout=timeout, max_retries=max_retries
+            api_key=api_key,
+            base_url=base_url,
+            timeout=timeout,
+            max_retries=max_retries,
+            max_backoff=max_backoff,
         )
         self._client = http_client or httpx.AsyncClient(timeout=timeout)
 
@@ -267,13 +293,17 @@ class AsyncTransport(_BaseTransport):
                 )
             except httpx.TimeoutException as exc:
                 if self._should_retry_exception(exc, attempt):
-                    await asyncio.sleep(compute_backoff(attempt, retry_after=None))
+                    await asyncio.sleep(
+                        compute_backoff(attempt, retry_after=None, max_backoff=self.max_backoff)
+                    )
                     attempt += 1
                     continue
                 raise APITimeoutError(exc.request) from exc
             except httpx.HTTPError as exc:
                 if self._should_retry_exception(exc, attempt):
-                    await asyncio.sleep(compute_backoff(attempt, retry_after=None))
+                    await asyncio.sleep(
+                        compute_backoff(attempt, retry_after=None, max_backoff=self.max_backoff)
+                    )
                     attempt += 1
                     continue
                 raise APIConnectionError(str(exc), request=exc.request) from exc
@@ -282,7 +312,11 @@ class AsyncTransport(_BaseTransport):
                 return parse_response_body(response)
             if self._should_retry_response(response, attempt):
                 await asyncio.sleep(
-                    compute_backoff(attempt, retry_after=_retry_after_seconds(response))
+                    compute_backoff(
+                        attempt,
+                        retry_after=_retry_after_seconds(response),
+                        max_backoff=self.max_backoff,
+                    )
                 )
                 attempt += 1
                 continue

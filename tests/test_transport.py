@@ -49,14 +49,22 @@ def test_clean_query_params_drops_none_and_not_given() -> None:
 
 
 def test_compute_backoff_honours_retry_after() -> None:
-    assert compute_backoff(0, retry_after=5.0) == 5.0
-    assert compute_backoff(3, retry_after=0.0) == 0.0
+    assert compute_backoff(0, retry_after=5.0, max_backoff=30.0) == 5.0
+    assert compute_backoff(3, retry_after=0.0, max_backoff=30.0) == 0.0
+
+
+def test_compute_backoff_caps_retry_after_at_max_backoff() -> None:
+    assert compute_backoff(0, retry_after=120.0, max_backoff=30.0) == 30.0
+
+
+def test_compute_backoff_caps_exponential_growth_at_max_backoff() -> None:
+    assert compute_backoff(10, retry_after=None, max_backoff=30.0) == 30.0
 
 
 def test_compute_backoff_grows_exponentially_without_retry_after() -> None:
-    zero = compute_backoff(0, retry_after=None)
-    one = compute_backoff(1, retry_after=None)
-    two = compute_backoff(2, retry_after=None)
+    zero = compute_backoff(0, retry_after=None, max_backoff=30.0)
+    one = compute_backoff(1, retry_after=None, max_backoff=30.0)
+    two = compute_backoff(2, retry_after=None, max_backoff=30.0)
     assert 0.5 <= zero < 0.6
     assert 1.0 <= one < 1.2
     assert 2.0 <= two < 2.4

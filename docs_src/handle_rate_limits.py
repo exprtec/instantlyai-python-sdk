@@ -12,8 +12,8 @@ import instantlyai
 
 def main(client: instantlyai.Instantly) -> None:
     # The client already retries 429s with exponential backoff (honouring
-    # Retry-After) up to `max_retries` times -- most rate limits never
-    # surface to your code at all.
+    # Retry-After, capped at `max_backoff`) up to `max_retries` times --
+    # most rate limits never surface to your code at all.
     try:
         list(client.campaigns.list(limit=100))
     except instantlyai.RateLimitError as exc:
@@ -23,5 +23,8 @@ def main(client: instantlyai.Instantly) -> None:
 
 
 if __name__ == "__main__":
-    with instantlyai.Instantly(max_retries=5) as client:
+    # `max_backoff` caps how long any single retry can wait, even if the
+    # server's `Retry-After` header asks for longer -- useful when the whole
+    # call is wrapped in a caller-side deadline (e.g. `asyncio.wait_for`).
+    with instantlyai.Instantly(max_retries=5, max_backoff=10.0) as client:
         main(client)

@@ -17,6 +17,7 @@ import httpx
 from . import resources
 from ._transport import (
     DEFAULT_BASE_URL,
+    DEFAULT_MAX_BACKOFF,
     DEFAULT_MAX_RETRIES,
     DEFAULT_TIMEOUT,
     AsyncTransport,
@@ -54,6 +55,7 @@ class Instantly:
         base_url: str = DEFAULT_BASE_URL,
         timeout: httpx.Timeout = DEFAULT_TIMEOUT,
         max_retries: int = DEFAULT_MAX_RETRIES,
+        max_backoff: float = DEFAULT_MAX_BACKOFF,
         http_client: httpx.Client | None = None,
     ) -> None:
         self._transport = SyncTransport(
@@ -61,6 +63,7 @@ class Instantly:
             base_url=base_url,
             timeout=timeout,
             max_retries=max_retries,
+            max_backoff=max_backoff,
             http_client=http_client,
         )
 
@@ -125,6 +128,7 @@ class AsyncInstantly:
         base_url: str = DEFAULT_BASE_URL,
         timeout: httpx.Timeout = DEFAULT_TIMEOUT,
         max_retries: int = DEFAULT_MAX_RETRIES,
+        max_backoff: float = DEFAULT_MAX_BACKOFF,
         http_client: httpx.AsyncClient | None = None,
     ) -> None:
         self._transport = AsyncTransport(
@@ -132,6 +136,7 @@ class AsyncInstantly:
             base_url=base_url,
             timeout=timeout,
             max_retries=max_retries,
+            max_backoff=max_backoff,
             http_client=http_client,
         )
 

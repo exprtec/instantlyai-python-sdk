@@ -7,6 +7,18 @@ All notable changes to this project are documented here. Format follows
 
 ## [Unreleased]
 
+## [0.1.4] - 2026-07-25
+
+### Fixed
+
+- `compute_backoff()` honored the server's `Retry-After` header with no upper bound,
+  so a rate-limited endpoint could stall a request for however long the server asked
+  no matter how large `max_retries` allowed the wait to grow, making caller-side
+  deadlines (e.g. `asyncio.wait_for`) unreliable. Retry waits -- both `Retry-After`-driven
+  and exponential-backoff-driven -- are now capped at a `max_backoff` ceiling (default
+  30s), configurable via a new `max_backoff` constructor kwarg on `Instantly` /
+  `AsyncInstantly`, alongside `timeout` and `max_retries`.
+
 ## [0.1.3] - 2026-07-23
 
 ### Fixed

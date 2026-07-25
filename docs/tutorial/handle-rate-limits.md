@@ -2,7 +2,10 @@
 
 Every request already retries automatically on `429` and `5xx` responses, with
 exponential backoff honouring the server's `Retry-After` header, up to `max_retries`
-(default `3`). Most rate limits never reach your code.
+(default `3`). Every wait -- whether server-directed or exponential -- is capped at
+`max_backoff` seconds (default `30`), so a caller-side deadline (e.g.
+`asyncio.wait_for`) stays meaningful even if the server asks for a longer wait. Most
+rate limits never reach your code.
 
 <!-- docs_src: handle_rate_limits.py -->
 ```python
@@ -20,8 +23,8 @@ import instantlyai
 
 def main(client: instantlyai.Instantly) -> None:
     # The client already retries 429s with exponential backoff (honouring
-    # Retry-After) up to `max_retries` times -- most rate limits never
-    # surface to your code at all.
+    # Retry-After, capped at `max_backoff`) up to `max_retries` times --
+    # most rate limits never surface to your code at all.
     try:
         list(client.campaigns.list(limit=100))
     except instantlyai.RateLimitError as exc:
@@ -31,7 +34,10 @@ def main(client: instantlyai.Instantly) -> None:
 
 
 if __name__ == "__main__":
-    with instantlyai.Instantly(max_retries=5) as client:
+    # `max_backoff` caps how long any single retry can wait, even if the
+    # server's `Retry-After` header asks for longer -- useful when the whole
+    # call is wrapped in a caller-side deadline (e.g. `asyncio.wait_for`).
+    with instantlyai.Instantly(max_retries=5, max_backoff=10.0) as client:
         main(client)
 ```
 
