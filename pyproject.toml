@@ -49,7 +49,7 @@ dev = [
     "pre-commit>=4.0",
 ]
 codegen = [
-    "datamodel-code-generator>=0.26",
+    "datamodel-code-generator==0.69.0",
 ]
 docs = [
     "mkdocs>=1.6",

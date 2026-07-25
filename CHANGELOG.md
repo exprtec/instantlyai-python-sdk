@@ -7,6 +7,38 @@ All notable changes to this project are documented here. Format follows
 
 ## [Unreleased]
 
+## [0.2.0] - 2026-07-25
+
+### Changed
+
+- **Breaking:** `TagsItem` (the model for `Account.tags[]`) renamed to `Tag`.
+  Surfaced by regenerating models against the pinned `datamodel-code-generator`
+  version: the last full regeneration predates the current pinned version, whose
+  naming heuristic for this SDK-injected nested schema (see the `resource_id` fix
+  below) differs. Not an upstream Instantly API change. Acceptable pre-1.0.
+- Pinned `datamodel-code-generator` to an exact version (`==0.69.0`, previously
+  `>=0.26`) in `pyproject.toml`. The dependency had silently drifted ahead of the
+  version last used to generate `models/_generated.py`, so regenerating produced a
+  large unrelated formatting/naming diff on top of the actual fix below. Pinning
+  keeps future regenerations reproducible.
+
+### Fixed
+
+- `CustomTagMapping.resource_id` was typed as `UUID`, but it only holds a UUID for
+  campaign mappings (`resource_type=2`); account mappings (`resource_type=1`) hold
+  the account's email address, since accounts are addressed by email everywhere else
+  in the API. `client.custom_tag_mappings.list()` raised a `ValidationError` on every
+  account mapping. Retyped the field as `str`; `scripts/generate_models.py` now drops
+  the upstream spec's incorrect `format: uuid` hint on this field so regeneration
+  doesn't reintroduce it.
+- The pinned generator version also stopped emitting `extra="forbid"` on the `Tag`
+  model (the one schema in `models/_generated.py` that's injected by
+  `scripts/generate_models.py` itself rather than sourced from the OpenAPI spec) even
+  though nothing about that schema changed. `patch_spec()` now declares
+  `additionalProperties: false` on it explicitly instead of relying on the
+  generator's default for a bare nested object, so this doesn't silently regress
+  again on a future generator bump.
+
 ## [0.1.5] - 2026-07-25
 
 ### Fixed

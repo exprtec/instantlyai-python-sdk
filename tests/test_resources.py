@@ -106,3 +106,30 @@ async def test_async_campaigns_list_auto_paginates() -> None:
     ids = [str(c.id) async for c in await client.campaigns.list()]
     assert ids == [uuid_fixture("1")]
     await client.close()
+
+
+@respx.mock
+def test_custom_tag_mappings_list_accepts_email_resource_id_for_accounts() -> None:
+    # Account mappings (resource_type=1) hold the account's email address in
+    # `resource_id`, not a UUID -- unlike campaign mappings (resource_type=2).
+    respx.get("https://api.instantly.ai/api/v2/custom-tag-mappings").mock(
+        return_value=httpx.Response(
+            200,
+            json={
+                "items": [
+                    {
+                        "id": uuid_fixture("1"),
+                        "tag_id": uuid_fixture("2"),
+                        "resource_id": "someone@example.com",
+                        "resource_type": 1,
+                        "timestamp_created": "2026-07-22T04:01:16.604Z",
+                        "organization_id": uuid_fixture("3"),
+                    }
+                ]
+            },
+        )
+    )
+    client = Instantly(api_key="key")
+    mappings = list(client.custom_tag_mappings.list(resource_ids="someone@example.com"))
+    assert mappings[0].resource_id == "someone@example.com"
+    client.close()

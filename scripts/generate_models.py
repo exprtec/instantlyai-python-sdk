@@ -77,6 +77,14 @@ def patch_spec(spec_path: Path) -> None:
         "description": "Tags associated with the account, set to `include_tags` to populate",
         "items": {
             "type": "object",
+            # Explicit `additionalProperties: false` rather than relying on the
+            # generator's default for a nested anonymous object without one --
+            # that default isn't stable across generator versions (0.69.0 stopped
+            # emitting `extra="forbid"` for this exact shape between the last
+            # regen and this one, though nothing else in the spec changed), and
+            # silently losing strictness here would reopen the exact class of bug
+            # this patch exists to fix (an unannounced field breaking validation).
+            "additionalProperties": False,
             "properties": {
                 "id": {
                     "type": "string",
@@ -101,6 +109,14 @@ def patch_spec(spec_path: Path) -> None:
     schemas["CustomTagMapping"]["properties"]["resource_type"]["description"] = (
         "Resource type of custom tag, can be 1 for accounts or 2 for campaigns"
     )
+
+    # `CustomTagMapping.resource_id` is declared `format: uuid`, but it only
+    # holds a UUID for campaign mappings (`resource_type=2`). Account mappings
+    # (`resource_type=1`) hold the account's email address, since accounts are
+    # addressed by email everywhere else in the API. The `uuid` format hint
+    # doesn't match actual API behavior for `resource_type=1`, so drop it --
+    # the field is a plain string whose shape depends on `resource_type`.
+    del schemas["CustomTagMapping"]["properties"]["resource_id"]["format"]
 
     spec_path.write_text(json.dumps(spec))
 

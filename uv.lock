@@ -558,7 +558,7 @@ requires-dist = [
 ]
 
 [package.metadata.requires-dev]
-codegen = [{ name = "datamodel-code-generator", specifier = ">=0.26" }]
+codegen = [{ name = "datamodel-code-generator", specifier = "==0.69.0" }]
 dev = [
     { name = "pre-commit", specifier = ">=4.0" },
     { name = "pytest", specifier = ">=8.0" },
