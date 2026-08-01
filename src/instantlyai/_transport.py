@@ -9,6 +9,7 @@ free functions below -- only the actual httpx call differs between them.
 from __future__ import annotations
 
 import asyncio
+import logging
 import random
 import time
 from enum import Enum
@@ -19,6 +20,8 @@ from pydantic import BaseModel
 
 from ._exceptions import APIConnectionError, APITimeoutError, build_status_error
 from ._version import __version__
+
+logger = logging.getLogger("instantlyai")
 
 __all__ = [
     "DEFAULT_MAX_BACKOFF",
@@ -210,6 +213,7 @@ class SyncTransport(_BaseTransport):
     ) -> Any:
         attempt = 0
         while True:
+            logger.debug("%s %s (attempt %d)", method, path, attempt + 1)
             try:
                 response = self._client.request(
                     method,
@@ -220,33 +224,39 @@ class SyncTransport(_BaseTransport):
                 )
             except httpx.TimeoutException as exc:
                 if self._should_retry_exception(exc, attempt):
-                    time.sleep(
-                        compute_backoff(attempt, retry_after=None, max_backoff=self.max_backoff)
-                    )
+                    wait = compute_backoff(attempt, retry_after=None, max_backoff=self.max_backoff)
+                    logger.warning("%s %s timed out, retrying in %.2fs", method, path, wait)
+                    time.sleep(wait)
                     attempt += 1
                     continue
+                logger.error("%s %s timed out, giving up", method, path)
                 raise APITimeoutError(exc.request) from exc
             except httpx.HTTPError as exc:
                 if self._should_retry_exception(exc, attempt):
-                    time.sleep(
-                        compute_backoff(attempt, retry_after=None, max_backoff=self.max_backoff)
-                    )
+                    wait = compute_backoff(attempt, retry_after=None, max_backoff=self.max_backoff)
+                    logger.warning("%s %s failed (%s), retrying in %.2fs", method, path, exc, wait)
+                    time.sleep(wait)
                     attempt += 1
                     continue
+                logger.error("%s %s failed: %s", method, path, exc)
                 raise APIConnectionError(str(exc), request=exc.request) from exc
 
             if response.is_success:
+                logger.debug("%s %s -> %d", method, path, response.status_code)
                 return parse_response_body(response)
             if self._should_retry_response(response, attempt):
-                time.sleep(
-                    compute_backoff(
-                        attempt,
-                        retry_after=_retry_after_seconds(response),
-                        max_backoff=self.max_backoff,
-                    )
+                wait = compute_backoff(
+                    attempt,
+                    retry_after=_retry_after_seconds(response),
+                    max_backoff=self.max_backoff,
                 )
+                logger.warning(
+                    "%s %s -> %d, retrying in %.2fs", method, path, response.status_code, wait
+                )
+                time.sleep(wait)
                 attempt += 1
                 continue
+            logger.error("%s %s -> %d", method, path, response.status_code)
             raise build_status_error(response, parse_response_body(response))
 
     def close(self) -> None:
@@ -283,6 +293,7 @@ class AsyncTransport(_BaseTransport):
     ) -> Any:
         attempt = 0
         while True:
+            logger.debug("%s %s (attempt %d)", method, path, attempt + 1)
             try:
                 response = await self._client.request(
                     method,
@@ -293,33 +304,39 @@ class AsyncTransport(_BaseTransport):
                 )
             except httpx.TimeoutException as exc:
                 if self._should_retry_exception(exc, attempt):
-                    await asyncio.sleep(
-                        compute_backoff(attempt, retry_after=None, max_backoff=self.max_backoff)
-                    )
+                    wait = compute_backoff(attempt, retry_after=None, max_backoff=self.max_backoff)
+                    logger.warning("%s %s timed out, retrying in %.2fs", method, path, wait)
+                    await asyncio.sleep(wait)
                     attempt += 1
                     continue
+                logger.error("%s %s timed out, giving up", method, path)
                 raise APITimeoutError(exc.request) from exc
             except httpx.HTTPError as exc:
                 if self._should_retry_exception(exc, attempt):
-                    await asyncio.sleep(
-                        compute_backoff(attempt, retry_after=None, max_backoff=self.max_backoff)
-                    )
+                    wait = compute_backoff(attempt, retry_after=None, max_backoff=self.max_backoff)
+                    logger.warning("%s %s failed (%s), retrying in %.2fs", method, path, exc, wait)
+                    await asyncio.sleep(wait)
                     attempt += 1
                     continue
+                logger.error("%s %s failed: %s", method, path, exc)
                 raise APIConnectionError(str(exc), request=exc.request) from exc
 
             if response.is_success:
+                logger.debug("%s %s -> %d", method, path, response.status_code)
                 return parse_response_body(response)
             if self._should_retry_response(response, attempt):
-                await asyncio.sleep(
-                    compute_backoff(
-                        attempt,
-                        retry_after=_retry_after_seconds(response),
-                        max_backoff=self.max_backoff,
-                    )
+                wait = compute_backoff(
+                    attempt,
+                    retry_after=_retry_after_seconds(response),
+                    max_backoff=self.max_backoff,
                 )
+                logger.warning(
+                    "%s %s -> %d, retrying in %.2fs", method, path, response.status_code, wait
+                )
+                await asyncio.sleep(wait)
                 attempt += 1
                 continue
+            logger.error("%s %s -> %d", method, path, response.status_code)
             raise build_status_error(response, parse_response_body(response))
 
     async def aclose(self) -> None:

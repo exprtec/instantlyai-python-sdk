@@ -7,6 +7,13 @@ All notable changes to this project are documented here. Format follows
 
 ## [Unreleased]
 
+### Added
+
+- Basic logging in the transport layer (`logging.getLogger("instantlyai")`):
+  debug-level on every request attempt and successful response, warning-level
+  on retries, error-level right before a request ultimately fails. Silent by
+  default -- opt in with `logging.getLogger("instantlyai").setLevel(...)`.
+
 ## [0.2.1] - 2026-08-01
 
 ### Fixed
