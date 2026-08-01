@@ -7,6 +7,18 @@ All notable changes to this project are documented here. Format follows
 
 ## [Unreleased]
 
+## [0.2.1] - 2026-08-01
+
+### Fixed
+
+- Regenerated models against the current upstream OpenAPI spec to pick up
+  `DFYEmailAccountOrder.forwarding_mode` (a new `redirect | stealth | null`
+  enum field Instantly added since the last regeneration). `extra="forbid"`
+  on that model meant `client.dfy_email_account_orders.list()` raised a
+  `ValidationError` on every response once the API started sending it.
+- `ProviderCode` gained value `11` for the same reason -- accounts using the
+  new provider previously failed to validate.
+
 ## [0.2.0] - 2026-07-25
 
 ### Changed

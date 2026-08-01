@@ -133,6 +133,7 @@ class ProviderCode(Enum):
     number_3 = 3
     number_4 = 4
     number_8 = 8
+    number_11 = 11
 
 
 class Tag(BaseModel):
@@ -160,12 +161,12 @@ class Account(BaseModel):
     timestamp_created: AwareDatetime = Field(
         ...,
         description="Timestamp when the account was created",
-        examples=["2026-07-25T08:20:11.861Z"],
+        examples=["2026-08-01T01:37:37.889Z"],
     )
     timestamp_updated: AwareDatetime = Field(
         ...,
         description="Timestamp when the account was last updated",
-        examples=["2026-07-25T08:20:11.861Z"],
+        examples=["2026-08-01T01:37:37.889Z"],
     )
     first_name: str = Field(
         ..., description="First name associated with the account", examples=["John"]
@@ -179,7 +180,7 @@ class Account(BaseModel):
     added_by: UUID | None = Field(
         None,
         description="User ID who added the account",
-        examples=["019f985c-45d5-714b-9ab2-f385ff46c0ac"],
+        examples=["019fbaf8-3a61-714d-82bc-35de090351f1"],
     )
     daily_limit: float | None = Field(
         None, description="Daily email sending limit", examples=[100]
@@ -197,7 +198,7 @@ class Account(BaseModel):
     modified_by: UUID | None = Field(
         None,
         description="User ID who last modified the account",
-        examples=["019f985c-45d5-714b-9ab2-f386192664d2"],
+        examples=["019fbaf8-3a61-714d-82bc-35df86313c97"],
     )
     tracking_domain_name: str | None = Field(
         None, description="Tracking domain", examples=["example.com"]
@@ -219,7 +220,7 @@ class Account(BaseModel):
     organization: UUID = Field(
         ...,
         description="Organization ID that owns this account",
-        examples=["019f985c-45d5-714b-9ab2-f387e81b5f26"],
+        examples=["019fbaf8-3a61-714d-82bc-35e08a0bbc0b"],
     )
     warmup_status: WarmupStatus = Field(
         ..., description="Current warmup status of the account", examples=[1]
@@ -230,7 +231,7 @@ class Account(BaseModel):
     timestamp_warmup_start: AwareDatetime | None = Field(
         None,
         description="Timestamp when warmup was started",
-        examples=["2026-07-25T08:20:11.861Z"],
+        examples=["2026-08-01T01:37:37.889Z"],
     )
     provider_code: ProviderCode = Field(
         ...,
@@ -517,7 +518,9 @@ class AutoVariantSelect(BaseModel):
     Auto variant select settings
     """
 
-    trigger: Trigger = Field(..., examples=["click_rate"])
+    trigger: Trigger = Field(
+        ..., examples=["click_rate"], json_schema_extra={"example": "click_rate"}
+    )
 
 
 class NotSendingStatus(Enum):
@@ -547,9 +550,15 @@ class LimitEmailsPerCompanyOverride(BaseModel):
     Overrides the workspace-wide limit emails per company setting for this campaign.
     """
 
-    mode: Mode = Field(..., examples=["custom"])
-    daily_limit: float | None = Field(None, examples=[3], ge=1.0)
-    scope: Scope | None = Field(None, examples=["per_campaign"])
+    mode: Mode = Field(
+        ..., examples=["custom"], json_schema_extra={"example": "custom"}
+    )
+    daily_limit: float | None = Field(
+        None, examples=[3], ge=1.0, json_schema_extra={"example": 3}
+    )
+    scope: Scope | None = Field(
+        None, examples=["per_campaign"], json_schema_extra={"example": "per_campaign"}
+    )
 
 
 class Action(Enum):
@@ -588,7 +597,7 @@ class Campaign(BaseModel):
     id: UUID = Field(
         ...,
         description="Unique identifier for the campaign",
-        examples=["019f985c-45a2-7938-9dd4-73e32ae248f2"],
+        examples=["019fbaf8-3a26-7b8a-ace6-415c19600615"],
     )
     name: str = Field(
         ..., description="Name of the campaign", examples=["My First Campaign"]
@@ -608,12 +617,12 @@ class Campaign(BaseModel):
     timestamp_created: str = Field(
         ...,
         description="Timestamp when the campaign was created",
-        examples=["2026-07-25T08:20:11.810Z"],
+        examples=["2026-08-01T01:37:37.830Z"],
     )
     timestamp_updated: str = Field(
         ...,
         description="Timestamp when the campaign was last updated",
-        examples=["2026-07-25T08:20:11.810Z"],
+        examples=["2026-08-01T01:37:37.830Z"],
     )
     email_gap: float | None = Field(
         None, description="The gap between emails in minutes", examples=[10]
@@ -700,15 +709,15 @@ class Campaign(BaseModel):
     organization: UUID | None = Field(
         None,
         description="Organization ID",
-        examples=["019f985c-45a2-7938-9dd4-73e5b1a6e691"],
+        examples=["019fbaf8-3a26-7b8a-ace6-415ef114ca61"],
     )
     owned_by: UUID | None = Field(
-        None, description="Owner ID", examples=["019f985c-45a2-7938-9dd4-73e696055466"]
+        None, description="Owner ID", examples=["019fbaf8-3a26-7b8a-ace6-415fbf1f11f8"]
     )
     ai_sdr_id: UUID | None = Field(
         None,
         description="AI Sales Agent ID that created this campaign",
-        examples=["019f985c-45a2-7938-9dd4-73e743370d80"],
+        examples=["019fbaf8-3a26-7b8a-ace6-41600b5e8188"],
     )
     provider_routing_rules: list[ProviderRoutingRule] | None = Field(
         None, description="Auto variant select settings"
@@ -746,23 +755,36 @@ class File(BaseModel):
         extra="forbid",
     )
     filename: str = Field(
-        ..., description="Attachment file name", examples=["attachment.pdf"]
+        ...,
+        description="Attachment file name",
+        examples=["attachment.pdf"],
+        json_schema_extra={"example": "attachment.pdf"},
     )
     size: float | None = Field(
-        None, description="Attachment file size in bytes", examples=[1927]
+        None,
+        description="Attachment file size in bytes",
+        examples=[1927],
+        json_schema_extra={"example": 1927},
     )
     type: str | None = Field(
-        None, description="Attachment MIME type", examples=["application/pdf"]
+        None,
+        description="Attachment MIME type",
+        examples=["application/pdf"],
+        json_schema_extra={"example": "application/pdf"},
     )
     url: AnyUrl | None = Field(
         None,
         description="Download URL when available",
         examples=["https://cdn.instantly.ai/example-attachment/file.pdf"],
+        json_schema_extra={
+            "example": "https://cdn.instantly.ai/example-attachment/file.pdf"
+        },
     )
     error: str | None = Field(
         None,
         description="Error description when the attachment failed to upload",
         examples=["Upload failed"],
+        json_schema_extra={"example": "Upload failed"},
     )
 
 
@@ -788,17 +810,17 @@ class Email(BaseModel):
     id: UUID = Field(
         ...,
         description="A Unique identifier",
-        examples=["019f985c-45dd-711d-bebf-f64eae2e2545"],
+        examples=["019fbaf8-3a68-79bf-b1bd-bfd5d58c977e"],
     )
     timestamp_created: AwareDatetime = Field(
         ...,
         description="Timestamp when the email was added to our database. This is not the timestamp of the email itself, since the email could have been sent at a different time. Please check the `timestamp_email` field for the timestamp of the email.",
-        examples=["2026-07-25T08:20:11.869Z"],
+        examples=["2026-08-01T01:37:37.896Z"],
     )
     timestamp_email: AwareDatetime = Field(
         ...,
         description="The timestamp of the email, as provided by the email server. Please note that the timestamp is not always accurate, as it can be manipulated by the sender or the email server.",
-        examples=["2026-07-25T08:20:11.869Z"],
+        examples=["2026-08-01T01:37:37.896Z"],
     )
     message_id: str = Field(
         ...,
@@ -839,22 +861,22 @@ class Email(BaseModel):
     organization_id: UUID = Field(
         ...,
         description="The workspace ID",
-        examples=["019f985c-45dd-711d-bebf-f64f4e92021f"],
+        examples=["019fbaf8-3a68-79bf-b1bd-bfd6d53faa1a"],
     )
     campaign_id: UUID | None = Field(
         None,
         description="The id of the campaign that the email is associated with (it can be null for manually sent emails)",
-        examples=["019f985c-45dd-711d-bebf-f6504e691d6b"],
+        examples=["019fbaf8-3a68-79bf-b1bd-bfd77ebfbcd2"],
     )
     subsequence_id: UUID | None = Field(
         None,
         description="The id of the campaign subsequence that the email is associated with (it can be null for manually sent emails)",
-        examples=["019f985c-45dd-711d-bebf-f6516a37df60"],
+        examples=["019fbaf8-3a68-79bf-b1bd-bfd82258712d"],
     )
     list_id: UUID | None = Field(
         None,
         description="The id of the list (if the lead is part of a list)",
-        examples=["019f985c-45dd-711d-bebf-f6525535a4b8"],
+        examples=["019fbaf8-3a68-79bf-b1bd-bfd9516804a3"],
     )
     lead: str | None = Field(
         None,
@@ -864,7 +886,7 @@ class Email(BaseModel):
     lead_id: UUID | None = Field(
         None,
         description="The lead id (if any)",
-        examples=["019f985c-45dd-711d-bebf-f6535055e0d9"],
+        examples=["019fbaf8-3a68-79bf-b1bd-bfdad6a04512"],
     )
     eaccount: str = Field(
         ...,
@@ -892,7 +914,7 @@ class Email(BaseModel):
     reminder_ts: AwareDatetime | None = Field(
         None,
         description="Timestamp for the reminder.",
-        examples=["2026-07-25T08:20:11.869Z"],
+        examples=["2026-08-01T01:37:37.896Z"],
     )
     ai_interest_value: float | None = Field(
         None, description="AI interest value", examples=[0.75]
@@ -911,7 +933,7 @@ class Email(BaseModel):
     thread_id: UUID | None = Field(
         None,
         description="Identifier for the email thread. All the emails in the same thread have the same thread ID",
-        examples=["019f985c-45dd-711d-bebf-f6549fa78855"],
+        examples=["019fbaf8-3a68-79bf-b1bd-bfdb937c451a"],
     )
     content_preview: str | None = Field(
         None,
@@ -947,7 +969,7 @@ class Email(BaseModel):
     ai_agent_id: UUID | None = Field(
         None,
         description="ID of the AI agent that sent this email (if applicable)",
-        examples=["019f985c-45dd-711d-bebf-f65550973f7c"],
+        examples=["019fbaf8-3a68-79bf-b1bd-bfdca8446f47"],
     )
 
 
@@ -1023,12 +1045,12 @@ class LeadList(BaseModel):
     id: UUID = Field(
         ...,
         description="Unique identifier for the lead list",
-        examples=["019f985c-45c0-745e-ba70-735d49658c08"],
+        examples=["019fbaf8-3a53-753a-b827-99d59f16a061"],
     )
     organization_id: UUID = Field(
         ...,
         description="Organization ID that owns this lead list",
-        examples=["019f985c-45c0-745e-ba70-735e29945fb6"],
+        examples=["019fbaf8-3a53-753a-b827-99d6c5eab02d"],
     )
     has_enrichment_task: bool | None = Field(
         None,
@@ -1038,7 +1060,7 @@ class LeadList(BaseModel):
     owned_by: UUID | None = Field(
         None,
         description="User ID of the owner of this lead list. Defaults to the user that created the list",
-        examples=["019f985c-45c0-745e-ba70-735f6d4dfcff"],
+        examples=["019fbaf8-3a53-753a-b827-99d7c533c18f"],
     )
     name: str = Field(
         ..., description="Name of the lead list", examples=["My Lead List"]
@@ -1046,7 +1068,7 @@ class LeadList(BaseModel):
     timestamp_created: AwareDatetime = Field(
         ...,
         description="Timestamp when the lead list was created",
-        examples=["2026-07-25T08:20:11.840Z"],
+        examples=["2026-08-01T01:37:37.875Z"],
     )
 
 
@@ -1263,9 +1285,13 @@ class When(BaseModel):
         ...,
         description="Condition for automation trigger",
         examples=["placement_goes_below"],
+        json_schema_extra={"example": "placement_goes_below"},
     )
     condition_value: float | None = Field(
-        None, description="Value for condition, if applicable", examples=[80]
+        None,
+        description="Value for condition, if applicable",
+        examples=[80],
+        json_schema_extra={"example": 80},
     )
 
 
@@ -1274,15 +1300,30 @@ class Then(BaseModel):
     Actions to take when condition is met
     """
 
-    webhook_url: str | None = Field(None, examples=["https://example.com/webhook"])
-    pause_sending_campaigns_for: float | None = Field(
-        None, description="Number of days to pause sending campaigns for", examples=[14]
+    webhook_url: str | None = Field(
+        None,
+        examples=["https://example.com/webhook"],
+        json_schema_extra={"example": "https://example.com/webhook"},
     )
-    pause: bool | None = Field(None, examples=[True])
-    enable_slow_ramp: bool | None = Field(None, examples=[True])
-    disable_slow_ramp: bool | None = Field(None, examples=[True])
+    pause_sending_campaigns_for: float | None = Field(
+        None,
+        description="Number of days to pause sending campaigns for",
+        examples=[14],
+        json_schema_extra={"example": 14},
+    )
+    pause: bool | None = Field(
+        None, examples=[True], json_schema_extra={"example": True}
+    )
+    enable_slow_ramp: bool | None = Field(
+        None, examples=[True], json_schema_extra={"example": True}
+    )
+    disable_slow_ramp: bool | None = Field(
+        None, examples=[True], json_schema_extra={"example": True}
+    )
     add_tags: list[UUID] | None = Field(
-        None, examples=[["019f985c-45b8-7281-933e-eeb1982269ec"]]
+        None,
+        examples=[["019fbaf8-3a40-732f-b2a7-e0140485baf2"]],
+        json_schema_extra={"example": ["019fbaf8-3a40-732f-b2a7-e0140485baf2"]},
     )
     remove_tags: list[UUID] | None = None
 
@@ -1323,12 +1364,12 @@ class InboxPlacementTest(BaseModel):
     id: UUID = Field(
         ...,
         description="Unique identifier for the inbox placement test",
-        examples=["019f985c-45b8-7281-933e-eeaced59dfda"],
+        examples=["019fbaf8-3a40-732f-b2a7-e00f56744bc2"],
     )
     organization_id: UUID = Field(
         ...,
         description="Organization ID",
-        examples=["019f985c-45b8-7281-933e-eead27d090f5"],
+        examples=["019fbaf8-3a40-732f-b2a7-e0100cbccfe8"],
     )
     name: str = Field(
         ...,
@@ -1369,7 +1410,7 @@ class InboxPlacementTest(BaseModel):
     campaign_id: UUID | None = Field(
         None,
         description="Campaign ID",
-        examples=["019f985c-45b8-7281-933e-eeaed0b3c934"],
+        examples=["019fbaf8-3a40-732f-b2a7-e0118db2087d"],
     )
     email_subject: str = Field(
         ...,
@@ -1387,7 +1428,7 @@ class InboxPlacementTest(BaseModel):
     test_code: str | None = Field(
         None,
         description="Code for identifying inbox placement tests sent from outside Instantly. Use ptid_ followed by letters, numbers, hyphens, or underscores. When creating a test, the ptid_ prefix is added automatically if omitted. The full code must be at most 50 characters.",
-        examples=["ptid_EzPQkeXAOacCWTx11yO7f"],
+        examples=["ptid_jpf81eYICb5x4lxvi0Nej"],
         pattern="^ptid_(?!ptid_)[A-Za-z0-9_-]{1,45}$",
     )
     tags: list[UUID] | None = Field(
@@ -1404,12 +1445,12 @@ class InboxPlacementTest(BaseModel):
     timestamp_created: str = Field(
         ...,
         description="Timestamp when the inbox placement test was created",
-        examples=["2026-07-25T08:20:11.832Z"],
+        examples=["2026-08-01T01:37:37.856Z"],
     )
     timestamp_next_run: str | None = Field(
         None,
         description="Timestamp when the inbox placement test will run next",
-        examples=["2026-07-25T08:20:11.832Z"],
+        examples=["2026-08-01T01:37:37.856Z"],
     )
     automations: list[Automation] | None = Field(
         None,
@@ -1481,6 +1522,9 @@ class AuthenticationFailureResults(BaseModel):
         examples=[
             "Authentication-Results: smtp.local;\r\n\tdkim=pass header.d=gappssmtp.com\r\n header.b=ABC123"
         ],
+        json_schema_extra={
+            "example": "Authentication-Results: smtp.local;\r\n\tdkim=pass header.d=gappssmtp.com\r\n header.b=ABC123"
+        },
     )
     dkim_signature: str | None = Field(
         None,
@@ -1488,9 +1532,15 @@ class AuthenticationFailureResults(BaseModel):
         examples=[
             "DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gappssmtp.com; s=20161025;\r\n h=mime-version:from:date:message-id:subject:to; bh=ABC123; b=ABC123"
         ],
+        json_schema_extra={
+            "example": "DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gappssmtp.com; s=20161025;\r\n h=mime-version:from:date:message-id:subject:to; bh=ABC123; b=ABC123"
+        },
     )
     received_spf: str | None = Field(
-        None, description="Received SPF", examples=["Received-SPF: pass"]
+        None,
+        description="Received SPF",
+        examples=["Received-SPF: pass"],
+        json_schema_extra={"example": "Received-SPF: pass"},
     )
 
 
@@ -1514,27 +1564,27 @@ class InboxPlacementAnalytics(BaseModel):
     id: UUID = Field(
         ...,
         description="Unique identifier for the inbox placement analytics entry",
-        examples=["019f985c-45a6-76df-8224-1791e47d12be"],
+        examples=["019fbaf8-3a2c-765d-8db9-18fa764492ab"],
     )
     timestamp_created: str = Field(
         ...,
         description="Timestamp when the inbox placement analytics was created",
-        examples=["2026-07-25T08:20:11.814Z"],
+        examples=["2026-08-01T01:37:37.836Z"],
     )
     timestamp_created_date: str = Field(
         ...,
         description="Date when the inbox placement analytics was created",
-        examples=["2026-07-25"],
+        examples=["2026-08-01"],
     )
     organization_id: UUID = Field(
         ...,
         description="Organization ID",
-        examples=["019f985c-45a6-76df-8224-1792313fa10c"],
+        examples=["019fbaf8-3a2c-765d-8db9-18fb8be74710"],
     )
     test_id: UUID = Field(
         ...,
         description="Inbox Placement Test ID",
-        examples=["019f985c-45a6-76df-8224-179354a93799"],
+        examples=["019fbaf8-3a2c-765d-8db9-18fc8913885e"],
     )
     is_spam: bool | None = Field(
         None,
@@ -1684,27 +1734,27 @@ class InboxPlacementBlacklistAndSpamAssassinReport(BaseModel):
     id: UUID = Field(
         ...,
         description="Unique identifier for the inbox placement report entry",
-        examples=["019f985c-45a9-7a17-a956-0d7e245b7bfc"],
+        examples=["019fbaf8-3a2f-7c33-8608-f43b54445678"],
     )
     timestamp_created: str = Field(
         ...,
         description="Timestamp when the inbox placement report was created",
-        examples=["2026-07-25T08:20:11.817Z"],
+        examples=["2026-08-01T01:37:37.839Z"],
     )
     timestamp_created_date: str = Field(
         ...,
         description="Date when the inbox placement report was created",
-        examples=["2026-07-25"],
+        examples=["2026-08-01"],
     )
     organization_id: UUID = Field(
         ...,
         description="Organization ID",
-        examples=["019f985c-45a9-7a17-a956-0d7f8534f007"],
+        examples=["019fbaf8-3a2f-7c33-8608-f43cfc15ab01"],
     )
     test_id: UUID = Field(
         ...,
         description="Inbox Placement Test ID",
-        examples=["019f985c-45a9-7a17-a956-0d805a8effe2"],
+        examples=["019fbaf8-3a2f-7c33-8608-f43ddb021024"],
     )
     domain_blacklist_count: float | None = Field(
         None, description="Count of blacklists the domain is listed on", examples=[5]
@@ -1922,15 +1972,15 @@ class APIKey(BaseModel):
     model_config = ConfigDict(
         extra="forbid",
     )
-    id: UUID = Field(..., examples=["019f985c-4589-797b-8939-143f18c2dcc4"])
+    id: UUID = Field(..., examples=["019fbaf8-3a10-7ff6-a028-e11fe3d4d684"])
     name: str = Field(..., examples=["My API Key"])
     scopes: list[Scope1]
     key: str = Field(..., examples=["a1b2c3d4e5f6g7h8i9j0"])
     organization_id: UUID = Field(
-        ..., examples=["019f985c-4598-707f-a069-0fd589fba170"]
+        ..., examples=["019fbaf8-3a1c-7de1-b7b4-9b2ab0bb87f3"]
     )
-    timestamp_created: AwareDatetime = Field(..., examples=["2026-07-25T08:20:11.800Z"])
-    timestamp_updated: AwareDatetime = Field(..., examples=["2026-07-25T08:20:11.800Z"])
+    timestamp_created: AwareDatetime = Field(..., examples=["2026-08-01T01:37:37.820Z"])
+    timestamp_updated: AwareDatetime = Field(..., examples=["2026-08-01T01:37:37.820Z"])
 
 
 class Status4(Enum):
@@ -1956,12 +2006,12 @@ class AccountCampaignMapping(BaseModel):
     model_config = ConfigDict(
         extra="forbid",
     )
-    campaign_id: UUID = Field(..., examples=["019f985c-4585-7026-900f-78330e37f3c7"])
+    campaign_id: UUID = Field(..., examples=["019fbaf8-3a0d-7a04-a479-ec33163bdd45"])
     campaign_name: str = Field(..., examples=["Campaign Name"])
     timestamp_created: str = Field(
         ...,
         description="Timestamp when the campaign was created",
-        examples=["2026-07-25T08:20:11.781Z"],
+        examples=["2026-08-01T01:37:37.805Z"],
     )
     status: Status4 | None = Field(None, description="Campaign Status", examples=[1])
 
@@ -1981,9 +2031,9 @@ class Status5(Enum):
 
 class LastStep(BaseModel):
     from_: str | None = Field(None, alias="from", examples=["campaign"])
-    stepID: str | None = Field(None, examples=["019f985c-3740-780c-bbe1-645b3964c440"])
+    stepID: str | None = Field(None, examples=["019fbaf8-34dc-7209-a3f0-5f8b6f841053"])
     timestamp_executed: AwareDatetime | None = Field(
-        None, examples=["2026-07-25T08:20:08.128Z"]
+        None, examples=["2026-08-01T01:37:36.476Z"]
     )
 
 
@@ -2007,14 +2057,34 @@ class Payload(BaseModel):
     __annotations__ = {
         "__pydantic_extra__": Dict[str, str | float | bool | dict[str, Any] | None],
     }
-    firstName: str | None = Field(None, examples=["John"])
-    lastName: str | None = Field(None, examples=["Doe"])
-    companyName: str | None = Field(None, examples=["Acme Corp"])
-    jobTitle: str | None = Field(None, examples=["Head of Growth"])
-    website: str | None = Field(None, examples=["https://example.com"])
-    phone: str | None = Field(None, examples=["+1234567890"])
+    firstName: str | None = Field(
+        None, examples=["John"], json_schema_extra={"example": "John"}
+    )
+    lastName: str | None = Field(
+        None, examples=["Doe"], json_schema_extra={"example": "Doe"}
+    )
+    companyName: str | None = Field(
+        None, examples=["Acme Corp"], json_schema_extra={"example": "Acme Corp"}
+    )
+    jobTitle: str | None = Field(
+        None,
+        examples=["Head of Growth"],
+        json_schema_extra={"example": "Head of Growth"},
+    )
+    website: str | None = Field(
+        None,
+        examples=["https://example.com"],
+        json_schema_extra={"example": "https://example.com"},
+    )
+    phone: str | None = Field(
+        None, examples=["+1234567890"], json_schema_extra={"example": "+1234567890"}
+    )
     personalization: str | None = Field(
-        None, examples=["Hi {{first_name}}, I noticed you work at {{company_name}}..."]
+        None,
+        examples=["Hi {{first_name}}, I noticed you work at {{company_name}}..."],
+        json_schema_extra={
+            "example": "Hi {{first_name}}, I noticed you work at {{company_name}}..."
+        },
     )
 
 
@@ -2024,9 +2094,9 @@ class StatusSummarySubseq(BaseModel):
     """
 
     from_: str | None = Field(None, alias="from", examples=["campaign"])
-    stepID: str | None = Field(None, examples=["019f985c-3740-780c-bbe1-645c3aeade13"])
+    stepID: str | None = Field(None, examples=["019fbaf8-34dc-7209-a3f0-5f8c1dcbd4ba"])
     timestampExecuted: AwareDatetime | None = Field(
-        None, examples=["2026-07-25T08:20:08.128Z"]
+        None, examples=["2026-08-01T01:37:36.476Z"]
     )
 
 
@@ -2122,27 +2192,27 @@ class Lead(BaseModel):
     id: UUID = Field(
         ...,
         description="Unique identifier for the lead",
-        examples=["019f985c-373e-786e-b7f8-4c05cc3c0857"],
+        examples=["019fbaf8-34da-7b63-91b6-ea98a1a0138e"],
     )
     timestamp_created: AwareDatetime = Field(
         ...,
         description="Timestamp when the lead was created",
-        examples=["2026-07-25T08:20:08.127Z"],
+        examples=["2026-08-01T01:37:36.476Z"],
     )
     timestamp_updated: AwareDatetime = Field(
         ...,
         description="Timestamp when the lead was last updated",
-        examples=["2026-07-25T08:20:08.127Z"],
+        examples=["2026-08-01T01:37:36.476Z"],
     )
     organization: UUID = Field(
         ...,
         description="Organization ID associated with the lead",
-        examples=["019f985c-373f-70f6-b79d-0dd5a7c8feeb"],
+        examples=["019fbaf8-34dc-7209-a3f0-5f89386c6996"],
     )
     campaign: UUID | None = Field(
         None,
         description="Campaign ID associated with the lead",
-        examples=["019f985c-373f-70f6-b79d-0dd602581073"],
+        examples=["019fbaf8-34dc-7209-a3f0-5f8a14db5028"],
     )
     status: Status5 = Field(..., description="Status of the lead", examples=[1])
     email: str | None = Field(
@@ -2197,12 +2267,12 @@ class Lead(BaseModel):
     last_step_id: UUID | None = Field(
         None,
         description="ID of the last step",
-        examples=["019f985c-3740-780c-bbe1-645d587b5405"],
+        examples=["019fbaf8-34dc-7209-a3f0-5f8d63c46043"],
     )
     last_step_timestamp_executed: AwareDatetime | None = Field(
         None,
         description="Timestamp when the last step was executed",
-        examples=["2026-07-25T08:20:08.128Z"],
+        examples=["2026-08-01T01:37:36.476Z"],
     )
     email_opened_step: float | None = Field(
         None, description="Last email step opened by the lead", examples=[1]
@@ -2230,7 +2300,7 @@ class Lead(BaseModel):
     subsequence_id: str | None = Field(
         None,
         description="ID of the subsequence",
-        examples=["019f985c-3740-780c-bbe1-645e2ad95361"],
+        examples=["019fbaf8-34dc-7209-a3f0-5f8e80658c2d"],
     )
     verification_status: VerificationStatus1 | None = Field(
         None, description="Verification status of the lead", examples=[1]
@@ -2241,32 +2311,32 @@ class Lead(BaseModel):
     timestamp_added_subsequence: AwareDatetime | None = Field(
         None,
         description="Timestamp when the lead was added to the subsequence",
-        examples=["2026-07-25T08:20:08.128Z"],
+        examples=["2026-08-01T01:37:36.476Z"],
     )
     timestamp_last_contact: AwareDatetime | None = Field(
         None,
         description="Timestamp of the last contact with the lead",
-        examples=["2026-07-25T08:20:08.128Z"],
+        examples=["2026-08-01T01:37:36.476Z"],
     )
     timestamp_last_open: AwareDatetime | None = Field(
         None,
         description="Timestamp of the last email open",
-        examples=["2026-07-25T08:20:08.128Z"],
+        examples=["2026-08-01T01:37:36.476Z"],
     )
     timestamp_last_reply: AwareDatetime | None = Field(
         None,
         description="Timestamp of the last email reply",
-        examples=["2026-07-25T08:20:08.128Z"],
+        examples=["2026-08-01T01:37:36.476Z"],
     )
     timestamp_last_interest_change: AwareDatetime | None = Field(
         None,
         description="Timestamp of the last interest status change",
-        examples=["2026-07-25T08:20:08.128Z"],
+        examples=["2026-08-01T01:37:36.476Z"],
     )
     timestamp_last_click: AwareDatetime | None = Field(
         None,
         description="Timestamp of the last email click",
-        examples=["2026-07-25T08:20:08.128Z"],
+        examples=["2026-08-01T01:37:36.476Z"],
     )
     enrichment_status: EnrichmentStatus | None = Field(
         None, description="Enrichment status of the lead", examples=[1]
@@ -2274,7 +2344,7 @@ class Lead(BaseModel):
     list_id: UUID | None = Field(
         None,
         description="List ID associated with the lead",
-        examples=["019f985c-3740-780c-bbe1-645f25d7ff5b"],
+        examples=["019fbaf8-34dc-7209-a3f0-5f8f454b770d"],
     )
     last_contacted_from: str | None = Field(
         None, description="Source of the last contact", examples=["email"]
@@ -2282,7 +2352,7 @@ class Lead(BaseModel):
     uploaded_by_user: UUID | None = Field(
         None,
         description="ID of the user who uploaded the lead",
-        examples=["019f985c-3740-780c-bbe1-6460cab29d55"],
+        examples=["019fbaf8-34dc-7209-a3f0-5f90fc435ace"],
     )
     upload_method: UploadMethod | None = Field(
         None, description="Method used to upload the lead", examples=["manual"]
@@ -2290,7 +2360,7 @@ class Lead(BaseModel):
     assigned_to: UUID | None = Field(
         None,
         description="ID of the user assigned to the lead",
-        examples=["019f985c-3740-780c-bbe1-6461208884f7"],
+        examples=["019fbaf8-34dd-754e-a6ab-9186bc4ab70a"],
     )
     is_website_visitor: bool | None = Field(
         None, description="Indicates if the lead is a website visitor", examples=[True]
@@ -2298,7 +2368,7 @@ class Lead(BaseModel):
     timestamp_last_touch: AwareDatetime | None = Field(
         None,
         description="Timestamp of the last touch with the lead",
-        examples=["2026-07-25T08:20:08.128Z"],
+        examples=["2026-08-01T01:37:36.477Z"],
     )
     esp_code: EspCode | None = Field(
         None, description="ESP code associated with the lead", examples=[1]
@@ -2382,12 +2452,12 @@ class BackgroundJob(BaseModel):
     workspace_id: UUID = Field(
         ...,
         description="Workspace ID",
-        examples=["019f985c-45c4-7fbd-8eb1-e493740d334a"],
+        examples=["019fbaf8-3a57-7cf6-b89f-53b30861c51e"],
     )
     user_id: UUID | None = Field(
         None,
         description="The id of the user that triggered the action that created the job",
-        examples=["019f985c-45c4-7fbd-8eb1-e49440d86b7b"],
+        examples=["019fbaf8-3a57-7cf6-b89f-53b455ec1b32"],
     )
     type: Type1 = Field(
         ..., description="Type of background job", examples=["move-leads"]
@@ -2395,7 +2465,7 @@ class BackgroundJob(BaseModel):
     entity_id: UUID | None = Field(
         None,
         description="The id of the entity that the job is related to",
-        examples=["019f985c-45c4-7fbd-8eb1-e4954f797af5"],
+        examples=["019fbaf8-3a57-7cf6-b89f-53b5bede5fa9"],
     )
     entity_type: EntityType | None = Field(
         None, description="Type of entity", examples=["list"]
@@ -2415,12 +2485,12 @@ class BackgroundJob(BaseModel):
     created_at: str = Field(
         ...,
         description="Timestamp when the job was created",
-        examples=["2026-07-25T08:20:11.844Z"],
+        examples=["2026-08-01T01:37:37.879Z"],
     )
     updated_at: str = Field(
         ...,
         description="Timestamp when the job was last updated",
-        examples=["2026-07-25T08:20:11.844Z"],
+        examples=["2026-08-01T01:37:37.879Z"],
     )
 
 
@@ -2435,22 +2505,22 @@ class CustomTag(BaseModel):
     id: UUID = Field(
         ...,
         description="Unique identifier for the custom tag",
-        examples=["019f985c-45ca-71c5-a92f-69aa8d88de8e"],
+        examples=["019fbaf8-3a5a-7210-9483-f51a7d074095"],
     )
     timestamp_created: AwareDatetime = Field(
         ...,
         description="Timestamp when the custom tag was created",
-        examples=["2026-07-25T08:20:11.850Z"],
+        examples=["2026-08-01T01:37:37.882Z"],
     )
     timestamp_updated: AwareDatetime = Field(
         ...,
         description="Timestamp when the custom tag was last updated",
-        examples=["2026-07-25T08:20:11.850Z"],
+        examples=["2026-08-01T01:37:37.882Z"],
     )
     organization_id: UUID = Field(
         ...,
         description="Organization ID that owns this custom tag",
-        examples=["019f985c-45ca-71c5-a92f-69ab42108f03"],
+        examples=["019fbaf8-3a5a-7210-9483-f51b8d9c913b"],
     )
     label: str = Field(
         ...,
@@ -2486,17 +2556,17 @@ class CustomTagMapping(BaseModel):
     id: UUID = Field(
         ...,
         description="A Unique identifier",
-        examples=["019f985c-4648-7952-90ce-d9bef7cfd562"],
+        examples=["019fbaf8-3adb-720e-a21b-65ceb73845f7"],
     )
     tag_id: UUID = Field(
         ...,
         description="ID of the tag this custom mapping belongs to",
-        examples=["019f985c-4648-7952-90ce-d9bf33232fc2"],
+        examples=["019fbaf8-3adb-720e-a21b-65cf82e97a50"],
     )
     resource_id: str = Field(
         ...,
         description="ID of the resource custom tag mapping belongs to, resource_type determines the type of resource",
-        examples=["019f985c-4648-7952-90ce-d9c020534b1a"],
+        examples=["019fbaf8-3adb-720e-a21b-65d0d2fb918a"],
     )
     resource_type: ResourceType = Field(
         ...,
@@ -2506,12 +2576,12 @@ class CustomTagMapping(BaseModel):
     timestamp_created: AwareDatetime = Field(
         ...,
         description="Timestamp when the custom tag mapping was created",
-        examples=["2026-07-25T08:20:11.976Z"],
+        examples=["2026-08-01T01:37:38.011Z"],
     )
     organization_id: UUID = Field(
         ...,
         description="Organization ID that owns this custom tag mapping",
-        examples=["019f985c-4648-7952-90ce-d9c1dfacc1b8"],
+        examples=["019fbaf8-3adb-720e-a21b-65d1ca9198d0"],
     )
 
 
@@ -2526,17 +2596,17 @@ class BlockListEntry(BaseModel):
     id: UUID = Field(
         ...,
         description="Unique identifier for the block list entry",
-        examples=["019f985c-45d7-7f79-8f1e-f2ede967f97c"],
+        examples=["019fbaf8-3a64-7157-a412-d30f459f049b"],
     )
     timestamp_created: AwareDatetime = Field(
         ...,
         description="Timestamp when the block list entry was created",
-        examples=["2026-07-25T08:20:11.863Z"],
+        examples=["2026-08-01T01:37:37.892Z"],
     )
     organization_id: UUID = Field(
         ...,
         description="Organization ID that owns this block list entry",
-        examples=["019f985c-45d7-7f79-8f1e-f2ee183776a5"],
+        examples=["019fbaf8-3a64-7157-a412-d3106f2a6da9"],
     )
     bl_value: str = Field(
         ..., description="The email or domain to block", examples=["example.com"]
@@ -2567,22 +2637,22 @@ class LeadLabel(BaseModel):
     id: UUID = Field(
         ...,
         description="Unique identifier for the custom lead label",
-        examples=["019f985c-45e0-7141-b785-e0e5973758e5"],
+        examples=["019fbaf8-3a6c-79af-b462-403b5a8c3eae"],
     )
     timestamp_created: AwareDatetime = Field(
         ...,
         description="Timestamp when the custom lead label was created",
-        examples=["2026-07-25T08:20:11.872Z"],
+        examples=["2026-08-01T01:37:37.900Z"],
     )
     created_by: UUID = Field(
         ...,
         description="User ID of the creator of this label",
-        examples=["019f985c-45e0-7141-b785-e0e6591820cb"],
+        examples=["019fbaf8-3a6c-79af-b462-403cf26eb123"],
     )
     organization_id: UUID = Field(
         ...,
         description="Organization ID that owns this custom lead label",
-        examples=["019f985c-45e0-7141-b785-e0e7d048c13a"],
+        examples=["019fbaf8-3a6c-79af-b462-403da9bafae3"],
     )
     label: str = Field(
         ...,
@@ -2634,27 +2704,27 @@ class Workspace(BaseModel):
     id: UUID = Field(
         ...,
         description="Unique identifier for the workspace",
-        examples=["019f985c-45ea-70b7-9407-1f7baa52eec2"],
+        examples=["019fbaf8-3a7f-76f8-ae08-91db0169f3cb"],
     )
     timestamp_created: AwareDatetime = Field(
         ...,
         description="Timestamp when the workspace was created",
-        examples=["2026-07-25T08:20:11.882Z"],
+        examples=["2026-08-01T01:37:37.919Z"],
     )
     timestamp_updated: AwareDatetime = Field(
         ...,
         description="Timestamp when the workspace was last updated",
-        examples=["2026-07-25T08:20:11.882Z"],
+        examples=["2026-08-01T01:37:37.919Z"],
     )
     scheduled_for_removal_at: AwareDatetime | None = Field(
         None,
         description="Timestamp when this workspace is scheduled to be removed",
-        examples=["2026-07-25T08:20:11.882Z"],
+        examples=["2026-08-01T01:37:37.919Z"],
     )
     owner: UUID = Field(
         ...,
         description="User ID of the workspace owner",
-        examples=["019f985c-45ea-70b7-9407-1f7c9bb343ef"],
+        examples=["019fbaf8-3a7f-76f8-ae08-91dc34f557f7"],
     )
     name: str = Field(
         ..., description="Name of the workspace", examples=["My Workspace"]
@@ -2797,21 +2867,21 @@ class WorkspaceGroupMember(BaseModel):
     id: UUID = Field(
         ...,
         description="The unique identifier of the workspace group member",
-        examples=["019f985c-45f8-729d-b12a-9c0443483db4"],
+        examples=["019fbaf8-3a89-7d0b-82e1-a9ef4fcf2aa9"],
     )
     admin_workspace_id: UUID = Field(
         ...,
         description="The id of the admin workspace",
-        examples=["019f985c-45f8-729d-b12a-9c05e4efc41e"],
+        examples=["019fbaf8-3a8a-7d9c-91da-0b9db1032ab3"],
     )
     sub_workspace_id: UUID = Field(
         ...,
         description="The id of the sub workspace",
-        examples=["019f985c-45f8-729d-b12a-9c06f5183597"],
+        examples=["019fbaf8-3a8a-7d9c-91da-0b9e799ed708"],
     )
     status: Status7 = Field(..., examples=["accepted"])
-    timestamp_created: AwareDatetime = Field(..., examples=["2026-07-25T08:20:11.896Z"])
-    timestamp_updated: AwareDatetime = Field(..., examples=["2026-07-25T08:20:11.896Z"])
+    timestamp_created: AwareDatetime = Field(..., examples=["2026-08-01T01:37:37.930Z"])
+    timestamp_updated: AwareDatetime = Field(..., examples=["2026-08-01T01:37:37.930Z"])
     sub_workspace_name: str | None = Field(
         None, description="The name of the sub workspace.", examples=["My Workspace"]
     )
@@ -2884,7 +2954,7 @@ class WorkspaceMember(BaseModel):
     id: UUID = Field(
         ...,
         description="Unique identifier for the workspace member",
-        examples=["019f985c-45ff-7648-a698-7992e9d00b58"],
+        examples=["019fbaf8-3a8e-7d74-abe7-b8b57595a513"],
     )
     email: EmailStr = Field(
         ...,
@@ -2894,7 +2964,7 @@ class WorkspaceMember(BaseModel):
     user_id: UUID = Field(
         ...,
         description="User ID of the workspace member",
-        examples=["019f985c-45ff-7648-a698-79933e669def"],
+        examples=["019fbaf8-3a8e-7d74-abe7-b8b6aafb61e1"],
     )
     user_email: EmailStr | None = Field(
         None, description="Email address of the user", examples=["user@example.com"]
@@ -2914,12 +2984,12 @@ class WorkspaceMember(BaseModel):
     timestamp_created: AwareDatetime = Field(
         ...,
         description="Timestamp when the workspace member was created",
-        examples=["2026-07-25T08:20:11.903Z"],
+        examples=["2026-08-01T01:37:37.934Z"],
     )
     workspace_id: UUID = Field(
         ...,
         description="ID of the workspace this member belongs to",
-        examples=["019f985c-45ff-7648-a698-79942bfa7557"],
+        examples=["019fbaf8-3a8e-7d74-abe7-b8b75deaae77"],
     )
     accepted: bool = Field(
         ...,
@@ -2929,7 +2999,7 @@ class WorkspaceMember(BaseModel):
     issuer_id: UUID | None = Field(
         None,
         description="ID of the user who added this member to the workspace",
-        examples=["019f985c-45ff-7648-a698-79955afe21a8"],
+        examples=["019fbaf8-3a8e-7d74-abe7-b8b8af16e79c"],
     )
     permissions: list[Permission] | None = Field(
         None,
@@ -3180,28 +3250,28 @@ class CampaignSubsequence(BaseModel):
     id: UUID = Field(
         ...,
         description="Unique identifier for the subsequence",
-        examples=["019f985c-4607-7571-a6f7-f97427e1e95f"],
+        examples=["019fbaf8-3a95-7c2a-b84f-6f1df82c56f2"],
     )
     timestamp_created: AwareDatetime = Field(
         ...,
         description="Timestamp when the subsequence was created",
-        examples=["2026-07-25T08:20:11.911Z"],
+        examples=["2026-08-01T01:37:37.941Z"],
     )
     parent_campaign: UUID = Field(
         ...,
         description="ID of the parent campaign",
-        examples=["019f985c-4607-7571-a6f7-f975607b7013"],
+        examples=["019fbaf8-3a95-7c2a-b84f-6f1e2fe7ee33"],
     )
     workspace: UUID = Field(
         ...,
         description="ID of the workspace this subsequence belongs to",
-        examples=["019f985c-4607-7571-a6f7-f97644682df2"],
+        examples=["019fbaf8-3a95-7c2a-b84f-6f1f68c763ea"],
     )
     status: Status8 = Field(..., description="Status of the subsequence", examples=[0])
     timestamp_leads_updated: AwareDatetime = Field(
         ...,
         description="Timestamp when the leads were last updated",
-        examples=["2026-07-25T08:20:11.911Z"],
+        examples=["2026-08-01T01:37:37.941Z"],
     )
     name: str = Field(
         ..., description="Name of the subsequence", examples=["Follow-up sequence"]
@@ -3285,7 +3355,7 @@ class AuditLog(BaseModel):
     timestamp: AwareDatetime = Field(
         ...,
         description="When the activity occurred",
-        examples=["2026-07-25T08:20:11.924Z"],
+        examples=["2026-08-01T01:37:37.956Z"],
     )
     organization_id: UUID = Field(
         ...,
@@ -3388,17 +3458,17 @@ class Webhook(BaseModel):
     id: UUID = Field(
         ...,
         description="Unique identifier for the webhook (UUID)",
-        examples=["019f985c-3d5a-73a5-8816-0291af536dea"],
+        examples=["019fbaf8-3aca-7465-8af9-3084bf6b1986"],
     )
     organization: UUID = Field(
         ...,
         description="Organization (workspace) UUID that owns this webhook",
-        examples=["019f985c-3d5a-73a5-8816-0292bdb79663"],
+        examples=["019fbaf8-3acb-7553-ba7a-af5317de08ee"],
     )
     campaign: UUID | None = Field(
         None,
         description="Optional campaign UUID to filter events (null = all campaigns in workspace)",
-        examples=["019f985c-3d5a-73a5-8816-02931727f2b3"],
+        examples=["019fbaf8-3acb-7553-ba7a-af54c88f5129"],
     )
     name: str | None = Field(
         None,
@@ -3428,7 +3498,7 @@ class Webhook(BaseModel):
     timestamp_created: AwareDatetime = Field(
         ...,
         description="Timestamp when the webhook was created",
-        examples=["2026-07-25T08:20:09.690Z"],
+        examples=["2026-08-01T01:37:37.995Z"],
     )
     status: float | None = Field(
         None,
@@ -3438,7 +3508,7 @@ class Webhook(BaseModel):
     timestamp_error: AwareDatetime | None = Field(
         None,
         description="Timestamp when webhook was disabled due to delivery failures (null if active)",
-        examples=["2026-07-25T08:20:09.690Z"],
+        examples=["2026-08-01T01:37:37.995Z"],
     )
 
 
@@ -3453,12 +3523,12 @@ class WebhookEvent(BaseModel):
     id: UUID = Field(
         ...,
         description="Unique identifier for the webhook event (UUID)",
-        examples=["019f985c-463e-7aad-bfd7-556b460dcfe8"],
+        examples=["019fbaf8-3acf-74d8-8c7c-e718de185865"],
     )
     timestamp_created: AwareDatetime = Field(
         ...,
         description="Timestamp when the webhook event was created",
-        examples=["2026-07-25T08:20:11.966Z"],
+        examples=["2026-08-01T01:37:37.999Z"],
     )
     timestamp_created_date: date = Field(
         ...,
@@ -3468,7 +3538,7 @@ class WebhookEvent(BaseModel):
     organization_id: UUID = Field(
         ...,
         description="Organization (workspace) UUID that owns this webhook event",
-        examples=["019f985c-463e-7aad-bfd7-556c7eaf4dbd"],
+        examples=["019fbaf8-3acf-74d8-8c7c-e71922999c79"],
     )
     payload: dict[str, Any] | None = Field(
         None, description="JSON payload that was sent/attempted to be sent"
@@ -3500,12 +3570,12 @@ class WebhookEvent(BaseModel):
     timestamp_next_retry: AwareDatetime | None = Field(
         None,
         description="Timestamp for the next retry attempt (if applicable)",
-        examples=["2026-07-25T08:20:11.966Z"],
+        examples=["2026-08-01T01:37:37.999Z"],
     )
     retry_group_id: UUID | None = Field(
         None,
         description="UUID for grouping retry attempts",
-        examples=["019f985c-463e-7aad-bfd7-556da8223979"],
+        examples=["019fbaf8-3acf-74d8-8c7c-e71a8f6ec9d2"],
     )
     retry_successful: bool | None = Field(
         None,
@@ -3522,6 +3592,16 @@ class WebhookEvent(BaseModel):
         description="Response time in milliseconds for the webhook call",
         examples=[150],
     )
+
+
+class ForwardingMode(Enum):
+    """
+    How the forwarding domain is applied. Null when no forwarding is configured.
+    """
+
+    redirect = "redirect"
+    stealth = "stealth"
+    NoneType_None = None
 
 
 class DFYEmailAccountOrder(BaseModel):
@@ -3545,18 +3625,23 @@ class DFYEmailAccountOrder(BaseModel):
         description="Forwarding domain for the email account, if any",
         examples=["forward.example.com"],
     )
+    forwarding_mode: ForwardingMode | None = Field(
+        None,
+        description="How the forwarding domain is applied. Null when no forwarding is configured.",
+        examples=["redirect"],
+    )
     is_pre_warmed_up: bool | None = Field(
         None, description="Indicates if the account is pre-warmed up", examples=[True]
     )
     timestamp_cancelled: AwareDatetime | None = Field(
         None,
         description="Timestamp when the order was cancelled, if applicable",
-        examples=["2026-07-25T08:20:11.968Z"],
+        examples=["2026-08-01T01:37:38.003Z"],
     )
     timestamp_created: AwareDatetime = Field(
         ...,
         description="Timestamp when the order was created",
-        examples=["2026-07-25T08:20:11.968Z"],
+        examples=["2026-08-01T01:37:38.003Z"],
     )
 
 
@@ -3574,8 +3659,12 @@ class Category(Enum):
 
 
 class Property(BaseModel):
-    name: str | None = Field(None, examples=["Property name"])
-    property: str | None = Field(None, examples=["{{property1}}"])
+    name: str | None = Field(
+        None, examples=["Property name"], json_schema_extra={"example": "Property name"}
+    )
+    property: str | None = Field(
+        None, examples=["{{property1}}"], json_schema_extra={"example": "{{property1}}"}
+    )
 
 
 class ModelVersion(Enum):
@@ -3611,8 +3700,12 @@ class TemplateType(Enum):
 
 
 class Name1(BaseModel):
-    first: str | None = Field(None, examples=["John"])
-    last: str | None = Field(None, examples=["Smith"])
+    first: str | None = Field(
+        None, examples=["John"], json_schema_extra={"example": "John"}
+    )
+    last: str | None = Field(
+        None, examples=["Smith"], json_schema_extra={"example": "Smith"}
+    )
 
 
 class Payload1(BaseModel):
@@ -3620,7 +3713,11 @@ class Payload1(BaseModel):
 
 
 class Creator(BaseModel):
-    id: str | None = Field(None, examples=["019f985c-4651-743f-b3b3-abdccc0a5290"])
+    id: str | None = Field(
+        None,
+        examples=["019fbaf8-3ae4-78da-bffd-76bf257aa4b2"],
+        json_schema_extra={"example": "019fbaf8-3ae4-78da-bffd-76bf257aa4b2"},
+    )
     payload: Payload1 | None = None
 
 
@@ -3633,8 +3730,8 @@ class CustomPromptTemplate(BaseModel):
         extra="forbid",
     )
     id: str = Field(..., examples=["1"])
-    workspace_id: UUID = Field(..., examples=["019f985c-4651-743f-b3b3-abda7b94472e"])
-    created_by: UUID = Field(..., examples=["019f985c-4651-743f-b3b3-abdb611836e1"])
+    workspace_id: UUID = Field(..., examples=["019fbaf8-3ae4-78da-bffd-76bd17ae597a"])
+    created_by: UUID = Field(..., examples=["019fbaf8-3ae4-78da-bffd-76be3a332d9e"])
     name: str = Field(..., examples=["Prompt template name"])
     description: str | None = Field(None, examples=["Prompt template description"])
     category: Category = Field(
@@ -3713,16 +3810,16 @@ class SalesFlow(BaseModel):
     model_config = ConfigDict(
         extra="forbid",
     )
-    id: UUID = Field(..., examples=["019f985c-4644-7baf-b706-50c27ae67973"])
+    id: UUID = Field(..., examples=["019fbaf8-3ad7-744f-ba5a-c762624d35aa"])
     timestamp_created: AwareDatetime = Field(
         ...,
         description="Date and time when sales flow created",
-        examples=["2026-07-25T08:20:11.972Z"],
+        examples=["2026-08-01T01:37:38.007Z"],
     )
     organization_id: UUID = Field(
         ...,
         description="Organization ID associated with the sales flow",
-        examples=["019f985c-4644-7baf-b706-50c3b17f5b52"],
+        examples=["019fbaf8-3ad7-744f-ba5a-c76381c1e030"],
     )
     name: str = Field(
         ..., description="Name of the sales flow", examples=["Smart view name"]
@@ -3738,17 +3835,17 @@ class SalesFlow(BaseModel):
     created_by: UUID = Field(
         ...,
         description="UUID of the user who created the sales flow.",
-        examples=["019f985c-4644-7baf-b706-50c4264a924e"],
+        examples=["019fbaf8-3ad7-744f-ba5a-c764af0acb9d"],
     )
     list_id: str | None = Field(
         None,
         description='The ID of the list, can be "all-lists" in case of all.',
-        examples=["019f985c-4644-7baf-b706-50c506a95e4b"],
+        examples=["019fbaf8-3ad7-744f-ba5a-c7657e1bdcd2"],
     )
     campaign_id: str | None = Field(
         None,
         description='The ID of the campaign. Set to null when "all-campaigns" is passed.',
-        examples=["019f985c-4644-7baf-b706-50c6ee188cc7"],
+        examples=["019fbaf8-3ad7-744f-ba5a-c76695cefeea"],
     )
     list_name: str | None = Field(
         None, description="The name of the list. ", examples=["List name"]
@@ -3769,12 +3866,12 @@ class EmailTemplate(BaseModel):
     id: UUID = Field(
         ...,
         description="A Unique identifier",
-        examples=["019f985c-4659-7077-b000-78677c371635"],
+        examples=["019fbaf8-3aed-7160-bc88-9929ed5904e9"],
     )
     timestamp_created: AwareDatetime = Field(
         ...,
         description="Timestamp when the email template was added to our database.",
-        examples=["2026-07-25T08:20:11.993Z"],
+        examples=["2026-08-01T01:37:38.029Z"],
     )
     body: str = Field(
         ...,
@@ -3792,7 +3889,7 @@ class EmailTemplate(BaseModel):
     organization: UUID = Field(
         ...,
         description="The workspace ID",
-        examples=["019f985c-4659-7077-b000-7868f4da50c0"],
+        examples=["019fbaf8-3aed-7160-bc88-992ae4a854ca"],
     )
 
 
