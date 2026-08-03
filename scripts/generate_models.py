@@ -116,7 +116,20 @@ def patch_spec(spec_path: Path) -> None:
     # addressed by email everywhere else in the API. The `uuid` format hint
     # doesn't match actual API behavior for `resource_type=1`, so drop it --
     # the field is a plain string whose shape depends on `resource_type`.
-    del schemas["CustomTagMapping"]["properties"]["resource_id"]["format"]
+    schemas["CustomTagMapping"]["properties"]["resource_id"].pop("format", None)
+
+    # Draft campaigns can be returned with `"campaign_schedule": {}` before a
+    # sending window has ever been configured. The upstream schema requires
+    # `campaign_schedule.schedules` with at least one item, which makes
+    # `campaigns.list()` and `campaigns.retrieve()` raise `ValidationError` for
+    # otherwise valid draft campaigns. Treat a missing schedules key as an empty
+    # schedule so response validation matches live API behavior.
+    campaign_schedule = schemas["Campaign"]["properties"]["campaign_schedule"]
+    schedules = campaign_schedule["properties"]["schedules"]
+    schedules.pop("minItems", None)
+    schedules["default"] = []
+    if "schedules" in campaign_schedule.get("required", []):
+        campaign_schedule["required"].remove("schedules")
 
     spec_path.write_text(json.dumps(spec))
 

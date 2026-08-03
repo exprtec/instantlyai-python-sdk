@@ -54,6 +54,38 @@ def test_campaigns_list_auto_paginates_across_pages() -> None:
 
 
 @respx.mock
+def test_campaigns_list_accepts_draft_campaign_without_schedule() -> None:
+    draft = campaign_json("1", "Draft Campaign")
+    draft["status"] = 0
+    draft["campaign_schedule"] = {}
+    respx.get("https://api.instantly.ai/api/v2/campaigns").mock(
+        return_value=httpx.Response(200, json={"items": [draft]})
+    )
+
+    client = Instantly(api_key="key")
+    campaigns = list(client.campaigns.list())
+    assert campaigns[0].name == "Draft Campaign"
+    assert campaigns[0].campaign_schedule.schedules == []
+    client.close()
+
+
+@respx.mock
+def test_campaigns_retrieve_accepts_draft_campaign_without_schedule() -> None:
+    draft = campaign_json("1", "Draft Campaign")
+    draft["status"] = 0
+    draft["campaign_schedule"] = {}
+    respx.get(f"https://api.instantly.ai/api/v2/campaigns/{uuid_fixture('1')}").mock(
+        return_value=httpx.Response(200, json=draft)
+    )
+
+    client = Instantly(api_key="key")
+    campaign = client.campaigns.retrieve(uuid_fixture("1"))
+    assert campaign.name == "Draft Campaign"
+    assert campaign.campaign_schedule.schedules == []
+    client.close()
+
+
+@respx.mock
 def test_campaigns_retrieve_maps_404_to_not_found_error() -> None:
     respx.get("https://api.instantly.ai/api/v2/campaigns/missing").mock(
         return_value=httpx.Response(

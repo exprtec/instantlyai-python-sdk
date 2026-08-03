@@ -5,6 +5,11 @@ Every model in `instantlyai.models` is generated from Instantly's OpenAPI spec (
 directly; you never construct most of them yourself except for nested request-body
 fields (e.g. `CampaignSchedule` when calling `client.campaigns.create(...)`).
 
+Draft campaigns returned by the API can have no sending window configured yet. In
+that case, `Campaign.campaign_schedule.schedules` validates as an empty list, so
+`client.campaigns.list()` and `client.campaigns.retrieve(...)` can still return the
+campaign instead of failing model validation.
+
 The most commonly used top-level entities:
 
 ::: instantlyai.models

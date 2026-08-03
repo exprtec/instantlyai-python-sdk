@@ -7,12 +7,22 @@ All notable changes to this project are documented here. Format follows
 
 ## [Unreleased]
 
+## [0.2.2] - 2026-08-03
+
 ### Added
 
 - Basic logging in the transport layer (`logging.getLogger("instantlyai")`):
   debug-level on every request attempt and successful response, warning-level
   on retries, error-level right before a request ultimately fails. Silent by
   default -- opt in with `logging.getLogger("instantlyai").setLevel(...)`.
+
+### Fixed
+
+- `client.campaigns.list()` and `client.campaigns.retrieve(...)` no longer raise
+  a `ValidationError` when the API returns a draft campaign with
+  `"campaign_schedule": {}` before a sending window has been configured. The
+  generated `CampaignSchedule.schedules` field now accepts that live API shape
+  as an empty schedule list.
 
 ## [0.2.1] - 2026-08-01
 

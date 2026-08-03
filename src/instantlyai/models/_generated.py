@@ -439,7 +439,7 @@ class CampaignSchedule(BaseModel):
         description="End date in YYYY-MM-DD format. Uses the campaign's timezone.",
         examples=["2025-09-25"],
     )
-    schedules: list[Schedule] = Field(..., min_length=1)
+    schedules: list[Schedule] | None = Field([], validate_default=True)
 
 
 class DelayUnit(Enum):
