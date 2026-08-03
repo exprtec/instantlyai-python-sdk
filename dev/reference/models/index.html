@@ -1353,6 +1353,10 @@
 <code>scripts/generate_models.py</code>) -- never hand-edited. Resource methods return these
 directly; you never construct most of them yourself except for nested request-body
 fields (e.g. <code>CampaignSchedule</code> when calling <code>client.campaigns.create(...)</code>).</p>
+<p>Draft campaigns returned by the API can have no sending window configured yet. In
+that case, <code>Campaign.campaign_schedule.schedules</code> validates as an empty list, so
+<code>client.campaigns.list()</code> and <code>client.campaigns.retrieve(...)</code> can still return the
+campaign instead of failing model validation.</p>
 <p>The most commonly used top-level entities:</p>
 
 
