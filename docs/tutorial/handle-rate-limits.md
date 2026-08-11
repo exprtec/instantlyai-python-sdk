@@ -7,6 +7,25 @@ exponential backoff honouring the server's `Retry-After` header, up to `max_retr
 `asyncio.wait_for`) stays meaningful even if the server asks for a longer wait. Most
 rate limits never reach your code.
 
+That's all reactive, though: it waits until the server has already said no. For
+tight loops over paginated endpoints -- walking `emails.list()` or `leads.list()`
+across a large date range or workspace -- firing requests as fast as the network
+allows will cross a low limit (e.g. Instantly's 20 req/min on some endpoints) well
+before the retry budget runs out, and once it does, giving up is a real outcome, not
+a hypothetical: the call raises `RateLimitError` and whatever loop was driving it
+stops. Set `requests_per_minute` to pace requests proactively instead:
+
+```python
+with instantlyai.Instantly(requests_per_minute=20) as client:
+    for email in client.emails.list(limit=100):
+        ...
+```
+
+This spaces every request -- including retries, since those consume budget too --
+so the limit is rarely hit at all rather than hit-and-recovered-from repeatedly.
+It's off by default (`None`); set it once you know the effective limit for the
+endpoints you're calling.
+
 <!-- docs_src: handle_rate_limits.py -->
 ```python
 """Handle rate limits: built-in retry/backoff, plus catching RateLimitError yourself.
@@ -37,7 +56,13 @@ if __name__ == "__main__":
     # `max_backoff` caps how long any single retry can wait, even if the
     # server's `Retry-After` header asks for longer -- useful when the whole
     # call is wrapped in a caller-side deadline (e.g. `asyncio.wait_for`).
-    with instantlyai.Instantly(max_retries=5, max_backoff=10.0) as client:
+    #
+    # `requests_per_minute` paces requests *before* they're sent, instead of
+    # reacting after the server has already said no. Useful for tight loops
+    # over paginated endpoints (`emails.list()`, `leads.list()`, ...) that
+    # would otherwise fire requests as fast as the network allows and burn
+    # through the retry budget every time they cross the limit.
+    with instantlyai.Instantly(max_retries=5, max_backoff=10.0, requests_per_minute=20) as client:
         main(client)
 ```
 

@@ -11,6 +11,7 @@ from __future__ import annotations
 import asyncio
 import logging
 import random
+import threading
 import time
 from enum import Enum
 from typing import Any, TypeAlias
@@ -26,6 +27,7 @@ logger = logging.getLogger("instantlyai")
 __all__ = [
     "DEFAULT_MAX_BACKOFF",
     "DEFAULT_MAX_RETRIES",
+    "DEFAULT_REQUESTS_PER_MINUTE",
     "DEFAULT_TIMEOUT",
     "NOT_GIVEN",
     "AsyncTransport",
@@ -37,6 +39,7 @@ DEFAULT_TIMEOUT = httpx.Timeout(30.0, connect=5.0)
 DEFAULT_MAX_RETRIES = 3
 DEFAULT_MAX_BACKOFF = 30.0
 DEFAULT_BASE_URL = "https://api.instantly.ai"
+DEFAULT_REQUESTS_PER_MINUTE = None
 
 _RETRYABLE_STATUS_CODES = frozenset({429, 500, 502, 503, 504})
 _RETRYABLE_EXCEPTIONS = (
@@ -166,12 +169,17 @@ class _BaseTransport:
         timeout: httpx.Timeout,
         max_retries: int,
         max_backoff: float,
+        requests_per_minute: float | None,
     ) -> None:
         self.api_key = api_key
         self.base_url = base_url.rstrip("/")
         self.timeout = timeout
         self.max_retries = max_retries
         self.max_backoff = max_backoff
+        self.requests_per_minute = requests_per_minute
+        self._min_request_interval = 60.0 / requests_per_minute if requests_per_minute else 0.0
+        self._next_request_at: float | None = None
+        self._pace_lock = threading.Lock()
 
     def _url(self, path: str) -> str:
         return f"{self.base_url}{path}"
@@ -181,6 +189,23 @@ class _BaseTransport:
 
     def _should_retry_exception(self, exc: Exception, attempt: int) -> bool:
         return attempt < self.max_retries and isinstance(exc, _RETRYABLE_EXCEPTIONS)
+
+    def _pace_wait_seconds(self) -> float:
+        """Seconds to sleep before the next request so `requests_per_minute` holds.
+
+        Every attempt -- including retries -- consumes real budget against the
+        server's rate limit, so this is called before each one, not just the
+        first. The next slot is reserved up front (before sleeping) so
+        concurrent callers on the same transport queue up correctly instead of
+        racing to the same window.
+        """
+        if self._min_request_interval <= 0:
+            return 0.0
+        with self._pace_lock:
+            now = time.monotonic()
+            start_at = max(now, self._next_request_at or 0.0)
+            self._next_request_at = start_at + self._min_request_interval
+            return start_at - now
 
 
 class SyncTransport(_BaseTransport):
@@ -192,6 +217,7 @@ class SyncTransport(_BaseTransport):
         timeout: httpx.Timeout = DEFAULT_TIMEOUT,
         max_retries: int = DEFAULT_MAX_RETRIES,
         max_backoff: float = DEFAULT_MAX_BACKOFF,
+        requests_per_minute: float | None = DEFAULT_REQUESTS_PER_MINUTE,
         http_client: httpx.Client | None = None,
     ) -> None:
         super().__init__(
@@ -200,6 +226,7 @@ class SyncTransport(_BaseTransport):
             timeout=timeout,
             max_retries=max_retries,
             max_backoff=max_backoff,
+            requests_per_minute=requests_per_minute,
         )
         self._client = http_client or httpx.Client(timeout=timeout)
 
@@ -213,6 +240,10 @@ class SyncTransport(_BaseTransport):
     ) -> Any:
         attempt = 0
         while True:
+            wait = self._pace_wait_seconds()
+            if wait > 0:
+                logger.debug("pacing %s %s: sleeping %.2fs", method, path, wait)
+                time.sleep(wait)
             logger.debug("%s %s (attempt %d)", method, path, attempt + 1)
             try:
                 response = self._client.request(
@@ -272,6 +303,7 @@ class AsyncTransport(_BaseTransport):
         timeout: httpx.Timeout = DEFAULT_TIMEOUT,
         max_retries: int = DEFAULT_MAX_RETRIES,
         max_backoff: float = DEFAULT_MAX_BACKOFF,
+        requests_per_minute: float | None = DEFAULT_REQUESTS_PER_MINUTE,
         http_client: httpx.AsyncClient | None = None,
     ) -> None:
         super().__init__(
@@ -280,6 +312,7 @@ class AsyncTransport(_BaseTransport):
             timeout=timeout,
             max_retries=max_retries,
             max_backoff=max_backoff,
+            requests_per_minute=requests_per_minute,
         )
         self._client = http_client or httpx.AsyncClient(timeout=timeout)
 
@@ -293,6 +326,10 @@ class AsyncTransport(_BaseTransport):
     ) -> Any:
         attempt = 0
         while True:
+            wait = self._pace_wait_seconds()
+            if wait > 0:
+                logger.debug("pacing %s %s: sleeping %.2fs", method, path, wait)
+                await asyncio.sleep(wait)
             logger.debug("%s %s (attempt %d)", method, path, attempt + 1)
             try:
                 response = await self._client.request(

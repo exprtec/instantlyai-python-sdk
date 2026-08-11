@@ -7,6 +7,21 @@ All notable changes to this project are documented here. Format follows
 
 ## [Unreleased]
 
+## [0.2.3] - 2026-08-11
+
+### Added
+
+- `requests_per_minute` option on `Instantly`/`AsyncInstantly` (and the
+  transport classes directly) to proactively pace requests -- e.g.
+  `Instantly(api_key=..., requests_per_minute=20)` keeps to 20 req/min
+  regardless of how tight a caller's loop is. Unset by default, matching
+  existing behaviour. Meant for high-volume paginated pulls (large
+  `emails.list()`/`leads.list()` walks) that would otherwise burn through the
+  transport's retry budget and give up after repeatedly tripping a 429,
+  instead of just... not tripping it. Retries still apply on top of this for
+  the rare case pacing alone isn't enough (e.g. concurrent callers sharing
+  the same workspace's limit).
+
 ## [0.2.2] - 2026-08-03
 
 ### Added

@@ -26,5 +26,11 @@ if __name__ == "__main__":
     # `max_backoff` caps how long any single retry can wait, even if the
     # server's `Retry-After` header asks for longer -- useful when the whole
     # call is wrapped in a caller-side deadline (e.g. `asyncio.wait_for`).
-    with instantlyai.Instantly(max_retries=5, max_backoff=10.0) as client:
+    #
+    # `requests_per_minute` paces requests *before* they're sent, instead of
+    # reacting after the server has already said no. Useful for tight loops
+    # over paginated endpoints (`emails.list()`, `leads.list()`, ...) that
+    # would otherwise fire requests as fast as the network allows and burn
+    # through the retry budget every time they cross the limit.
+    with instantlyai.Instantly(max_retries=5, max_backoff=10.0, requests_per_minute=20) as client:
         main(client)

@@ -92,6 +92,15 @@ def test_multiple_clients_do_not_share_state() -> None:
     client_b.close()
 
 
+def test_requests_per_minute_reaches_the_transport_and_defaults_to_unset() -> None:
+    paced = Instantly(api_key="key", requests_per_minute=20)
+    unpaced = Instantly(api_key="key")
+    assert paced._transport.requests_per_minute == 20
+    assert unpaced._transport.requests_per_minute is None
+    paced.close()
+    unpaced.close()
+
+
 @pytest.mark.asyncio
 async def test_async_client_is_a_context_manager(monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.setenv("INSTANTLY_API_KEY", "env-key")

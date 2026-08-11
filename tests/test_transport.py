@@ -165,6 +165,59 @@ async def test_async_transport_retries_on_rate_limit(monkeypatch: pytest.MonkeyP
     await transport.aclose()
 
 
+def test_pace_wait_seconds_is_zero_when_requests_per_minute_unset() -> None:
+    transport = SyncTransport(api_key="key")
+    assert transport._pace_wait_seconds() == 0.0
+    assert transport._pace_wait_seconds() == 0.0
+
+
+def test_pace_wait_seconds_spaces_out_calls(monkeypatch: pytest.MonkeyPatch) -> None:
+    clock = iter([100.0, 100.1, 103.0])
+    monkeypatch.setattr("instantlyai._transport.time.monotonic", lambda: next(clock))
+    transport = SyncTransport(api_key="key", requests_per_minute=60)  # 1s interval
+
+    assert transport._pace_wait_seconds() == pytest.approx(0.0)  # first call, no reservation yet
+    assert transport._pace_wait_seconds() == pytest.approx(0.9)  # 0.1s later, wait out the rest
+    assert transport._pace_wait_seconds() == pytest.approx(0.0)  # already past the reserved slot
+
+
+def test_async_transport_shares_the_same_pacer() -> None:
+    transport = AsyncTransport(api_key="key", requests_per_minute=30)  # 2s interval
+    assert transport._min_request_interval == pytest.approx(2.0)
+
+
+@respx.mock
+def test_sync_transport_sleeps_for_pace_wait(monkeypatch: pytest.MonkeyPatch) -> None:
+    sleeps: list[float] = []
+    monkeypatch.setattr("instantlyai._transport.time.sleep", lambda s: sleeps.append(s))
+    respx.get("https://api.instantly.ai/api/v2/campaigns").mock(
+        return_value=httpx.Response(200, json={"items": []})
+    )
+    transport = SyncTransport(api_key="key")
+    monkeypatch.setattr(transport, "_pace_wait_seconds", lambda: 0.75)
+    transport.request("GET", "/api/v2/campaigns")
+    assert sleeps == [0.75]
+
+
+@respx.mock
+@pytest.mark.asyncio
+async def test_async_transport_sleeps_for_pace_wait(monkeypatch: pytest.MonkeyPatch) -> None:
+    sleeps: list[float] = []
+
+    async def fake_sleep(seconds: float) -> None:
+        sleeps.append(seconds)
+
+    monkeypatch.setattr("instantlyai._transport.asyncio.sleep", fake_sleep)
+    respx.get("https://api.instantly.ai/api/v2/campaigns").mock(
+        return_value=httpx.Response(200, json={"items": []})
+    )
+    transport = AsyncTransport(api_key="key")
+    monkeypatch.setattr(transport, "_pace_wait_seconds", lambda: 0.4)
+    await transport.request("GET", "/api/v2/campaigns")
+    await transport.aclose()
+    assert sleeps == [0.4]
+
+
 @respx.mock
 def test_rate_limit_error_raised_after_exhausting_retries(monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.setattr("instantlyai._transport.time.sleep", lambda _seconds: None)
