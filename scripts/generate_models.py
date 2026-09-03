@@ -58,7 +58,7 @@ def fetch_spec(source: str) -> Path:
 def patch_spec(spec_path: Path) -> None:
     """Correct known gaps/bugs in the upstream spec before codegen sees it.
 
-    Both patches below are tracked as issues against Instantly's published
+    These patches are tracked as issues against Instantly's published
     OpenAPI document; they live here (rather than as post-codegen edits to
     ``_generated.py``) so they survive the next regeneration.
     """
@@ -118,6 +118,16 @@ def patch_spec(spec_path: Path) -> None:
     # the field is a plain string whose shape depends on `resource_type`.
     schemas["CustomTagMapping"]["properties"]["resource_id"].pop("format", None)
 
+    # The API returns ESP codes 5 and 7 for some live leads, but the published
+    # schema omits them. Keep Lead model validation aligned with the values
+    # returned by the API so paginated lead reads do not fail on an otherwise
+    # usable page.
+    esp_code = schemas["Lead"]["properties"]["esp_code"]
+    for value in (5, 7):
+        if value not in esp_code["enum"]:
+            esp_code["enum"].append(value)
+    esp_code.setdefault("x-enumDescriptions", {}).update({"5": "Unknown", "7": "Unknown"})
+
     # Draft campaigns can be returned with `"campaign_schedule": {}` before a
     # sending window has ever been configured. The upstream schema requires
     # `campaign_schedule.schedules` with at least one item, which makes
@@ -148,6 +158,15 @@ def run_codegen(spec_path: Path) -> None:
         ],
         check=True,
     )
+    # The API documents the standard statuses as an enum, but also returns
+    # arbitrary numeric values for custom interest statuses. Preserve the
+    # enum for known values while allowing those documented custom values.
+    generated = GENERATED_FILE.read_text()
+    generated = generated.replace(
+        "lt_interest_status: LtInterestStatus | None = Field(",
+        "lt_interest_status: LtInterestStatus | float | None = Field(",
+    )
+    GENERATED_FILE.write_text(generated)
 
 
 def top_level_names(source: str) -> list[str]:

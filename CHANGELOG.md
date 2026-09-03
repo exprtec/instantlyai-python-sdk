@@ -5,7 +5,17 @@ All notable changes to this project are documented here. Format follows
 [Semantic Versioning](https://semver.org/) (`0.x` -- minor bumps may break, see
 [README](https://github.com/exprtec/instantlyai-python-sdk#readme)).
 
-## [Unreleased]
+## [0.2.4] - 2026-09-03
+
+### Fixed
+
+- Added ESP codes `5` and `7` to the `Lead` model. The live API returns these
+  values for some leads even though they are missing from the published
+  OpenAPI schema.
+- `Lead.lt_interest_status` now also accepts arbitrary numeric values, not
+  just the documented `LtInterestStatus` enum members. The API returns custom
+  interest statuses as plain numbers, which previously failed model
+  validation.
 
 ## [0.2.3] - 2026-08-11
 

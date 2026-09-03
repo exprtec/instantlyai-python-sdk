@@ -2167,6 +2167,8 @@ class EspCode(Enum):
     number_13 = 13
     number_999 = 999
     number_1000 = 1000
+    number_7 = 7
+    number_5 = 5
 
 
 class EsgCode(Enum):
@@ -2292,7 +2294,7 @@ class Lead(BaseModel):
     email_clicked_variant: float | None = Field(
         None, description="Last step variant the lead has clicked", examples=[1]
     )
-    lt_interest_status: LtInterestStatus | None = Field(
+    lt_interest_status: LtInterestStatus | float | None = Field(
         None,
         description="Lead interest status. It can be either a static value (check below), or a custom status interest value",
         examples=[1],

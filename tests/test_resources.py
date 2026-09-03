@@ -119,6 +119,21 @@ def test_leads_list_paginates_via_post_body_cursor() -> None:
 
 
 @respx.mock
+def test_leads_list_accepts_custom_interest_status() -> None:
+    lead = lead_json()
+    lead["lt_interest_status"] = -29999
+    respx.post("https://api.instantly.ai/api/v2/leads/list").mock(
+        return_value=httpx.Response(200, json={"items": [lead]})
+    )
+
+    client = Instantly(api_key="key")
+    leads = list(client.leads.list())
+
+    assert leads[0].lt_interest_status == -29999
+    client.close()
+
+
+@respx.mock
 def test_campaigns_share_returns_none_for_no_content_response() -> None:
     respx.post(f"https://api.instantly.ai/api/v2/campaigns/{uuid_fixture('1')}/share").mock(
         return_value=httpx.Response(204)
