@@ -5,6 +5,21 @@ All notable changes to this project are documented here. Format follows
 [Semantic Versioning](https://semver.org/) (`0.x` -- minor bumps may break, see
 [README](https://github.com/exprtec/instantlyai-python-sdk#readme)).
 
+## [0.3.0] - 2026-09-14
+
+### Added
+
+- Regenerated the public Pydantic models from Instantly's updated OpenAPI schema,
+  including AI agents, agent configuration, Engage items, domain forwarding, signal
+  targeting, and the latest campaign, email, and lead fields.
+
+### Changed
+
+- Updated lead resource annotations to use the generated lead custom-variable model
+  after the new API schemas caused it to be named `Payload8`.
+- The model generator now sends a browser-compatible User-Agent when downloading the
+  live OpenAPI document and keeps generated exports naturally sorted.
+
 ## [0.2.4] - 2026-09-03
 
 ### Fixed

@@ -15,6 +15,7 @@ from __future__ import annotations
 
 import ast
 import json
+import re
 import subprocess
 import sys
 import urllib.request
@@ -48,7 +49,8 @@ CODEGEN_ARGS = [
 def fetch_spec(source: str) -> Path:
     dest = MODELS_DIR / ".openapi-spec.json"
     if source.startswith("http://") or source.startswith("https://"):
-        with urllib.request.urlopen(source) as response:
+        request = urllib.request.Request(source, headers={"User-Agent": "Mozilla/5.0"})
+        with urllib.request.urlopen(request) as response:
             dest.write_bytes(response.read())
     else:
         dest.write_bytes(Path(source).read_bytes())
@@ -182,8 +184,17 @@ def top_level_names(source: str) -> list[str]:
     return sorted(set(names))
 
 
+def _model_sort_key(name: str, *, case_sensitive: bool) -> tuple[str, int]:
+    match = re.match(r"^(.*?)(\d+)$", name)
+    prefix = match.group(1) if match else name
+    suffix = int(match.group(2)) if match else -1
+    return (prefix if case_sensitive else prefix.casefold(), suffix)
+
+
 def write_init(names: list[str]) -> None:
-    joined = ",\n    ".join(names)
+    import_names = sorted(names, key=lambda name: _model_sort_key(name, case_sensitive=False))
+    public_names = sorted(names, key=lambda name: _model_sort_key(name, case_sensitive=True))
+    joined = ",\n    ".join(import_names)
     content = (
         '"""Public Pydantic models, generated from the Instantly OpenAPI spec.\n\n'
         "Do not hand-edit this package -- re-run ``scripts/generate_models.py``.\n"
@@ -191,7 +202,7 @@ def write_init(names: list[str]) -> None:
         "from ._generated import (\n"
         f"    {joined},\n"
         ")\n\n"
-        f"__all__ = [\n    " + ",\n    ".join(f'"{n}"' for n in names) + ",\n]\n"
+        f"__all__ = [\n    " + ",\n    ".join(f'"{n}"' for n in public_names) + ",\n]\n"
     )
     INIT_FILE.write_text(content)
 

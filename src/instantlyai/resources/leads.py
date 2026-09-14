@@ -7,7 +7,8 @@ from typing import Any, Literal
 from .._pagination import AsyncCursorPage, SyncCursorPage
 from .._transport import NOT_GIVEN, NotGiven
 from .._types import JSONObject
-from ..models import BackgroundJob, Lead, Payload
+from ..models import BackgroundJob, Lead
+from ..models import Payload8 as LeadPayload
 from ._base import AsyncAPIResource, SyncAPIResource
 
 __all__ = ["AsyncLeads", "Leads"]
@@ -72,7 +73,7 @@ class Leads(SyncAPIResource):
         blocklist_id: str | NotGiven = NOT_GIVEN,
         verify_leads_for_lead_finder: bool | NotGiven = NOT_GIVEN,
         verify_leads_on_import: bool | NotGiven = NOT_GIVEN,
-        custom_variables: Payload | NotGiven = NOT_GIVEN,
+        custom_variables: LeadPayload | NotGiven = NOT_GIVEN,
     ) -> Lead:
         """Create lead."""
         body = {
@@ -117,7 +118,7 @@ class Leads(SyncAPIResource):
         lt_interest_status: float | None | NotGiven = NOT_GIVEN,
         pl_value_lead: str | None | NotGiven = NOT_GIVEN,
         assigned_to: str | None | NotGiven = NOT_GIVEN,
-        custom_variables: Payload | NotGiven = NOT_GIVEN,
+        custom_variables: LeadPayload | NotGiven = NOT_GIVEN,
     ) -> Lead:
         """Patch lead. Omitted fields are left unchanged."""
         body = {
@@ -163,7 +164,7 @@ class Leads(SyncAPIResource):
     def bulk_add(
         self,
         *,
-        leads: _list[Payload],
+        leads: _list[LeadPayload],
         campaign_id: str | NotGiven = NOT_GIVEN,
         list_id: str | NotGiven = NOT_GIVEN,
         blocklist_id: str | NotGiven = NOT_GIVEN,
@@ -399,7 +400,7 @@ class AsyncLeads(AsyncAPIResource):
         blocklist_id: str | NotGiven = NOT_GIVEN,
         verify_leads_for_lead_finder: bool | NotGiven = NOT_GIVEN,
         verify_leads_on_import: bool | NotGiven = NOT_GIVEN,
-        custom_variables: Payload | NotGiven = NOT_GIVEN,
+        custom_variables: LeadPayload | NotGiven = NOT_GIVEN,
     ) -> Lead:
         """Create lead."""
         body = {
@@ -444,7 +445,7 @@ class AsyncLeads(AsyncAPIResource):
         lt_interest_status: float | None | NotGiven = NOT_GIVEN,
         pl_value_lead: str | None | NotGiven = NOT_GIVEN,
         assigned_to: str | None | NotGiven = NOT_GIVEN,
-        custom_variables: Payload | NotGiven = NOT_GIVEN,
+        custom_variables: LeadPayload | NotGiven = NOT_GIVEN,
     ) -> Lead:
         """Patch lead. Omitted fields are left unchanged."""
         body = {
@@ -490,7 +491,7 @@ class AsyncLeads(AsyncAPIResource):
     async def bulk_add(
         self,
         *,
-        leads: _list[Payload],
+        leads: _list[LeadPayload],
         campaign_id: str | NotGiven = NOT_GIVEN,
         list_id: str | NotGiven = NOT_GIVEN,
         blocklist_id: str | NotGiven = NOT_GIVEN,

@@ -36,6 +36,6 @@ The most commonly used top-level entities:
         - DFYEmailAccountOrder
         - AuditLog
 
-The rest of the ~140 generated models (nested request/response shapes, enums) are
-documented inline via their docstrings -- browse `src/instantlyai/models/_generated.py`
-or your editor's autocomplete for the full set.
+The rest of the ~210 generated models (nested request/response shapes, enums, AI
+agents, and Engage items) are documented inline via their docstrings -- browse
+`src/instantlyai/models/_generated.py` or your editor's autocomplete for the full set.

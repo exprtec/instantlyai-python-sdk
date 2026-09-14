@@ -1,12 +1,14 @@
 """Integration-style tests: exercise real resource methods against a mocked API."""
 
+import json
+
 import httpx
 import pytest
 import respx
 from conftest import SCHEDULE_JSON, campaign_json, lead_json, uuid_fixture
 
 from instantlyai import AsyncInstantly, Instantly, NotFoundError
-from instantlyai.models import CampaignSchedule
+from instantlyai.models import CampaignSchedule, Payload8
 
 
 @respx.mock
@@ -24,6 +26,20 @@ def test_campaigns_create_serializes_nested_model_body() -> None:
     sent_body = route.calls.last.request.content
     assert b"campaign_schedule" in sent_body
     assert b"NOT_GIVEN" not in sent_body  # NotGiven fields must never reach the wire
+    client.close()
+
+
+@respx.mock
+def test_leads_create_serializes_updated_lead_payload_model() -> None:
+    route = respx.post("https://api.instantly.ai/api/v2/leads").mock(
+        return_value=httpx.Response(200, json=lead_json())
+    )
+    client = Instantly(api_key="key")
+    client.leads.create(custom_variables=Payload8(firstName="Jane", score=42))
+
+    custom_variables = json.loads(route.calls.last.request.content)["custom_variables"]
+    assert custom_variables["firstName"] == "Jane"
+    assert custom_variables["score"] == 42
     client.close()
 
 

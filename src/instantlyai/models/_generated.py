@@ -4,11 +4,19 @@
 from __future__ import annotations
 
 from datetime import date
-from enum import Enum
+from enum import Enum, IntEnum
 from typing import Any, Dict, Literal
 from uuid import UUID
 
-from pydantic import AnyUrl, AwareDatetime, BaseModel, ConfigDict, EmailStr, Field
+from pydantic import (
+    AnyUrl,
+    AwareDatetime,
+    BaseModel,
+    ConfigDict,
+    EmailStr,
+    Field,
+    RootModel,
+)
 
 
 class Advanced(BaseModel):
@@ -161,12 +169,12 @@ class Account(BaseModel):
     timestamp_created: AwareDatetime = Field(
         ...,
         description="Timestamp when the account was created",
-        examples=["2026-08-01T01:37:37.889Z"],
+        examples=["2026-09-13T20:22:26.038Z"],
     )
     timestamp_updated: AwareDatetime = Field(
         ...,
         description="Timestamp when the account was last updated",
-        examples=["2026-08-01T01:37:37.889Z"],
+        examples=["2026-09-13T20:22:26.038Z"],
     )
     first_name: str = Field(
         ..., description="First name associated with the account", examples=["John"]
@@ -180,7 +188,7 @@ class Account(BaseModel):
     added_by: UUID | None = Field(
         None,
         description="User ID who added the account",
-        examples=["019fbaf8-3a61-714d-82bc-35de090351f1"],
+        examples=["01a09c6f-77f6-7634-a285-9ea581b967dd"],
     )
     daily_limit: float | None = Field(
         None, description="Daily email sending limit", examples=[100]
@@ -198,7 +206,7 @@ class Account(BaseModel):
     modified_by: UUID | None = Field(
         None,
         description="User ID who last modified the account",
-        examples=["019fbaf8-3a61-714d-82bc-35df86313c97"],
+        examples=["01a09c6f-77f6-7634-a285-9ea6843e757e"],
     )
     tracking_domain_name: str | None = Field(
         None, description="Tracking domain", examples=["example.com"]
@@ -220,7 +228,7 @@ class Account(BaseModel):
     organization: UUID = Field(
         ...,
         description="Organization ID that owns this account",
-        examples=["019fbaf8-3a61-714d-82bc-35e08a0bbc0b"],
+        examples=["01a09c6f-77f6-7634-a285-9ea70d7ee05f"],
     )
     warmup_status: WarmupStatus = Field(
         ..., description="Current warmup status of the account", examples=[1]
@@ -231,7 +239,7 @@ class Account(BaseModel):
     timestamp_warmup_start: AwareDatetime | None = Field(
         None,
         description="Timestamp when warmup was started",
-        examples=["2026-08-01T01:37:37.889Z"],
+        examples=["2026-09-13T20:22:26.038Z"],
     )
     provider_code: ProviderCode = Field(
         ...,
@@ -465,7 +473,9 @@ class PreDelayUnit(Enum):
 class Variant(BaseModel):
     subject: str = Field(..., examples=["Hello {{firstName}}"])
     body: str = Field(
-        ..., examples=["Hey {{firstName}},\n\nI hope you are doing well."]
+        ...,
+        description="Email body HTML. Use `<br/>` tags for delivered email line breaks.",
+        examples=["Hey {{firstName}},<br/><br/>I hope you are doing well."],
     )
     v_disabled: bool | None = Field(
         None,
@@ -597,7 +607,7 @@ class Campaign(BaseModel):
     id: UUID = Field(
         ...,
         description="Unique identifier for the campaign",
-        examples=["019fbaf8-3a26-7b8a-ace6-415c19600615"],
+        examples=["01a09c6f-779e-7058-9144-4d2874068d22"],
     )
     name: str = Field(
         ..., description="Name of the campaign", examples=["My First Campaign"]
@@ -617,12 +627,12 @@ class Campaign(BaseModel):
     timestamp_created: str = Field(
         ...,
         description="Timestamp when the campaign was created",
-        examples=["2026-08-01T01:37:37.830Z"],
+        examples=["2026-09-13T20:22:25.950Z"],
     )
     timestamp_updated: str = Field(
         ...,
         description="Timestamp when the campaign was last updated",
-        examples=["2026-08-01T01:37:37.830Z"],
+        examples=["2026-09-13T20:22:25.950Z"],
     )
     email_gap: float | None = Field(
         None, description="The gap between emails in minutes", examples=[10]
@@ -709,15 +719,20 @@ class Campaign(BaseModel):
     organization: UUID | None = Field(
         None,
         description="Organization ID",
-        examples=["019fbaf8-3a26-7b8a-ace6-415ef114ca61"],
+        examples=["01a09c6f-779e-7058-9144-4d2aaa82472a"],
     )
     owned_by: UUID | None = Field(
-        None, description="Owner ID", examples=["019fbaf8-3a26-7b8a-ace6-415fbf1f11f8"]
+        None, description="Owner ID", examples=["01a09c6f-779e-7058-9144-4d2b03c76580"]
+    )
+    created_by: UUID | None = Field(
+        None,
+        description="ID of the user who created the campaign",
+        examples=["01a09c6f-779e-7058-9144-4d2c91faf8a5"],
     )
     ai_sdr_id: UUID | None = Field(
         None,
         description="AI Sales Agent ID that created this campaign",
-        examples=["019fbaf8-3a26-7b8a-ace6-41600b5e8188"],
+        examples=["01a09c6f-779e-7058-9144-4d2d3809889a"],
     )
     provider_routing_rules: list[ProviderRoutingRule] | None = Field(
         None, description="Auto variant select settings"
@@ -730,12 +745,14 @@ class Body(BaseModel):
     """
 
     text: str | None = Field(
-        None, description="Text content of the email", examples=["This is a test email"]
+        None,
+        description="Plain-text representation of the email body. Newline characters are preserved as line breaks in this text view.",
+        examples=["This is a test email"],
     )
     html: str | None = Field(
         None,
-        description="HTML content of the email",
-        examples=["<p>This is a test email</p>"],
+        description="HTML content of the email. Use `<br/>` tags for delivered email line breaks.",
+        examples=["This is a test email.<br/><br/>Second line."],
     )
 
 
@@ -810,17 +827,17 @@ class Email(BaseModel):
     id: UUID = Field(
         ...,
         description="A Unique identifier",
-        examples=["019fbaf8-3a68-79bf-b1bd-bfd5d58c977e"],
+        examples=["01a09c6f-77ff-7af6-99a0-5fa000cd2835"],
     )
     timestamp_created: AwareDatetime = Field(
         ...,
         description="Timestamp when the email was added to our database. This is not the timestamp of the email itself, since the email could have been sent at a different time. Please check the `timestamp_email` field for the timestamp of the email.",
-        examples=["2026-08-01T01:37:37.896Z"],
+        examples=["2026-09-13T20:22:26.047Z"],
     )
     timestamp_email: AwareDatetime = Field(
         ...,
         description="The timestamp of the email, as provided by the email server. Please note that the timestamp is not always accurate, as it can be manipulated by the sender or the email server.",
-        examples=["2026-08-01T01:37:37.896Z"],
+        examples=["2026-09-13T20:22:26.047Z"],
     )
     message_id: str = Field(
         ...,
@@ -861,22 +878,22 @@ class Email(BaseModel):
     organization_id: UUID = Field(
         ...,
         description="The workspace ID",
-        examples=["019fbaf8-3a68-79bf-b1bd-bfd6d53faa1a"],
+        examples=["01a09c6f-77ff-7af6-99a0-5fa16e30bd81"],
     )
     campaign_id: UUID | None = Field(
         None,
         description="The id of the campaign that the email is associated with (it can be null for manually sent emails)",
-        examples=["019fbaf8-3a68-79bf-b1bd-bfd77ebfbcd2"],
+        examples=["01a09c6f-77ff-7af6-99a0-5fa2e7d8e920"],
     )
     subsequence_id: UUID | None = Field(
         None,
         description="The id of the campaign subsequence that the email is associated with (it can be null for manually sent emails)",
-        examples=["019fbaf8-3a68-79bf-b1bd-bfd82258712d"],
+        examples=["01a09c6f-77ff-7af6-99a0-5fa32353580e"],
     )
     list_id: UUID | None = Field(
         None,
         description="The id of the list (if the lead is part of a list)",
-        examples=["019fbaf8-3a68-79bf-b1bd-bfd9516804a3"],
+        examples=["01a09c6f-77ff-7af6-99a0-5fa4b6a60c1a"],
     )
     lead: str | None = Field(
         None,
@@ -886,7 +903,7 @@ class Email(BaseModel):
     lead_id: UUID | None = Field(
         None,
         description="The lead id (if any)",
-        examples=["019fbaf8-3a68-79bf-b1bd-bfdad6a04512"],
+        examples=["01a09c6f-77ff-7af6-99a0-5fa5db2b4631"],
     )
     eaccount: str = Field(
         ...,
@@ -914,7 +931,7 @@ class Email(BaseModel):
     reminder_ts: AwareDatetime | None = Field(
         None,
         description="Timestamp for the reminder.",
-        examples=["2026-08-01T01:37:37.896Z"],
+        examples=["2026-09-13T20:22:26.047Z"],
     )
     ai_interest_value: float | None = Field(
         None, description="AI interest value", examples=[0.75]
@@ -933,7 +950,7 @@ class Email(BaseModel):
     thread_id: UUID | None = Field(
         None,
         description="Identifier for the email thread. All the emails in the same thread have the same thread ID",
-        examples=["019fbaf8-3a68-79bf-b1bd-bfdb937c451a"],
+        examples=["01a09c6f-77ff-7af6-99a0-5fa61bf5bd76"],
     )
     content_preview: str | None = Field(
         None,
@@ -969,7 +986,7 @@ class Email(BaseModel):
     ai_agent_id: UUID | None = Field(
         None,
         description="ID of the AI agent that sent this email (if applicable)",
-        examples=["019fbaf8-3a68-79bf-b1bd-bfdca8446f47"],
+        examples=["01a09c6f-77ff-7af6-99a0-5fa73017bb1f"],
     )
 
 
@@ -1045,12 +1062,12 @@ class LeadList(BaseModel):
     id: UUID = Field(
         ...,
         description="Unique identifier for the lead list",
-        examples=["019fbaf8-3a53-753a-b827-99d59f16a061"],
+        examples=["01a09c6f-77dd-7947-b712-bfc24cde9c9a"],
     )
     organization_id: UUID = Field(
         ...,
         description="Organization ID that owns this lead list",
-        examples=["019fbaf8-3a53-753a-b827-99d6c5eab02d"],
+        examples=["01a09c6f-77dd-7947-b712-bfc3358c16fb"],
     )
     has_enrichment_task: bool | None = Field(
         None,
@@ -1060,7 +1077,7 @@ class LeadList(BaseModel):
     owned_by: UUID | None = Field(
         None,
         description="User ID of the owner of this lead list. Defaults to the user that created the list",
-        examples=["019fbaf8-3a53-753a-b827-99d7c533c18f"],
+        examples=["01a09c6f-77dd-7947-b712-bfc44557f1ca"],
     )
     name: str = Field(
         ..., description="Name of the lead list", examples=["My Lead List"]
@@ -1068,7 +1085,7 @@ class LeadList(BaseModel):
     timestamp_created: AwareDatetime = Field(
         ...,
         description="Timestamp when the lead list was created",
-        examples=["2026-08-01T01:37:37.875Z"],
+        examples=["2026-09-13T20:22:26.013Z"],
     )
 
 
@@ -1322,8 +1339,8 @@ class Then(BaseModel):
     )
     add_tags: list[UUID] | None = Field(
         None,
-        examples=[["019fbaf8-3a40-732f-b2a7-e0140485baf2"]],
-        json_schema_extra={"example": ["019fbaf8-3a40-732f-b2a7-e0140485baf2"]},
+        examples=[["01a09c6f-77b5-7cba-80d3-86009e1c5887"]],
+        json_schema_extra={"example": ["01a09c6f-77b5-7cba-80d3-86009e1c5887"]},
     )
     remove_tags: list[UUID] | None = None
 
@@ -1364,12 +1381,12 @@ class InboxPlacementTest(BaseModel):
     id: UUID = Field(
         ...,
         description="Unique identifier for the inbox placement test",
-        examples=["019fbaf8-3a40-732f-b2a7-e00f56744bc2"],
+        examples=["01a09c6f-77b5-7cba-80d3-85fb139f5dfc"],
     )
     organization_id: UUID = Field(
         ...,
         description="Organization ID",
-        examples=["019fbaf8-3a40-732f-b2a7-e0100cbccfe8"],
+        examples=["01a09c6f-77b5-7cba-80d3-85fc980dcb8b"],
     )
     name: str = Field(
         ...,
@@ -1410,7 +1427,7 @@ class InboxPlacementTest(BaseModel):
     campaign_id: UUID | None = Field(
         None,
         description="Campaign ID",
-        examples=["019fbaf8-3a40-732f-b2a7-e0118db2087d"],
+        examples=["01a09c6f-77b5-7cba-80d3-85fd6598e0ee"],
     )
     email_subject: str = Field(
         ...,
@@ -1428,7 +1445,7 @@ class InboxPlacementTest(BaseModel):
     test_code: str | None = Field(
         None,
         description="Code for identifying inbox placement tests sent from outside Instantly. Use ptid_ followed by letters, numbers, hyphens, or underscores. When creating a test, the ptid_ prefix is added automatically if omitted. The full code must be at most 50 characters.",
-        examples=["ptid_jpf81eYICb5x4lxvi0Nej"],
+        examples=["ptid_YcRmpYcYlIeu0eP1phkEQ"],
         pattern="^ptid_(?!ptid_)[A-Za-z0-9_-]{1,45}$",
     )
     tags: list[UUID] | None = Field(
@@ -1445,12 +1462,12 @@ class InboxPlacementTest(BaseModel):
     timestamp_created: str = Field(
         ...,
         description="Timestamp when the inbox placement test was created",
-        examples=["2026-08-01T01:37:37.856Z"],
+        examples=["2026-09-13T20:22:25.973Z"],
     )
     timestamp_next_run: str | None = Field(
         None,
         description="Timestamp when the inbox placement test will run next",
-        examples=["2026-08-01T01:37:37.856Z"],
+        examples=["2026-09-13T20:22:25.973Z"],
     )
     automations: list[Automation] | None = Field(
         None,
@@ -1564,27 +1581,27 @@ class InboxPlacementAnalytics(BaseModel):
     id: UUID = Field(
         ...,
         description="Unique identifier for the inbox placement analytics entry",
-        examples=["019fbaf8-3a2c-765d-8db9-18fa764492ab"],
+        examples=["01a09c6f-77a2-79fe-b739-857864c610ea"],
     )
     timestamp_created: str = Field(
         ...,
         description="Timestamp when the inbox placement analytics was created",
-        examples=["2026-08-01T01:37:37.836Z"],
+        examples=["2026-09-13T20:22:25.954Z"],
     )
     timestamp_created_date: str = Field(
         ...,
         description="Date when the inbox placement analytics was created",
-        examples=["2026-08-01"],
+        examples=["2026-09-13"],
     )
     organization_id: UUID = Field(
         ...,
         description="Organization ID",
-        examples=["019fbaf8-3a2c-765d-8db9-18fb8be74710"],
+        examples=["01a09c6f-77a2-79fe-b739-8579f0214da0"],
     )
     test_id: UUID = Field(
         ...,
         description="Inbox Placement Test ID",
-        examples=["019fbaf8-3a2c-765d-8db9-18fc8913885e"],
+        examples=["01a09c6f-77a2-79fe-b739-857a1f1031de"],
     )
     is_spam: bool | None = Field(
         None,
@@ -1734,27 +1751,27 @@ class InboxPlacementBlacklistAndSpamAssassinReport(BaseModel):
     id: UUID = Field(
         ...,
         description="Unique identifier for the inbox placement report entry",
-        examples=["019fbaf8-3a2f-7c33-8608-f43b54445678"],
+        examples=["01a09c6f-77a5-7211-8e81-c6b82c36423b"],
     )
     timestamp_created: str = Field(
         ...,
         description="Timestamp when the inbox placement report was created",
-        examples=["2026-08-01T01:37:37.839Z"],
+        examples=["2026-09-13T20:22:25.957Z"],
     )
     timestamp_created_date: str = Field(
         ...,
         description="Date when the inbox placement report was created",
-        examples=["2026-08-01"],
+        examples=["2026-09-13"],
     )
     organization_id: UUID = Field(
         ...,
         description="Organization ID",
-        examples=["019fbaf8-3a2f-7c33-8608-f43cfc15ab01"],
+        examples=["01a09c6f-77a5-7211-8e81-c6b974335384"],
     )
     test_id: UUID = Field(
         ...,
         description="Inbox Placement Test ID",
-        examples=["019fbaf8-3a2f-7c33-8608-f43ddb021024"],
+        examples=["01a09c6f-77a5-7211-8e81-c6ba5556e656"],
     )
     domain_blacklist_count: float | None = Field(
         None, description="Count of blacklists the domain is listed on", examples=[5]
@@ -1780,6 +1797,1023 @@ class InboxPlacementBlacklistAndSpamAssassinReport(BaseModel):
     )
     blacklist_report: BlacklistReport | None = Field(
         None, description="Detailed blacklist report for the domain or IP"
+    )
+
+
+class OnExhaustion(Enum):
+    """
+    What the agent does when the search runs out of new leads
+    """
+
+    pause = "pause"
+    fallback = "fallback"
+    broaden = "broaden"
+
+
+class Payload(BaseModel):
+    """
+    Lead Finder Agent payload
+    """
+
+    model_config = ConfigDict(
+        extra="allow",
+    )
+    campaign_id: UUID = Field(
+        ...,
+        description="Campaign this agent keeps topped up",
+        examples=["01a09c6f-77be-73d9-885c-3355910a2820"],
+        json_schema_extra={"example": "01a09c6f-77be-73d9-885c-3355910a2820"},
+    )
+    campaign_name: str | None = Field(
+        None,
+        description="Denormalized campaign name",
+        examples=["Outbound US"],
+        json_schema_extra={"example": "Outbound US"},
+    )
+    search_filters: dict[str, Any] | None = Field(
+        None, description="Primary audience search filters"
+    )
+    min_active_leads: float | None = Field(
+        None,
+        description="Threshold below which the agent tops up the campaign",
+        examples=[50],
+        json_schema_extra={"example": 50},
+    )
+    on_exhaustion: OnExhaustion | None = Field(
+        None,
+        description="What the agent does when the search runs out of new leads",
+        examples=["pause"],
+        json_schema_extra={"example": "pause"},
+    )
+    fallback_search_filters: dict[str, Any] | None = Field(
+        None,
+        description="Optional fallback audience used when the primary search is exhausted",
+    )
+    ai_enrichment: dict[str, Any] | None = Field(
+        None,
+        description="AI enrichment columns the agent fills on every top-up, keyed by output column name. Returned in the stored executor shape; the write shape is documented on the create and update endpoints.",
+    )
+    ai_enrichment_workflow: str | None = Field(
+        None,
+        description="Workflow template the enrichment chain was loaded from — a built-in key or `custom:<id>`.",
+        examples=["custom:0198c2a4-3f1e-7000-8000-000000000000"],
+        json_schema_extra={"example": "custom:0198c2a4-3f1e-7000-8000-000000000000"},
+    )
+
+
+class Payload1(BaseModel):
+    """
+    Voice Agent payload
+    """
+
+    model_config = ConfigDict(
+        extra="allow",
+    )
+    provider: Literal["elevenlabs"] = Field(
+        ...,
+        description="Voice provider adapter key",
+        examples=["elevenlabs"],
+        json_schema_extra={"example": "elevenlabs"},
+    )
+    voice_id: str | None = Field(
+        None,
+        description="Selected provider voice id",
+        examples=["21m00Tcm4TlvDq8ikWAM"],
+        json_schema_extra={"example": "21m00Tcm4TlvDq8ikWAM"},
+    )
+    language: str | None = Field(
+        None,
+        description="Agent language",
+        examples=["en"],
+        json_schema_extra={"example": "en"},
+    )
+    system_prompt: str | None = Field(
+        None,
+        description="Agent system prompt",
+        examples=["You are a friendly SDR."],
+        json_schema_extra={"example": "You are a friendly SDR."},
+    )
+    first_message: str | None = Field(
+        None,
+        description="Opening line",
+        examples=["Hi, is this {{lead.first_name}}?"],
+        json_schema_extra={"example": "Hi, is this {{lead.first_name}}?"},
+    )
+    phone_number_id: UUID | None = Field(
+        None,
+        description="Assigned phone number id",
+        examples=["01a09c6f-77be-73d9-885c-3356880e3037"],
+        json_schema_extra={"example": "01a09c6f-77be-73d9-885c-3356880e3037"},
+    )
+
+
+class Keywords(BaseModel):
+    include: str | None = Field(
+        None,
+        examples=["automation, efficiency, AI"],
+        json_schema_extra={"example": "automation, efficiency, AI"},
+    )
+    exclude: str | None = Field(
+        None,
+        examples=["manual, legacy"],
+        json_schema_extra={"example": "manual, legacy"},
+    )
+
+
+class JobTitle(BaseModel):
+    include: list[str] | None = None
+    exclude: list[str] | None = None
+
+
+class Icp(BaseModel):
+    name: str | None = Field(
+        None, examples=["Enterprise"], json_schema_extra={"example": "Enterprise"}
+    )
+    problems_solved: list[str] | None = None
+    benefits: list[str] | None = None
+    usp: str | None = Field(
+        None, examples=["AI-powered"], json_schema_extra={"example": "AI-powered"}
+    )
+    customer_goals: list[str] | None = None
+    success_stories: str | None = Field(
+        None, examples=["Case study"], json_schema_extra={"example": "Case study"}
+    )
+    keywords: Keywords | None = None
+    company_size: list[str] | None = None
+    industry: list[str] | None = None
+    job_title: JobTitle | None = None
+
+
+class Memory(BaseModel):
+    """
+    Business context and memory for the AI Sales Agent
+    """
+
+    company: str | None = Field(
+        None, examples=["Acme Inc"], json_schema_extra={"example": "Acme Inc"}
+    )
+    business_description: str | None = Field(
+        None,
+        examples=["We provide cloud software"],
+        json_schema_extra={"example": "We provide cloud software"},
+    )
+    active_icps_indexes: list[float] | None = None
+    icps: list[Icp] | None = None
+    custom_fields: list[str] | None = None
+    business_offers: list[str] | None = None
+    active_business_offers_indexes: list[float] | None = None
+
+
+class SignalTargetingCategory(Enum):
+    linkedin_post_company = "linkedin_post_company"
+    linkedin_post_contact = "linkedin_post_contact"
+    linkedin_comment = "linkedin_comment"
+    twitter_post_company = "twitter_post_company"
+    twitter_post_contact = "twitter_post_contact"
+    youtube_company = "youtube_company"
+    youtube_contact = "youtube_contact"
+    reddit_buying_intent = "reddit_buying_intent"
+    reddit_pain_point = "reddit_pain_point"
+    reddit_churn_risk = "reddit_churn_risk"
+    reddit_competitor_mention = "reddit_competitor_mention"
+    glassdoor_negative = "glassdoor_negative"
+    glassdoor_positive = "glassdoor_positive"
+    website_product_launch = "website_product_launch"
+    website_pricing_change = "website_pricing_change"
+    website_expansion = "website_expansion"
+    website_executive_change = "website_executive_change"
+    website_funding = "website_funding"
+    website_partnership = "website_partnership"
+    website_compliance = "website_compliance"
+    website_technology_adoption = "website_technology_adoption"
+    job_change = "job_change"
+    promotion = "promotion"
+    work_anniversary = "work_anniversary"
+    traffic_surge = "traffic_surge"
+    traffic_decline = "traffic_decline"
+
+
+class EnrichmentSettings(BaseModel):
+    """
+    Settings for lead enrichment
+    """
+
+    enrichment_limit_per_run: float | None = Field(
+        None,
+        description="Maximum number of leads to enrich per run",
+        examples=[30],
+        json_schema_extra={"example": 30},
+    )
+    signal_targeting_enabled: bool | None = Field(
+        None,
+        description="Whether the agent puts leads with recent buying signals first. AI Sales Agents only; other agent types ignore it. Defaults to true when omitted. Signals rank rather than filter: when fewer signal-carrying leads are available than the agent's daily target, the remainder is filled with other leads matching the ICP, so this never reduces the number of leads sourced. Set to false to stop prioritizing signals; the stored categories are kept for when it is turned back on.",
+        examples=[True],
+        json_schema_extra={"example": True},
+    )
+    signal_targeting_categories: list[SignalTargetingCategory] | None = Field(
+        None,
+        description="Signal categories the agent prioritizes while signal targeting is on (AI Sales Agents only), each with a 90-day freshness window. Omit to use the default high-intent set (recent funding or acquisition, executive leadership change, pricing change, product launch, company expansion, buying intent on Reddit). An empty array prioritizes nothing; a non-empty array targets exactly those categories.",
+        max_length=26,
+    )
+
+
+class Timing2(BaseModel):
+    from_: str | None = Field(
+        None, alias="from", examples=["09:00"], json_schema_extra={"example": "09:00"}
+    )
+    to: str | None = Field(
+        None, examples=["17:00"], json_schema_extra={"example": "17:00"}
+    )
+
+
+class Schedule2(BaseModel):
+    name: str | None = Field(
+        None, examples=["Default"], json_schema_extra={"example": "Default"}
+    )
+    timing: Timing2 | None = None
+    days: dict[str, bool] | None = None
+    timezone: str | None = Field(
+        None,
+        examples=["America/New_York"],
+        json_schema_extra={"example": "America/New_York"},
+    )
+
+
+class CampaignSchedule1(BaseModel):
+    schedules: list[Schedule2] | None = None
+
+
+class OutreachSettings(BaseModel):
+    """
+    Settings for email outreach
+    """
+
+    campaign_schedule: CampaignSchedule1 | None = None
+    email_list: list[EmailStr] | None = None
+    email_tag_list: list[str] | None = None
+    daily_limit: float | None = Field(
+        None, examples=[100], json_schema_extra={"example": 100}
+    )
+    stop_on_reply: bool | None = Field(
+        None, examples=[True], json_schema_extra={"example": True}
+    )
+    open_tracking: bool | None = Field(
+        None, examples=[True], json_schema_extra={"example": True}
+    )
+    first_email_text_only: bool | None = Field(
+        None, examples=[False], json_schema_extra={"example": False}
+    )
+    prioritize_new_leads: bool | None = Field(
+        None, examples=[False], json_schema_extra={"example": False}
+    )
+    match_lead_esp: bool | None = Field(
+        None, examples=[False], json_schema_extra={"example": False}
+    )
+
+
+class AutonomySettings(BaseModel):
+    """
+    Settings for AI Sales Agent autonomy
+    """
+
+    autopilot_mode: bool | None = Field(
+        None,
+        description="Whether autopilot mode is enabled",
+        examples=[False],
+        json_schema_extra={"example": False},
+    )
+    auto_reply_to_responses: bool | None = Field(
+        None,
+        description="Whether to auto-reply to responses",
+        examples=[False],
+        json_schema_extra={"example": False},
+    )
+
+
+class AiSdrConfig(BaseModel):
+    """
+    AI Sales Agent agent config
+    """
+
+    memory: Memory | None = Field(
+        None, description="Business context and memory for the AI Sales Agent"
+    )
+    enrichment_settings: EnrichmentSettings | None = Field(
+        None, description="Settings for lead enrichment"
+    )
+    outreach_settings: OutreachSettings | None = Field(
+        None, description="Settings for email outreach"
+    )
+    autonomy_settings: AutonomySettings | None = Field(
+        None, description="Settings for AI Sales Agent autonomy"
+    )
+
+
+class Type1(Enum):
+    """
+    SDR source type
+    """
+
+    website = "website"
+    pitch_deck = "pitch_deck"
+
+
+class Payload2(BaseModel):
+    """
+    Sales agent (SDR) payload
+    """
+
+    ai_sdr_config: AiSdrConfig = Field(..., description="AI Sales Agent agent config")
+    type: Type1 | None = Field(
+        None,
+        description="SDR source type",
+        examples=["website"],
+        json_schema_extra={"example": "website"},
+    )
+    input: str | None = Field(
+        None,
+        description="SDR input (e.g. website URL or pitch deck reference)",
+        examples=["https://example.com"],
+        json_schema_extra={"example": "https://example.com"},
+    )
+    master_lead_list_id: UUID | None = Field(
+        None,
+        description="Master lead list ID for the SDR",
+        examples=["01a09c6f-77be-73d9-885c-3354212a5c44"],
+        json_schema_extra={"example": "01a09c6f-77be-73d9-885c-3354212a5c44"},
+    )
+    initial_scrape_ready: bool | None = Field(
+        None,
+        description="Whether initial scrape is ready",
+        examples=[False],
+        json_schema_extra={"example": False},
+    )
+    timestamp_last_action: AwareDatetime | None = Field(
+        None,
+        description="Timestamp of last SDR action",
+        examples=["2024-01-01T12:00:00Z"],
+        json_schema_extra={"example": "2024-01-01T12:00:00Z"},
+    )
+    timestamp_last_decision: AwareDatetime | None = Field(
+        None,
+        description="Timestamp of last SDR decision",
+        examples=["2024-01-01T12:00:00Z"],
+        json_schema_extra={"example": "2024-01-01T12:00:00Z"},
+    )
+    next_decision_time: AwareDatetime | None = Field(
+        None,
+        description="Scheduled time for next decision",
+        examples=["2024-01-01T12:00:00Z"],
+        json_schema_extra={"example": "2024-01-01T12:00:00Z"},
+    )
+
+
+class ConfigurationType(Enum):
+    """
+    Type of the AI agent configuration
+    """
+
+    number_1 = 1
+    number_2 = 2
+
+
+class FallbackSendingAccounts(BaseModel):
+    accounts: list[EmailStr] | None = None
+    tag_ids: list[str] | None = None
+
+
+class NoShow(BaseModel):
+    """
+    No-show recovery feature configuration
+    """
+
+    enabled: bool | None = Field(
+        None,
+        description="Enable no-show recovery mode",
+        examples=[True],
+        json_schema_extra={"example": True},
+    )
+    max_followups: float | None = Field(
+        None,
+        description="Maximum number of no-show follow-up emails (1-10)",
+        examples=[3],
+        ge=1.0,
+        json_schema_extra={"example": 3},
+        le=10.0,
+    )
+    fallback_sending_accounts: FallbackSendingAccounts | None = Field(
+        None,
+        examples=[{"accounts": [], "tag_ids": []}],
+        json_schema_extra={"example": {"accounts": [], "tag_ids": []}},
+    )
+
+
+class TriggerOnLabelsMode(Enum):
+    """
+    Whether to include or exclude the selected labels. Defaults to include.
+    """
+
+    include = "include"
+    exclude = "exclude"
+
+
+class Payload3(BaseModel):
+    """
+    Reply agent (Inbox Manager) payload
+    """
+
+    configuration_type: ConfigurationType | None = Field(
+        None,
+        description="Type of the AI agent configuration",
+        examples=[1, 2],
+        json_schema_extra={"example": 1},
+    )
+    tags: list[Literal["default"] | UUID] | None = Field(
+        None, description="List of tags to use for AI Agent"
+    )
+    handle_followup: bool | None = Field(
+        None,
+        description="Whether to handle follow-up emails",
+        examples=[True],
+        json_schema_extra={"example": True},
+    )
+    respond_to_automatic_emails: bool | None = Field(
+        None,
+        description="Whether to respond to automatic emails",
+        examples=[True],
+        json_schema_extra={"example": True},
+    )
+    handle_objections: bool | None = Field(
+        None,
+        description="Whether to handle objections, declines, or negative replies",
+        examples=[True],
+        json_schema_extra={"example": True},
+    )
+    integrations: dict[str, Any] | None = Field(
+        None,
+        description="Configurations for app integrations",
+        examples=[
+            {
+                "slack": {
+                    "connectionId": "01a09c6f-77be-73d9-885c-335256cd70f1",
+                    "connectionName": "My Connection",
+                }
+            }
+        ],
+        json_schema_extra={
+            "example": {
+                "slack": {
+                    "connectionId": "01a09c6f-77be-73d9-885c-335256cd70f1",
+                    "connectionName": "My Connection",
+                }
+            }
+        },
+    )
+    no_show: NoShow | None = Field(
+        None,
+        description="No-show recovery feature configuration",
+        examples=[{"enabled": True, "max_followups": 3}],
+        json_schema_extra={"example": {"enabled": True, "max_followups": 3}},
+    )
+    trigger_on_labels_enabled: bool | None = Field(
+        None,
+        description="Whether to activate the agent only for specific interest labels",
+        examples=[False],
+        json_schema_extra={"example": False},
+    )
+    trigger_on_labels: list[float] | None = Field(
+        None,
+        description="Array of interest_status values to trigger the agent on",
+        examples=[[1, -1]],
+        json_schema_extra={"example": [1, -1]},
+    )
+    trigger_on_labels_mode: TriggerOnLabelsMode | None = Field(
+        None,
+        description="Whether to include or exclude the selected labels. Defaults to include.",
+        examples=["include"],
+        json_schema_extra={"example": "include"},
+    )
+    monthly_credit_budget: float | None = Field(
+        None,
+        description="Monthly AI credit budget for this agent (null = unlimited)",
+        examples=[1000],
+        ge=1.0,
+        json_schema_extra={"example": 1000},
+    )
+    followup_business_days_only: bool | None = Field(
+        None,
+        description="Whether to send follow-up emails only on business days (Mon-Fri)",
+        examples=[True],
+        json_schema_extra={"example": True},
+    )
+
+
+class Slack(BaseModel):
+    model_config = ConfigDict(
+        extra="forbid",
+    )
+    connection_id: str | None = Field(None, description="Slack app connection ID")
+    enabled: bool | None = Field(
+        None,
+        description="Whether Slack notifications are enabled for this Deliverability Agent.",
+    )
+    connection_name: str | None = Field(
+        None,
+        description="Deprecated. Kept only so previously stored values round-trip.",
+    )
+    channel_id: str | None = Field(
+        None,
+        description="Deprecated. Kept only so previously stored values round-trip.",
+    )
+    channel_name: str | None = Field(
+        None,
+        description="Deprecated. Kept only so previously stored values round-trip.",
+    )
+
+
+class Integrations(BaseModel):
+    """
+    Configurations for Deliverability Agent app integrations
+    """
+
+    model_config = ConfigDict(
+        extra="forbid",
+    )
+    slack: Slack | None = None
+
+
+class Payload4(BaseModel):
+    """
+    Deliverability Agent payload
+    """
+
+    model_config = ConfigDict(
+        extra="forbid",
+    )
+    integrations: Integrations | None = Field(
+        None, description="Configurations for Deliverability Agent app integrations"
+    )
+
+
+class Type2(Enum):
+    """
+    Type of the AI Agent
+    """
+
+    int_1 = 1
+    int_2 = 2
+    int_3 = 3
+    int_4 = 4
+    int_6 = 6
+    int_7 = 7
+    int_8 = 8
+    int_9 = 9
+    int_10 = 10
+    int_11 = 11
+
+
+class Status4(Enum):
+    """
+    Status of the AI Agent
+    """
+
+    number__1 = -1
+    number_0 = 0
+    number_1 = 1
+
+
+class AIAgent(BaseModel):
+    """
+    An AI agent
+    """
+
+    model_config = ConfigDict(
+        extra="forbid",
+    )
+    id: UUID = Field(
+        ...,
+        description="Unique identifier for the AI agent",
+        examples=["01a09c6f-77be-73d9-885c-335714946bc5"],
+    )
+    organization_id: UUID = Field(
+        ...,
+        description="Organization ID",
+        examples=["01a09c6f-77be-73d9-885c-33588281f521"],
+    )
+    name: str = Field(
+        ..., description="Name of the AI Agent", examples=["Test AI Agent"]
+    )
+    payload: Payload | Payload1 | Payload2 | Payload3 | Payload4 = Field(
+        ...,
+        description="Payload of the AI Agent. Either reply agent (Inbox Manager) or sales agent (SDR), depending on type.",
+    )
+    type: Type2 | None = Field(None, description="Type of the AI Agent", examples=[1])
+    timestamp_created: str = Field(
+        ...,
+        description="Timestamp when the AI agent was created",
+        examples=["2026-09-13T20:22:25.982Z"],
+    )
+    timestamp_updated: str = Field(
+        ...,
+        description="Timestamp when the AI agent was updated",
+        examples=["2026-09-13T20:22:25.982Z"],
+    )
+    status: Status4 = Field(..., description="Status of the AI Agent", examples=[1])
+    is_auto_created: bool | None = Field(
+        None, description="Whether the AI agent was auto-created", examples=[False]
+    )
+    created_by: UUID | None = Field(
+        None,
+        description="User ID who created the AI agent",
+        examples=["01a09c6f-77be-73d9-885c-3359494a9ae9"],
+    )
+    description: str | None = Field(
+        None,
+        description="Description of the AI agent",
+        examples=["Optional agent description"],
+    )
+
+
+class ConfigurationMode(Enum):
+    """
+    How much autonomy the agent runs with. Null for agent types that have no autonomy setting, and for agents whose mode is not configured yet.
+    """
+
+    copilot = "copilot"
+    fully_automatic = "fully_automatic"
+    NoneType_None = None
+
+
+class AIAgentSummary(BaseModel):
+    """
+    The fields shared by every AI agent type
+    """
+
+    model_config = ConfigDict(
+        extra="forbid",
+    )
+    id: UUID = Field(
+        ...,
+        description="Unique identifier for the AI agent",
+        examples=["01a09c6f-77be-73d9-885c-335714946bc5"],
+    )
+    type: Type2 | None = Field(None, description="Type of the AI Agent", examples=[1])
+    name: str = Field(
+        ..., description="Name of the AI Agent", examples=["Test AI Agent"]
+    )
+    status: Status4 = Field(..., description="Status of the AI Agent", examples=[1])
+    timestamp_created: str = Field(
+        ...,
+        description="Timestamp when the AI agent was created",
+        examples=["2026-09-13T20:22:25.982Z"],
+    )
+    timestamp_updated: str = Field(
+        ...,
+        description="Timestamp when the AI agent was updated",
+        examples=["2026-09-13T20:22:25.982Z"],
+    )
+    configuration_mode: ConfigurationMode | None = Field(
+        ...,
+        description="How much autonomy the agent runs with. Null for agent types that have no autonomy setting, and for agents whose mode is not configured yet.",
+        examples=["copilot"],
+    )
+
+
+class NoShow1(BaseModel):
+    """
+    No-show recovery feature configuration
+    """
+
+    enabled: bool | None = Field(
+        None, description="Enable no-show recovery mode", examples=[True]
+    )
+    max_followups: float | None = Field(
+        None,
+        description="Maximum number of no-show follow-up emails (1-10)",
+        examples=[3],
+        ge=1.0,
+        le=10.0,
+    )
+    fallback_sending_accounts: FallbackSendingAccounts | None = Field(
+        None, examples=[{"accounts": [], "tag_ids": []}]
+    )
+
+
+class Payload5(BaseModel):
+    """
+    Reply agent (Inbox Manager) payload
+    """
+
+    configuration_type: ConfigurationType | None = Field(
+        None, description="Type of the AI agent configuration", examples=[1]
+    )
+    tags: list[Literal["default"] | UUID] | None = Field(
+        None, description="List of tags to use for AI Agent"
+    )
+    handle_followup: bool | None = Field(
+        None, description="Whether to handle follow-up emails", examples=[True]
+    )
+    respond_to_automatic_emails: bool | None = Field(
+        None, description="Whether to respond to automatic emails", examples=[True]
+    )
+    handle_objections: bool | None = Field(
+        None,
+        description="Whether to handle objections, declines, or negative replies",
+        examples=[True],
+    )
+    integrations: dict[str, Any] | None = Field(
+        None,
+        description="Configurations for app integrations",
+        examples=[
+            {
+                "slack": {
+                    "connectionId": "01a09c6f-77be-73d9-885c-335256cd70f1",
+                    "connectionName": "My Connection",
+                }
+            }
+        ],
+    )
+    no_show: NoShow1 | None = Field(
+        None,
+        description="No-show recovery feature configuration",
+        examples=[{"enabled": True, "max_followups": 3}],
+    )
+    trigger_on_labels_enabled: bool | None = Field(
+        None,
+        description="Whether to activate the agent only for specific interest labels",
+        examples=[False],
+    )
+    trigger_on_labels: list[float] | None = Field(
+        None,
+        description="Array of interest_status values to trigger the agent on",
+        examples=[[1, -1]],
+    )
+    trigger_on_labels_mode: TriggerOnLabelsMode | None = Field(
+        None,
+        description="Whether to include or exclude the selected labels. Defaults to include.",
+        examples=["include"],
+    )
+    monthly_credit_budget: float | None = Field(
+        None,
+        description="Monthly AI credit budget for this agent (null = unlimited)",
+        examples=[1000],
+        ge=1.0,
+    )
+    followup_business_days_only: bool | None = Field(
+        None,
+        description="Whether to send follow-up emails only on business days (Mon-Fri)",
+        examples=[True],
+    )
+
+
+class Tags(BaseModel):
+    id: str = Field(..., examples=["tag-id"], json_schema_extra={"example": "tag-id"})
+    label: str = Field(
+        ..., examples=["Tag Label"], json_schema_extra={"example": "Tag Label"}
+    )
+
+
+class Integrations1(BaseModel):
+    id: str = Field(..., examples=["tag-id"], json_schema_extra={"example": "tag-id"})
+    label: str = Field(
+        ..., examples=["Tag Label"], json_schema_extra={"example": "Tag Label"}
+    )
+    is_valid: bool = Field(..., examples=[True], json_schema_extra={"example": True})
+    error: str | None = Field(None, examples=[""], json_schema_extra={"example": ""})
+
+
+class Metadata(BaseModel):
+    """
+    Included only when the `with_metadata` parameter is `true`. Contains additional information about the ai agent as tags.
+    """
+
+    tags: dict[str, Tags] | None = Field(
+        None, description="The tags associated with the ai agent"
+    )
+    integrations: dict[str, Integrations1] | None = Field(
+        None, description="The integrations associated with the ai agent"
+    )
+
+
+class AIInboxManager(BaseModel):
+    """
+    An AI Inbox Manager agent
+    """
+
+    model_config = ConfigDict(
+        extra="forbid",
+    )
+    id: UUID = Field(
+        ...,
+        description="Unique identifier for the AI agent",
+        examples=["01a09c6f-77be-73d9-885c-335714946bc5"],
+    )
+    organization_id: UUID = Field(
+        ...,
+        description="Organization ID",
+        examples=["01a09c6f-77be-73d9-885c-33588281f521"],
+    )
+    name: str = Field(
+        ..., description="Name of the AI Agent", examples=["Test AI Agent"]
+    )
+    payload: Payload5 = Field(..., description="Reply agent (Inbox Manager) payload")
+    type: Type2 | None = Field(None, description="Type of the AI Agent", examples=[1])
+    timestamp_created: str = Field(
+        ...,
+        description="Timestamp when the AI agent was created",
+        examples=["2026-09-13T20:22:25.982Z"],
+    )
+    timestamp_updated: str = Field(
+        ...,
+        description="Timestamp when the AI agent was updated",
+        examples=["2026-09-13T20:22:25.982Z"],
+    )
+    status: Status4 = Field(..., description="Status of the AI Agent", examples=[1])
+    is_auto_created: bool | None = Field(
+        None, description="Whether the AI agent was auto-created", examples=[False]
+    )
+    created_by: UUID | None = Field(
+        None,
+        description="User ID who created the AI agent",
+        examples=["01a09c6f-77be-73d9-885c-3359494a9ae9"],
+    )
+    description: str | None = Field(
+        None,
+        description="Description of the AI agent",
+        examples=["Optional agent description"],
+    )
+    metadata: Metadata | None = Field(
+        None,
+        description="Included only when the `with_metadata` parameter is `true`. Contains additional information about the ai agent as tags.",
+        examples=[{"tags": {"tag-id": {"id": "tag-id", "label": "Tag Label"}}}],
+    )
+
+
+class Integrations2(BaseModel):
+    """
+    Configurations for Deliverability Agent app integrations
+    """
+
+    model_config = ConfigDict(
+        extra="forbid",
+    )
+    slack: Slack | None = None
+
+
+class Payload6(BaseModel):
+    """
+    Deliverability Agent payload
+    """
+
+    model_config = ConfigDict(
+        extra="forbid",
+    )
+    integrations: Integrations2 | None = Field(
+        None, description="Configurations for Deliverability Agent app integrations"
+    )
+
+
+class AIDeliverabilityAgent(BaseModel):
+    """
+    An AI Deliverability Agent
+    """
+
+    model_config = ConfigDict(
+        extra="forbid",
+    )
+    id: UUID = Field(
+        ...,
+        description="Unique identifier for the AI agent",
+        examples=["01a09c6f-77be-73d9-885c-335714946bc5"],
+    )
+    organization_id: UUID = Field(
+        ...,
+        description="Organization ID",
+        examples=["01a09c6f-77be-73d9-885c-33588281f521"],
+    )
+    name: str = Field(
+        ..., description="Name of the AI Agent", examples=["Test AI Agent"]
+    )
+    payload: Payload6 | None = Field(None, description="Deliverability Agent payload")
+    type: Type2 | None = Field(None, description="Type of the AI Agent", examples=[1])
+    timestamp_created: str = Field(
+        ...,
+        description="Timestamp when the AI agent was created",
+        examples=["2026-09-13T20:22:25.982Z"],
+    )
+    timestamp_updated: str = Field(
+        ...,
+        description="Timestamp when the AI agent was updated",
+        examples=["2026-09-13T20:22:25.982Z"],
+    )
+    status: Status4 = Field(..., description="Status of the AI Agent", examples=[1])
+    is_auto_created: bool | None = Field(
+        None, description="Whether the AI agent was auto-created", examples=[False]
+    )
+    created_by: UUID | None = Field(
+        None,
+        description="User ID who created the AI agent",
+        examples=["01a09c6f-77be-73d9-885c-3359494a9ae9"],
+    )
+    description: str | None = Field(
+        None,
+        description="Description of the AI agent",
+        examples=["Optional agent description"],
+    )
+
+
+class Payload7(BaseModel):
+    """
+    Lead Finder Agent payload
+    """
+
+    model_config = ConfigDict(
+        extra="allow",
+    )
+    campaign_id: UUID = Field(
+        ...,
+        description="Campaign this agent keeps topped up",
+        examples=["01a09c6f-77be-73d9-885c-3355910a2820"],
+    )
+    campaign_name: str | None = Field(
+        None, description="Denormalized campaign name", examples=["Outbound US"]
+    )
+    search_filters: dict[str, Any] | None = Field(
+        None, description="Primary audience search filters"
+    )
+    min_active_leads: float | None = Field(
+        None,
+        description="Threshold below which the agent tops up the campaign",
+        examples=[50],
+    )
+    on_exhaustion: OnExhaustion | None = Field(
+        None,
+        description="What the agent does when the search runs out of new leads",
+        examples=["pause"],
+    )
+    fallback_search_filters: dict[str, Any] | None = Field(
+        None,
+        description="Optional fallback audience used when the primary search is exhausted",
+    )
+    ai_enrichment: dict[str, Any] | None = Field(
+        None,
+        description="AI enrichment columns the agent fills on every top-up, keyed by output column name. Returned in the stored executor shape; the write shape is documented on the create and update endpoints.",
+    )
+    ai_enrichment_workflow: str | None = Field(
+        None,
+        description="Workflow template the enrichment chain was loaded from — a built-in key or `custom:<id>`.",
+        examples=["custom:0198c2a4-3f1e-7000-8000-000000000000"],
+    )
+
+
+class AILeadFinderAgent(BaseModel):
+    """
+    An AI Lead Finder Agent
+    """
+
+    model_config = ConfigDict(
+        extra="forbid",
+    )
+    id: UUID = Field(
+        ...,
+        description="Unique identifier for the AI agent",
+        examples=["01a09c6f-77be-73d9-885c-335714946bc5"],
+    )
+    organization_id: UUID = Field(
+        ...,
+        description="Organization ID",
+        examples=["01a09c6f-77be-73d9-885c-33588281f521"],
+    )
+    name: str = Field(
+        ..., description="Name of the AI Agent", examples=["Test AI Agent"]
+    )
+    payload: Payload7 | None = Field(None, description="Lead Finder Agent payload")
+    type: Literal[6] | None = Field(
+        None, description="Type of the AI Agent", examples=[6]
+    )
+    timestamp_created: str = Field(
+        ...,
+        description="Timestamp when the AI agent was created",
+        examples=["2026-09-13T20:22:25.982Z"],
+    )
+    timestamp_updated: str = Field(
+        ...,
+        description="Timestamp when the AI agent was updated",
+        examples=["2026-09-13T20:22:25.982Z"],
+    )
+    status: Status4 = Field(..., description="Status of the AI Agent", examples=[1])
+    is_auto_created: bool | None = Field(
+        None, description="Whether the AI agent was auto-created", examples=[False]
+    )
+    created_by: UUID | None = Field(
+        None,
+        description="User ID who created the AI agent",
+        examples=["01a09c6f-77be-73d9-885c-3359494a9ae9"],
+    )
+    description: str | None = Field(
+        None,
+        description="Description of the AI agent",
+        examples=["Optional agent description"],
     )
 
 
@@ -1972,18 +3006,18 @@ class APIKey(BaseModel):
     model_config = ConfigDict(
         extra="forbid",
     )
-    id: UUID = Field(..., examples=["019fbaf8-3a10-7ff6-a028-e11fe3d4d684"])
+    id: UUID = Field(..., examples=["01a09c6f-7782-7965-9b49-a72bc914d191"])
     name: str = Field(..., examples=["My API Key"])
     scopes: list[Scope1]
     key: str = Field(..., examples=["a1b2c3d4e5f6g7h8i9j0"])
     organization_id: UUID = Field(
-        ..., examples=["019fbaf8-3a1c-7de1-b7b4-9b2ab0bb87f3"]
+        ..., examples=["01a09c6f-7792-70c3-8a8c-954b208711c9"]
     )
-    timestamp_created: AwareDatetime = Field(..., examples=["2026-08-01T01:37:37.820Z"])
-    timestamp_updated: AwareDatetime = Field(..., examples=["2026-08-01T01:37:37.820Z"])
+    timestamp_created: AwareDatetime = Field(..., examples=["2026-09-13T20:22:25.938Z"])
+    timestamp_updated: AwareDatetime = Field(..., examples=["2026-09-13T20:22:25.938Z"])
 
 
-class Status4(Enum):
+class Status9(Enum):
     """
     Campaign Status
     """
@@ -2006,17 +3040,17 @@ class AccountCampaignMapping(BaseModel):
     model_config = ConfigDict(
         extra="forbid",
     )
-    campaign_id: UUID = Field(..., examples=["019fbaf8-3a0d-7a04-a479-ec33163bdd45"])
+    campaign_id: UUID = Field(..., examples=["01a09c6f-777f-75e5-9bf7-41fc566333b6"])
     campaign_name: str = Field(..., examples=["Campaign Name"])
     timestamp_created: str = Field(
         ...,
         description="Timestamp when the campaign was created",
-        examples=["2026-08-01T01:37:37.805Z"],
+        examples=["2026-09-13T20:22:25.919Z"],
     )
-    status: Status4 | None = Field(None, description="Campaign Status", examples=[1])
+    status: Status9 | None = Field(None, description="Campaign Status", examples=[1])
 
 
-class Status5(Enum):
+class Status10(Enum):
     """
     Status of the lead
     """
@@ -2031,9 +3065,9 @@ class Status5(Enum):
 
 class LastStep(BaseModel):
     from_: str | None = Field(None, alias="from", examples=["campaign"])
-    stepID: str | None = Field(None, examples=["019fbaf8-34dc-7209-a3f0-5f8b6f841053"])
+    stepID: str | None = Field(None, examples=["01a09c6f-6dcb-71b5-a8cc-3a66b83912e7"])
     timestamp_executed: AwareDatetime | None = Field(
-        None, examples=["2026-08-01T01:37:36.476Z"]
+        None, examples=["2026-09-13T20:22:23.435Z"]
     )
 
 
@@ -2046,7 +3080,7 @@ class StatusSummary(BaseModel):
     domain_complete: bool | None = Field(None, examples=[True])
 
 
-class Payload(BaseModel):
+class Payload8(BaseModel):
     """
     Lead custom variables. This object can contain any key, but the values have to be of type string, number, boolean, or null. We do NOT allow objects or arrays as values.
     """
@@ -2094,9 +3128,9 @@ class StatusSummarySubseq(BaseModel):
     """
 
     from_: str | None = Field(None, alias="from", examples=["campaign"])
-    stepID: str | None = Field(None, examples=["019fbaf8-34dc-7209-a3f0-5f8c1dcbd4ba"])
+    stepID: str | None = Field(None, examples=["01a09c6f-6dcb-71b5-a8cc-3a6788cda04d"])
     timestampExecuted: AwareDatetime | None = Field(
-        None, examples=["2026-08-01T01:37:36.476Z"]
+        None, examples=["2026-09-13T20:22:23.435Z"]
     )
 
 
@@ -2167,8 +3201,8 @@ class EspCode(Enum):
     number_13 = 13
     number_999 = 999
     number_1000 = 1000
-    number_7 = 7
     number_5 = 5
+    number_7 = 7
 
 
 class EsgCode(Enum):
@@ -2194,29 +3228,29 @@ class Lead(BaseModel):
     id: UUID = Field(
         ...,
         description="Unique identifier for the lead",
-        examples=["019fbaf8-34da-7b63-91b6-ea98a1a0138e"],
+        examples=["01a09c6f-6dc8-7a6a-a5df-24b2078d1d69"],
     )
     timestamp_created: AwareDatetime = Field(
         ...,
         description="Timestamp when the lead was created",
-        examples=["2026-08-01T01:37:36.476Z"],
+        examples=["2026-09-13T20:22:23.434Z"],
     )
     timestamp_updated: AwareDatetime = Field(
         ...,
         description="Timestamp when the lead was last updated",
-        examples=["2026-08-01T01:37:36.476Z"],
+        examples=["2026-09-13T20:22:23.435Z"],
     )
     organization: UUID = Field(
         ...,
         description="Organization ID associated with the lead",
-        examples=["019fbaf8-34dc-7209-a3f0-5f89386c6996"],
+        examples=["01a09c6f-6dcb-71b5-a8cc-3a649ccba428"],
     )
     campaign: UUID | None = Field(
         None,
         description="Campaign ID associated with the lead",
-        examples=["019fbaf8-34dc-7209-a3f0-5f8a14db5028"],
+        examples=["01a09c6f-6dcb-71b5-a8cc-3a6534420de1"],
     )
-    status: Status5 = Field(..., description="Status of the lead", examples=[1])
+    status: Status10 = Field(..., description="Status of the lead", examples=[1])
     email: str | None = Field(
         None, description="Email address of the lead", examples=["example@example.com"]
     )
@@ -2256,7 +3290,7 @@ class Lead(BaseModel):
         ..., description="Company domain of the lead", examples=["example.com"]
     )
     status_summary: StatusSummary = Field(..., description="Status summary of the lead")
-    payload: Payload | None = Field(
+    payload: Payload8 | None = Field(
         None,
         description="Lead custom variables. This object can contain any key, but the values have to be of type string, number, boolean, or null. We do NOT allow objects or arrays as values.",
     )
@@ -2269,12 +3303,12 @@ class Lead(BaseModel):
     last_step_id: UUID | None = Field(
         None,
         description="ID of the last step",
-        examples=["019fbaf8-34dc-7209-a3f0-5f8d63c46043"],
+        examples=["01a09c6f-6dcb-71b5-a8cc-3a6897a989ca"],
     )
     last_step_timestamp_executed: AwareDatetime | None = Field(
         None,
         description="Timestamp when the last step was executed",
-        examples=["2026-08-01T01:37:36.476Z"],
+        examples=["2026-09-13T20:22:23.435Z"],
     )
     email_opened_step: float | None = Field(
         None, description="Last email step opened by the lead", examples=[1]
@@ -2302,7 +3336,7 @@ class Lead(BaseModel):
     subsequence_id: str | None = Field(
         None,
         description="ID of the subsequence",
-        examples=["019fbaf8-34dc-7209-a3f0-5f8e80658c2d"],
+        examples=["01a09c6f-6dcb-71b5-a8cc-3a698d6a4168"],
     )
     verification_status: VerificationStatus1 | None = Field(
         None, description="Verification status of the lead", examples=[1]
@@ -2313,32 +3347,32 @@ class Lead(BaseModel):
     timestamp_added_subsequence: AwareDatetime | None = Field(
         None,
         description="Timestamp when the lead was added to the subsequence",
-        examples=["2026-08-01T01:37:36.476Z"],
+        examples=["2026-09-13T20:22:23.435Z"],
     )
     timestamp_last_contact: AwareDatetime | None = Field(
         None,
         description="Timestamp of the last contact with the lead",
-        examples=["2026-08-01T01:37:36.476Z"],
+        examples=["2026-09-13T20:22:23.435Z"],
     )
     timestamp_last_open: AwareDatetime | None = Field(
         None,
         description="Timestamp of the last email open",
-        examples=["2026-08-01T01:37:36.476Z"],
+        examples=["2026-09-13T20:22:23.435Z"],
     )
     timestamp_last_reply: AwareDatetime | None = Field(
         None,
         description="Timestamp of the last email reply",
-        examples=["2026-08-01T01:37:36.476Z"],
+        examples=["2026-09-13T20:22:23.435Z"],
     )
     timestamp_last_interest_change: AwareDatetime | None = Field(
         None,
         description="Timestamp of the last interest status change",
-        examples=["2026-08-01T01:37:36.476Z"],
+        examples=["2026-09-13T20:22:23.435Z"],
     )
     timestamp_last_click: AwareDatetime | None = Field(
         None,
         description="Timestamp of the last email click",
-        examples=["2026-08-01T01:37:36.476Z"],
+        examples=["2026-09-13T20:22:23.435Z"],
     )
     enrichment_status: EnrichmentStatus | None = Field(
         None, description="Enrichment status of the lead", examples=[1]
@@ -2346,7 +3380,7 @@ class Lead(BaseModel):
     list_id: UUID | None = Field(
         None,
         description="List ID associated with the lead",
-        examples=["019fbaf8-34dc-7209-a3f0-5f8f454b770d"],
+        examples=["01a09c6f-6dcb-71b5-a8cc-3a6a2d66d691"],
     )
     last_contacted_from: str | None = Field(
         None, description="Source of the last contact", examples=["email"]
@@ -2354,7 +3388,7 @@ class Lead(BaseModel):
     uploaded_by_user: UUID | None = Field(
         None,
         description="ID of the user who uploaded the lead",
-        examples=["019fbaf8-34dc-7209-a3f0-5f90fc435ace"],
+        examples=["01a09c6f-6dcb-71b5-a8cc-3a6b5ac30411"],
     )
     upload_method: UploadMethod | None = Field(
         None, description="Method used to upload the lead", examples=["manual"]
@@ -2362,7 +3396,7 @@ class Lead(BaseModel):
     assigned_to: UUID | None = Field(
         None,
         description="ID of the user assigned to the lead",
-        examples=["019fbaf8-34dd-754e-a6ab-9186bc4ab70a"],
+        examples=["01a09c6f-6dcb-71b5-a8cc-3a6cbd5150ee"],
     )
     is_website_visitor: bool | None = Field(
         None, description="Indicates if the lead is a website visitor", examples=[True]
@@ -2370,7 +3404,7 @@ class Lead(BaseModel):
     timestamp_last_touch: AwareDatetime | None = Field(
         None,
         description="Timestamp of the last touch with the lead",
-        examples=["2026-08-01T01:37:36.477Z"],
+        examples=["2026-09-13T20:22:23.435Z"],
     )
     esp_code: EspCode | None = Field(
         None, description="ESP code associated with the lead", examples=[1]
@@ -2380,7 +3414,7 @@ class Lead(BaseModel):
     )
 
 
-class Type1(Enum):
+class Type6(Enum):
     """
     Type of background job
     """
@@ -2424,7 +3458,7 @@ class Data(BaseModel):
     )
 
 
-class Status6(Enum):
+class Status11(Enum):
     """
     Job status
     """
@@ -2454,20 +3488,20 @@ class BackgroundJob(BaseModel):
     workspace_id: UUID = Field(
         ...,
         description="Workspace ID",
-        examples=["019fbaf8-3a57-7cf6-b89f-53b30861c51e"],
+        examples=["01a09c6f-77e9-7e46-a4a3-e1574f1d3e6e"],
     )
     user_id: UUID | None = Field(
         None,
         description="The id of the user that triggered the action that created the job",
-        examples=["019fbaf8-3a57-7cf6-b89f-53b455ec1b32"],
+        examples=["01a09c6f-77e9-7e46-a4a3-e158698243c6"],
     )
-    type: Type1 = Field(
+    type: Type6 = Field(
         ..., description="Type of background job", examples=["move-leads"]
     )
     entity_id: UUID | None = Field(
         None,
         description="The id of the entity that the job is related to",
-        examples=["019fbaf8-3a57-7cf6-b89f-53b5bede5fa9"],
+        examples=["01a09c6f-77e9-7e46-a4a3-e159cfc498d2"],
     )
     entity_type: EntityType | None = Field(
         None, description="Type of entity", examples=["list"]
@@ -2483,16 +3517,16 @@ class BackgroundJob(BaseModel):
         ge=0.0,
         le=100.0,
     )
-    status: Status6 = Field(..., description="Job status", examples=["pending"])
+    status: Status11 = Field(..., description="Job status", examples=["pending"])
     created_at: str = Field(
         ...,
         description="Timestamp when the job was created",
-        examples=["2026-08-01T01:37:37.879Z"],
+        examples=["2026-09-13T20:22:26.025Z"],
     )
     updated_at: str = Field(
         ...,
         description="Timestamp when the job was last updated",
-        examples=["2026-08-01T01:37:37.879Z"],
+        examples=["2026-09-13T20:22:26.025Z"],
     )
 
 
@@ -2507,22 +3541,22 @@ class CustomTag(BaseModel):
     id: UUID = Field(
         ...,
         description="Unique identifier for the custom tag",
-        examples=["019fbaf8-3a5a-7210-9483-f51a7d074095"],
+        examples=["01a09c6f-77ec-71b4-9f1e-c40c79e6e52b"],
     )
     timestamp_created: AwareDatetime = Field(
         ...,
         description="Timestamp when the custom tag was created",
-        examples=["2026-08-01T01:37:37.882Z"],
+        examples=["2026-09-13T20:22:26.028Z"],
     )
     timestamp_updated: AwareDatetime = Field(
         ...,
         description="Timestamp when the custom tag was last updated",
-        examples=["2026-08-01T01:37:37.882Z"],
+        examples=["2026-09-13T20:22:26.028Z"],
     )
     organization_id: UUID = Field(
         ...,
         description="Organization ID that owns this custom tag",
-        examples=["019fbaf8-3a5a-7210-9483-f51b8d9c913b"],
+        examples=["01a09c6f-77ec-71b4-9f1e-c40d6752e839"],
     )
     label: str = Field(
         ...,
@@ -2545,6 +3579,7 @@ class ResourceType(Enum):
 
     number_1 = 1
     number_2 = 2
+    number_3 = 3
 
 
 class CustomTagMapping(BaseModel):
@@ -2558,17 +3593,17 @@ class CustomTagMapping(BaseModel):
     id: UUID = Field(
         ...,
         description="A Unique identifier",
-        examples=["019fbaf8-3adb-720e-a21b-65ceb73845f7"],
+        examples=["01a09c6f-7875-7743-83a2-09d813d877a0"],
     )
     tag_id: UUID = Field(
         ...,
         description="ID of the tag this custom mapping belongs to",
-        examples=["019fbaf8-3adb-720e-a21b-65cf82e97a50"],
+        examples=["01a09c6f-7875-7743-83a2-09d922963398"],
     )
     resource_id: str = Field(
         ...,
         description="ID of the resource custom tag mapping belongs to, resource_type determines the type of resource",
-        examples=["019fbaf8-3adb-720e-a21b-65d0d2fb918a"],
+        examples=["01a09c6f-7875-7743-83a2-09dae81f433d"],
     )
     resource_type: ResourceType = Field(
         ...,
@@ -2578,12 +3613,12 @@ class CustomTagMapping(BaseModel):
     timestamp_created: AwareDatetime = Field(
         ...,
         description="Timestamp when the custom tag mapping was created",
-        examples=["2026-08-01T01:37:38.011Z"],
+        examples=["2026-09-13T20:22:26.165Z"],
     )
     organization_id: UUID = Field(
         ...,
         description="Organization ID that owns this custom tag mapping",
-        examples=["019fbaf8-3adb-720e-a21b-65d1ca9198d0"],
+        examples=["01a09c6f-7875-7743-83a2-09dbe2290e6a"],
     )
 
 
@@ -2598,17 +3633,17 @@ class BlockListEntry(BaseModel):
     id: UUID = Field(
         ...,
         description="Unique identifier for the block list entry",
-        examples=["019fbaf8-3a64-7157-a412-d30f459f049b"],
+        examples=["01a09c6f-77f9-7d3a-a35d-7694bedb4132"],
     )
     timestamp_created: AwareDatetime = Field(
         ...,
         description="Timestamp when the block list entry was created",
-        examples=["2026-08-01T01:37:37.892Z"],
+        examples=["2026-09-13T20:22:26.041Z"],
     )
     organization_id: UUID = Field(
         ...,
         description="Organization ID that owns this block list entry",
-        examples=["019fbaf8-3a64-7157-a412-d3106f2a6da9"],
+        examples=["01a09c6f-77f9-7d3a-a35d-76956be0046a"],
     )
     bl_value: str = Field(
         ..., description="The email or domain to block", examples=["example.com"]
@@ -2628,6 +3663,26 @@ class InterestStatusLabel(Enum):
     neutral = "neutral"
 
 
+class AccessType(IntEnum):
+    """
+    The access the member holds: 1 read, 2 edit, 3 full (edit and share), 4 owner.
+    """
+
+    integer_1 = 1
+    integer_2 = 2
+    integer_3 = 3
+    integer_4 = 4
+
+
+class AccessGrant(BaseModel):
+    user_id: UUID = Field(..., examples=["01a09c6f-7803-75b9-9fac-4dde8799a51f"])
+    access_type: AccessType = Field(
+        ...,
+        description="The access the member holds: 1 read, 2 edit, 3 full (edit and share), 4 owner.",
+        examples=[2],
+    )
+
+
 class LeadLabel(BaseModel):
     """
     A custom label for categorizing and managing leads
@@ -2639,22 +3694,22 @@ class LeadLabel(BaseModel):
     id: UUID = Field(
         ...,
         description="Unique identifier for the custom lead label",
-        examples=["019fbaf8-3a6c-79af-b462-403b5a8c3eae"],
+        examples=["01a09c6f-7803-75b9-9fac-4ddba5e286fb"],
     )
     timestamp_created: AwareDatetime = Field(
         ...,
         description="Timestamp when the custom lead label was created",
-        examples=["2026-08-01T01:37:37.900Z"],
+        examples=["2026-09-13T20:22:26.051Z"],
     )
-    created_by: UUID = Field(
+    created_by: UUID | None = Field(
         ...,
-        description="User ID of the creator of this label",
-        examples=["019fbaf8-3a6c-79af-b462-403cf26eb123"],
+        description="User ID of the creator of this label. Null when the label was created by an API key or an internal service",
+        examples=["01a09c6f-7803-75b9-9fac-4ddcd505b12e"],
     )
     organization_id: UUID = Field(
         ...,
         description="Organization ID that owns this custom lead label",
-        examples=["019fbaf8-3a6c-79af-b462-403da9bafae3"],
+        examples=["01a09c6f-7803-75b9-9fac-4ddd4375144b"],
     )
     label: str = Field(
         ...,
@@ -2681,6 +3736,10 @@ class LeadLabel(BaseModel):
         description="Whether this label should be used with AI features",
         examples=[False],
     )
+    access_grants: list[AccessGrant] | None = Field(
+        None,
+        description="The access grants on this label, oldest first, each with the access type the member holds. Only present when resource ownership is enabled for the workspace.",
+    )
 
 
 class PlanIdVerification(BaseModel):
@@ -2706,27 +3765,27 @@ class Workspace(BaseModel):
     id: UUID = Field(
         ...,
         description="Unique identifier for the workspace",
-        examples=["019fbaf8-3a7f-76f8-ae08-91db0169f3cb"],
+        examples=["01a09c6f-780c-7293-b4e6-580150b49edf"],
     )
     timestamp_created: AwareDatetime = Field(
         ...,
         description="Timestamp when the workspace was created",
-        examples=["2026-08-01T01:37:37.919Z"],
+        examples=["2026-09-13T20:22:26.060Z"],
     )
     timestamp_updated: AwareDatetime = Field(
         ...,
         description="Timestamp when the workspace was last updated",
-        examples=["2026-08-01T01:37:37.919Z"],
+        examples=["2026-09-13T20:22:26.060Z"],
     )
     scheduled_for_removal_at: AwareDatetime | None = Field(
         None,
         description="Timestamp when this workspace is scheduled to be removed",
-        examples=["2026-08-01T01:37:37.919Z"],
+        examples=["2026-09-13T20:22:26.060Z"],
     )
     owner: UUID = Field(
         ...,
         description="User ID of the workspace owner",
-        examples=["019fbaf8-3a7f-76f8-ae08-91dc34f557f7"],
+        examples=["01a09c6f-780c-7293-b4e6-5802923856e3"],
     )
     name: str = Field(
         ..., description="Name of the workspace", examples=["My Workspace"]
@@ -2737,7 +3796,7 @@ class Workspace(BaseModel):
     plan_id_bundle: str | None = Field(
         None,
         description="Plan ID for workspace bundle",
-        examples=["pid_bundle_scale_v1"],
+        examples=["pid_bundle_scale_v2"],
     )
     add_unsub_to_block: bool | None = Field(
         None, description="Whether to add unsubscribes to block list", examples=[False]
@@ -2774,7 +3833,7 @@ class Workspace(BaseModel):
     )
 
 
-class Type2(Enum):
+class Type7(Enum):
     """
     Enrichment type to add to the resource
     """
@@ -2837,7 +3896,7 @@ class SuperSearchEnrichment(BaseModel):
     in_progress: bool | None = Field(
         None, description="Whether the enrichment is in progress", examples=[True]
     )
-    type: Type2 | None = Field(
+    type: Type7 | None = Field(
         None,
         description="Enrichment type to add to the resource",
         examples=["email_verification"],
@@ -2852,7 +3911,7 @@ class SuperSearchEnrichment(BaseModel):
     )
 
 
-class Status7(Enum):
+class Status12(Enum):
     pending = "pending"
     accepted = "accepted"
     rejected = "rejected"
@@ -2869,21 +3928,21 @@ class WorkspaceGroupMember(BaseModel):
     id: UUID = Field(
         ...,
         description="The unique identifier of the workspace group member",
-        examples=["019fbaf8-3a89-7d0b-82e1-a9ef4fcf2aa9"],
+        examples=["01a09c6f-781c-70f4-b3d5-cc490ef3e0f2"],
     )
     admin_workspace_id: UUID = Field(
         ...,
         description="The id of the admin workspace",
-        examples=["019fbaf8-3a8a-7d9c-91da-0b9db1032ab3"],
+        examples=["01a09c6f-781c-70f4-b3d5-cc4a3d43494a"],
     )
     sub_workspace_id: UUID = Field(
         ...,
         description="The id of the sub workspace",
-        examples=["019fbaf8-3a8a-7d9c-91da-0b9e799ed708"],
+        examples=["01a09c6f-781c-70f4-b3d5-cc4bc70ab61d"],
     )
-    status: Status7 = Field(..., examples=["accepted"])
-    timestamp_created: AwareDatetime = Field(..., examples=["2026-08-01T01:37:37.930Z"])
-    timestamp_updated: AwareDatetime = Field(..., examples=["2026-08-01T01:37:37.930Z"])
+    status: Status12 = Field(..., examples=["accepted"])
+    timestamp_created: AwareDatetime = Field(..., examples=["2026-09-13T20:22:26.076Z"])
+    timestamp_updated: AwareDatetime = Field(..., examples=["2026-09-13T20:22:26.076Z"])
     sub_workspace_name: str | None = Field(
         None, description="The name of the sub workspace.", examples=["My Workspace"]
     )
@@ -2929,6 +3988,8 @@ class Permission(Enum):
     customLeadLabels_delete = "customLeadLabels.delete"
     unibox_all = "unibox.all"
     analytics_view = "analytics.view"
+    websiteChat_view = "websiteChat.view"
+    websiteChat_manage = "websiteChat.manage"
     agency_manage = "agency.manage"
     accounts_view = "accounts.view"
     accounts_manage = "accounts.manage"
@@ -2956,7 +4017,7 @@ class WorkspaceMember(BaseModel):
     id: UUID = Field(
         ...,
         description="Unique identifier for the workspace member",
-        examples=["019fbaf8-3a8e-7d74-abe7-b8b57595a513"],
+        examples=["01a09c6f-7821-7976-9b27-6e8db1c1d627"],
     )
     email: EmailStr = Field(
         ...,
@@ -2966,7 +4027,7 @@ class WorkspaceMember(BaseModel):
     user_id: UUID = Field(
         ...,
         description="User ID of the workspace member",
-        examples=["019fbaf8-3a8e-7d74-abe7-b8b6aafb61e1"],
+        examples=["01a09c6f-7821-7976-9b27-6e8e45f5444a"],
     )
     user_email: EmailStr | None = Field(
         None, description="Email address of the user", examples=["user@example.com"]
@@ -2986,12 +4047,12 @@ class WorkspaceMember(BaseModel):
     timestamp_created: AwareDatetime = Field(
         ...,
         description="Timestamp when the workspace member was created",
-        examples=["2026-08-01T01:37:37.934Z"],
+        examples=["2026-09-13T20:22:26.081Z"],
     )
     workspace_id: UUID = Field(
         ...,
         description="ID of the workspace this member belongs to",
-        examples=["019fbaf8-3a8e-7d74-abe7-b8b75deaae77"],
+        examples=["01a09c6f-7821-7976-9b27-6e8f1f5eeb18"],
     )
     accepted: bool = Field(
         ...,
@@ -3001,7 +4062,7 @@ class WorkspaceMember(BaseModel):
     issuer_id: UUID | None = Field(
         None,
         description="ID of the user who added this member to the workspace",
-        examples=["019fbaf8-3a8e-7d74-abe7-b8b8af16e79c"],
+        examples=["01a09c6f-7821-7976-9b27-6e9048564eb9"],
     )
     permissions: list[Permission] | None = Field(
         None,
@@ -3009,7 +4070,7 @@ class WorkspaceMember(BaseModel):
     )
 
 
-class Status8(Enum):
+class Status13(Enum):
     """
     Status of the subsequence
     """
@@ -3024,16 +4085,8 @@ class Status8(Enum):
     number_4 = 4
 
 
-class CrmStatu(Enum):
-    number_1 = 1
-    number_2 = 2
-    number_3 = 3
-    number_4 = 4
-    number_0 = 0
-    number__1 = -1
-    number__2 = -2
-    number__3 = -3
-    number__4 = -4
+class CrmStatu(RootModel[float]):
+    root: float = Field(..., examples=[1], ge=-30000.0, le=30000.0)
 
 
 class LeadActivityEnum(Enum):
@@ -3048,7 +4101,8 @@ class Conditions(BaseModel):
     """
 
     crm_status: list[CrmStatu] | None = Field(
-        None, description="Lead CRM statuses that trigger the subsequence."
+        None,
+        description="Lead CRM statuses that trigger the subsequence. Accepts the built-in statuses listed below, or the interest status of a custom lead label.",
     )
     lead_activity: list[LeadActivityEnum] | None = Field(
         None, description="Lead activities that trigger the subsequence."
@@ -3056,7 +4110,7 @@ class Conditions(BaseModel):
     reply_contains: str | None = Field(None, examples=["yes"])
 
 
-class Timing2(BaseModel):
+class Timing3(BaseModel):
     from_: str = Field(
         ...,
         alias="from",
@@ -3173,16 +4227,16 @@ class Timezone2(Enum):
     Pacific_Apia = "Pacific/Apia"
 
 
-class Schedule2(BaseModel):
+class Schedule3(BaseModel):
     name: str = Field(..., examples=["My Schedule"])
-    timing: Timing2
+    timing: Timing3
     days: Days
     timezone: Timezone2 = Field(..., examples=["Etc/GMT+12"])
 
 
 class SubsequenceSchedule(BaseModel):
     """
-    Schedule configuration for the subsequence
+    Schedule configuration for the subsequence. When omitted on create, inherits the parent campaign's schedule.
     """
 
     start_date: date | None = Field(
@@ -3195,7 +4249,7 @@ class SubsequenceSchedule(BaseModel):
         description="End date in YYYY-MM-DD format. Uses the campaign's timezone.",
         examples=["2025-09-25"],
     )
-    schedules: list[Schedule2] = Field(..., min_length=1)
+    schedules: list[Schedule3] = Field(..., min_length=1)
 
 
 class Step1(BaseModel):
@@ -3224,11 +4278,21 @@ class Step1(BaseModel):
         description="The unit of time for the pre_delay value (minutes, hours, or days). **Only applicable to subsequences** - this field is ignored for regular campaigns. Defaults to days for backward compatibility.",
         examples=["days"],
     )
-    variants: list[Variant]
+    variants: list[Variant] = Field(..., max_length=26, min_length=1)
 
 
 class Sequence1(BaseModel):
     steps: list[Step1]
+
+
+class AutoVariantSelect1(BaseModel):
+    """
+    Automatically select the winning variant for each step using open, click, or reply rate. Set to `null` to disable automatic selection.
+    """
+
+    trigger: Trigger = Field(
+        ..., examples=["click_rate"], json_schema_extra={"example": "click_rate"}
+    )
 
 
 class DailyLimitMode(Enum):
@@ -3252,28 +4316,28 @@ class CampaignSubsequence(BaseModel):
     id: UUID = Field(
         ...,
         description="Unique identifier for the subsequence",
-        examples=["019fbaf8-3a95-7c2a-b84f-6f1df82c56f2"],
+        examples=["01a09c6f-782a-72dc-8459-14736e70b6f7"],
     )
     timestamp_created: AwareDatetime = Field(
         ...,
         description="Timestamp when the subsequence was created",
-        examples=["2026-08-01T01:37:37.941Z"],
+        examples=["2026-09-13T20:22:26.090Z"],
     )
     parent_campaign: UUID = Field(
         ...,
         description="ID of the parent campaign",
-        examples=["019fbaf8-3a95-7c2a-b84f-6f1e2fe7ee33"],
+        examples=["01a09c6f-782a-72dc-8459-14747bf519c5"],
     )
     workspace: UUID = Field(
         ...,
         description="ID of the workspace this subsequence belongs to",
-        examples=["019fbaf8-3a95-7c2a-b84f-6f1f68c763ea"],
+        examples=["01a09c6f-782a-72dc-8459-14753040b499"],
     )
-    status: Status8 = Field(..., description="Status of the subsequence", examples=[0])
+    status: Status13 = Field(..., description="Status of the subsequence", examples=[0])
     timestamp_leads_updated: AwareDatetime = Field(
         ...,
         description="Timestamp when the leads were last updated",
-        examples=["2026-08-01T01:37:37.941Z"],
+        examples=["2026-09-13T20:22:26.090Z"],
     )
     name: str = Field(
         ..., description="Name of the subsequence", examples=["Follow-up sequence"]
@@ -3281,12 +4345,17 @@ class CampaignSubsequence(BaseModel):
     conditions: Conditions = Field(
         ..., description="Conditions that trigger the subsequence"
     )
-    subsequence_schedule: SubsequenceSchedule = Field(
-        ..., description="Schedule configuration for the subsequence"
+    subsequence_schedule: SubsequenceSchedule | None = Field(
+        None,
+        description="Schedule configuration for the subsequence. When omitted on create, inherits the parent campaign's schedule.",
     )
-    sequences: list[Sequence1] = Field(
-        ...,
+    sequences: list[Sequence1] | None = Field(
+        None,
         description="List of sequences (the actual email copy). Even though this field is an array, only the first element is used, so please provide only one array item, and add the steps to that array",
+    )
+    auto_variant_select: AutoVariantSelect1 | None = Field(
+        None,
+        description="Automatically select the winning variant for each step using open, click, or reply rate. Set to `null` to disable automatic selection.",
     )
     daily_limit_mode: DailyLimitMode | None = Field(
         None,
@@ -3343,6 +4412,12 @@ class ActivityType(Enum):
     number_36 = 36
     number_37 = 37
     number_38 = 38
+    number_40 = 40
+    number_41 = 41
+    number_42 = 42
+    number_43 = 43
+    number_44 = 44
+    number_45 = 45
 
 
 class AuditLog(BaseModel):
@@ -3357,7 +4432,7 @@ class AuditLog(BaseModel):
     timestamp: AwareDatetime = Field(
         ...,
         description="When the activity occurred",
-        examples=["2026-08-01T01:37:37.956Z"],
+        examples=["2026-09-13T20:22:26.109Z"],
     )
     organization_id: UUID = Field(
         ...,
@@ -3423,6 +4498,688 @@ class AuditLog(BaseModel):
     )
 
 
+class Status14(Enum):
+    """
+    Status of the AI agent guidance
+    """
+
+    number_1 = 1
+    number_0 = 0
+
+
+class Category(Enum):
+    """
+    Category of the AI agent guidance
+    """
+
+    number_0 = 0
+    number_1 = 1
+    number_2 = 2
+    number_3 = 3
+    number_4 = 4
+
+
+class Tone(Enum):
+    """
+    Tone of voice for the AI agent
+    """
+
+    friendly = "friendly"
+    neutral = "neutral"
+    matter_of_fact = "matter_of_fact"
+    professional = "professional"
+    humorous = "humorous"
+
+
+class Length(Enum):
+    """
+    Response length preference
+    """
+
+    concise = "concise"
+    standard = "standard"
+    thorough = "thorough"
+
+
+class BasicGuidanceOptions(BaseModel):
+    """
+    Basic guidance options (tone, length, etc.) - only for BASICS category
+    """
+
+    tone: Tone = Field(
+        ..., description="Tone of voice for the AI agent", examples=["professional"]
+    )
+    length: Length = Field(
+        ..., description="Response length preference", examples=["standard"]
+    )
+
+
+class AIAgentGuidance(BaseModel):
+    """
+    A guidance category or input box for an AI agent
+    """
+
+    model_config = ConfigDict(
+        extra="forbid",
+    )
+    id: UUID = Field(
+        ...,
+        description="Unique identifier for the AI agent guidance",
+        examples=["01a09c6f-7850-7da2-abe1-152dfe09c71c"],
+    )
+    organization_id: UUID = Field(
+        ...,
+        description="Organization ID",
+        examples=["01a09c6f-7850-7da2-abe1-152ec2edbaa4"],
+    )
+    agent_id: UUID = Field(
+        ...,
+        description="Associated AI Agent ID",
+        examples=["01a09c6f-7850-7da2-abe1-152fd23442d8"],
+    )
+    label: str = Field(
+        ...,
+        description="Label of the AI agent guidance",
+        examples=["Test AI Agent Guidance"],
+    )
+    instruction: str = Field(
+        ...,
+        description="Instruction text for the AI agent guidance. Should be empty string for BASICS category.",
+        examples=["This is an AI agent guidance instruction"],
+    )
+    status: Status14 = Field(
+        ..., description="Status of the AI agent guidance", examples=[1]
+    )
+    category: Category = Field(
+        ..., description="Category of the AI agent guidance", examples=[1]
+    )
+    basic_guidance_options: BasicGuidanceOptions | None = Field(
+        None,
+        description="Basic guidance options (tone, length, etc.) - only for BASICS category",
+    )
+    timestamp_created: str = Field(
+        ...,
+        description="Timestamp when the AI agent guidance was created",
+        examples=["2026-09-13T20:22:26.128Z"],
+    )
+    timestamp_updated: str = Field(
+        ...,
+        description="Timestamp when the AI agent guidance was updated",
+        examples=["2026-09-13T20:22:26.128Z"],
+    )
+
+
+class Type8(Enum):
+    """
+    The type of business details extraction method used (website scraping or pitch deck). Required unless memory_from_workspace is true.
+    """
+
+    website = "website"
+    pitch_deck = "pitch_deck"
+
+
+class Status15(Enum):
+    """
+    Status of the AI Sales Agent
+    """
+
+    number__1 = -1
+    number_0 = 0
+    number_1 = 1
+
+
+class EnrichmentSettings1(BaseModel):
+    """
+    Settings for lead enrichment
+    """
+
+    enrichment_limit_per_run: float | None = Field(
+        None, description="Maximum number of leads to enrich per run", examples=[30]
+    )
+    signal_targeting_enabled: bool | None = Field(
+        None,
+        description="Whether the agent puts leads with recent buying signals first. AI Sales Agents only; other agent types ignore it. Defaults to true when omitted. Signals rank rather than filter: when fewer signal-carrying leads are available than the agent's daily target, the remainder is filled with other leads matching the ICP, so this never reduces the number of leads sourced. Set to false to stop prioritizing signals; the stored categories are kept for when it is turned back on.",
+        examples=[True],
+    )
+    signal_targeting_categories: list[SignalTargetingCategory] | None = Field(
+        None,
+        description="Signal categories the agent prioritizes while signal targeting is on (AI Sales Agents only), each with a 90-day freshness window. Omit to use the default high-intent set (recent funding or acquisition, executive leadership change, pricing change, product launch, company expansion, buying intent on Reddit). An empty array prioritizes nothing; a non-empty array targets exactly those categories.",
+        max_length=26,
+    )
+
+
+class OptOutSettings(BaseModel):
+    """
+    Opt-out settings appended to outgoing emails
+    """
+
+    text_opt_out_enabled: bool | None = Field(
+        True,
+        description="Append a plain-text opt-out line to every email",
+        examples=[True],
+    )
+
+
+class OutreachSettings1(BaseModel):
+    """
+    Settings for email outreach including campaign_schedule, email_list, email_tag_list, daily_limit, stop_on_reply, open_tracking, first_email_text_only, prioritize_new_leads, match_lead_esp
+    """
+
+    model_config = ConfigDict(
+        extra="allow",
+    )
+    opt_out_settings: OptOutSettings | None = Field(
+        None, description="Opt-out settings appended to outgoing emails"
+    )
+
+
+class AutonomySettings1(BaseModel):
+    """
+    Settings for AI Sales Agent autonomy including autopilot_mode, auto_reply_to_responses, and manual_leads_mode
+    """
+
+    model_config = ConfigDict(
+        extra="allow",
+    )
+    autopilot_mode: bool | None = Field(
+        None,
+        description="Enable autopilot mode for autonomous decision-making",
+        examples=[False],
+    )
+    auto_reply_to_responses: bool | None = Field(
+        None,
+        description="Automatically respond to prospect replies with contextual messages",
+        examples=[False],
+    )
+    manual_leads_mode: bool | None = Field(
+        None,
+        description="When true, automatic lead discovery is disabled and the user uploads leads manually",
+        examples=[False],
+    )
+
+
+class Config(BaseModel):
+    """
+    Configuration for the AI Sales Agent including memory, enrichment settings, outreach settings, and autonomy settings. If not provided, default configuration will be used.
+    """
+
+    model_config = ConfigDict(
+        extra="allow",
+    )
+    memory: dict[str, Any] | None = Field(
+        None, description="Business context and memory for the AI Sales Agent"
+    )
+    position_details: str | None = Field(
+        None,
+        description="Position details for recruiting agents, describing the role, responsibilities, and requirements",
+        examples=[
+            "Senior Software Engineer - Full-stack development with React and Node.js"
+        ],
+    )
+    investment_details: str | None = Field(
+        None,
+        description="Investment details for investment agents, describing the investment thesis and target companies",
+        examples=[
+            "Seed-stage B2B SaaS companies in fintech with strong recurring revenue"
+        ],
+    )
+    research_details: str | None = Field(
+        None,
+        description="Research details for user research agents, describing the research goals and target participants",
+        examples=[
+            "Interviewing product managers at mid-size tech companies about onboarding workflows"
+        ],
+    )
+    partnership_details: str | None = Field(
+        None,
+        description="Partnership details for partnership agents, describing the partnership goals and target partners",
+        examples=[
+            "Looking for B2B companies from pharma for a partnership in distributing our product"
+        ],
+    )
+    enrichment_settings: EnrichmentSettings1 | None = Field(
+        None, description="Settings for lead enrichment"
+    )
+    outreach_settings: OutreachSettings1 | None = Field(
+        None,
+        description="Settings for email outreach including campaign_schedule, email_list, email_tag_list, daily_limit, stop_on_reply, open_tracking, first_email_text_only, prioritize_new_leads, match_lead_esp",
+    )
+    autonomy_settings: AutonomySettings1 | None = Field(
+        None,
+        description="Settings for AI Sales Agent autonomy including autopilot_mode, auto_reply_to_responses, and manual_leads_mode",
+    )
+
+
+class AgentType(Enum):
+    """
+    The agent type. 2 = Sales Agent, 4 = Affiliate Agent, 7 = Recruiting Agent, 8 = Investment Agent, 9 = User Research Agent, 10 = Partnership Agent. Defaults to 2 (Sales Agent) if not provided.
+    """
+
+    number_2 = 2
+    number_4 = 4
+    number_7 = 7
+    number_8 = 8
+    number_9 = 9
+    number_10 = 10
+
+
+class AISalesAgent(BaseModel):
+    """
+    An AI Sales Development Representative that autonomously manages outreach campaigns
+    """
+
+    model_config = ConfigDict(
+        extra="forbid",
+    )
+    id: UUID = Field(
+        ...,
+        description="Unique identifier for the AI Sales Agent",
+        examples=["01a09c6f-7854-7567-9add-f0858bd225eb"],
+    )
+    workspace_id: UUID = Field(
+        ...,
+        description="Workspace ID that owns this AI Sales Agent",
+        examples=["01a09c6f-7854-7567-9add-f0866889a3fa"],
+    )
+    name: str = Field(
+        ...,
+        description="Name of the AI Sales Agent",
+        examples=["Enterprise Outreach Agent"],
+    )
+    description: str | None = Field(
+        None,
+        description="Description of the AI Sales Agent",
+        examples=["Targets enterprise companies in tech sector"],
+    )
+    type: Type8 | None = Field(
+        None,
+        description="The type of business details extraction method used (website scraping or pitch deck). Required unless memory_from_workspace is true.",
+        examples=["website"],
+    )
+    input: str | None = Field(
+        None,
+        description="The input used for creation: URL for website scraping or text content for pitch deck extraction. Required unless memory_from_workspace is true.",
+        examples=["https://example.com"],
+    )
+    status: Status15 = Field(
+        ..., description="Status of the AI Sales Agent", examples=[1]
+    )
+    config: Config | None = Field(
+        None,
+        description="Configuration for the AI Sales Agent including memory, enrichment settings, outreach settings, and autonomy settings. If not provided, default configuration will be used.",
+    )
+    created_by: UUID | None = Field(
+        None,
+        description="User ID who created the AI Sales Agent",
+        examples=["01a09c6f-7854-7567-9add-f0876d34468c"],
+    )
+    master_lead_list_id: UUID | None = Field(
+        None,
+        description="ID of the master lead list associated with this AI Sales Agent",
+        examples=["01a09c6f-7854-7567-9add-f088481b568d"],
+    )
+    initial_scrape_ready: bool = Field(
+        ...,
+        description="Indicates whether the initial website scrape has been completed",
+        examples=[False],
+    )
+    agent_type: AgentType | None = Field(
+        None,
+        description="The agent type. 2 = Sales Agent, 4 = Affiliate Agent, 7 = Recruiting Agent, 8 = Investment Agent, 9 = User Research Agent, 10 = Partnership Agent. Defaults to 2 (Sales Agent) if not provided.",
+        examples=[2],
+    )
+    self_improvement: bool | None = Field(
+        None,
+        description="When enabled, the agent learns from past campaign performance to iteratively improve its outreach strategy.",
+        examples=[False],
+    )
+    timestamp_created: AwareDatetime = Field(
+        ...,
+        description="Timestamp when the AI Sales Agent was created",
+        examples=["2026-09-13T20:22:26.133Z"],
+    )
+    timestamp_updated: AwareDatetime = Field(
+        ...,
+        description="Timestamp when the AI Sales Agent was last updated",
+        examples=["2026-09-13T20:22:26.133Z"],
+    )
+    timestamp_last_action: AwareDatetime | None = Field(
+        None,
+        description="Timestamp of the last action taken by the AI Sales Agent",
+        examples=["2026-09-13T20:22:26.133Z"],
+    )
+    timestamp_last_decision: AwareDatetime | None = Field(
+        None,
+        description="Timestamp of the last decision made by the AI Sales Agent",
+        examples=["2026-09-13T20:22:26.133Z"],
+    )
+    next_decision_time: AwareDatetime | None = Field(
+        None,
+        description="Timestamp of the next scheduled decision time",
+        examples=["2026-09-13T20:22:26.133Z"],
+    )
+
+
+class SendingStatus(Enum):
+    """
+    Status of the email sending process
+    """
+
+    number__1 = -1
+    number_1 = 1
+    number_2 = 2
+
+
+class ErrorCode(Enum):
+    """
+    Error code for the email sending process (nullable)
+    """
+
+    NO_SENDING_ACCOUNT = "NO_SENDING_ACCOUNT"
+    ACCOUNT_INACTIVE = "ACCOUNT_INACTIVE"
+    ACCOUNT_FETCH_FAILED = "ACCOUNT_FETCH_FAILED"
+    SEND_FAILED = "SEND_FAILED"
+    HITL_NOT_SUPPORTED = "HITL_NOT_SUPPORTED"
+    RATE_LIMITED = "RATE_LIMITED"
+    AGENT_NOT_FOUND = "AGENT_NOT_FOUND"
+    LEAD_BLOCKED = "LEAD_BLOCKED"
+    FREE_TRIAL_LIMIT_REACHED = "FREE_TRIAL_LIMIT_REACHED"
+    OUT_OF_CREDITS = "OUT_OF_CREDITS"
+    MONTHLY_BUDGET_EXCEEDED = "MONTHLY_BUDGET_EXCEEDED"
+
+
+class AISalesAgentReply(BaseModel):
+    """
+    A single AI-generated reply in the SDR inbox manager
+    """
+
+    model_config = ConfigDict(
+        extra="forbid",
+    )
+    id: UUID = Field(
+        ...,
+        description="Unique identifier for the AI Sales Agent reply",
+        examples=["01a09c6f-7859-7165-9f9b-5044fcd90a3f"],
+    )
+    organization_id: UUID | None = Field(
+        None,
+        description="Organization ID",
+        examples=["01a09c6f-7859-7165-9f9b-50457d157b5f"],
+    )
+    timestamp_created: str | None = Field(
+        None,
+        description="Timestamp when the AI Sales Agent reply was created (ISO 8601)",
+        examples=["2026-09-13T20:22:26.137Z"],
+    )
+    timestamp_updated: str | None = Field(
+        None,
+        description="Timestamp when the AI Sales Agent reply was last updated (ISO 8601)",
+        examples=["2026-09-13T20:22:26.137Z"],
+    )
+    agent_id: UUID | None = Field(
+        None,
+        description="ID of the AI agent that generated this reply (nullable)",
+        examples=["01a09c6f-7859-7165-9f9b-504689ed69a5"],
+    )
+    thread_id: str | None = Field(
+        None,
+        description="Conversation thread identifier (nullable)",
+        examples=["3c-zuFiJhv7cqJE5IoKkg6Pzh9"],
+    )
+    lead: str | None = Field(
+        None,
+        description="Lead email address this reply is associated with",
+        examples=["john@example.com"],
+    )
+    feedback_positive: bool | None = Field(
+        None,
+        description="Whether the feedback on the reply was positive (nullable)",
+        examples=[True],
+    )
+    feedback_text: str | None = Field(
+        None,
+        description="Feedback text left by a user for this reply (nullable)",
+        examples=["Great response!"],
+    )
+    html: str | None = Field(
+        None,
+        description="HTML-formatted reply (nullable)",
+        examples=["<p>Hello, John!</p>"],
+    )
+    requires_hitl: bool | None = Field(
+        None,
+        description="If true, the reply requires human-in-the-loop review (nullable)",
+        examples=[True],
+    )
+    requires_hitl_reason: str | None = Field(
+        None,
+        description="Reason why human-in-the-loop review is required (nullable)",
+        examples=["Low confidence score detected"],
+    )
+    generation_lag_seconds: float | None = Field(
+        None,
+        description="Time taken (in seconds) for AI to generate the reply (nullable)",
+        examples=[2.5],
+    )
+    is_automatic_email: bool | None = Field(
+        None,
+        description="Whether this reply was automatically sent as an email (nullable)",
+        examples=[False],
+    )
+    in_reply_to: str | None = Field(
+        None,
+        description="ID of the reply this message is in response to (nullable)",
+        examples=["reply_12345"],
+    )
+    usage_metadata: dict[str, Any] | None = Field(
+        None,
+        description="JSON object with OpenAI usage, costs, and prompt data (nullable)",
+    )
+    calendly_tool_used: bool | None = Field(
+        None,
+        description="Whether the Calendly scheduling tool was used in this reply",
+        examples=[False],
+    )
+    confidence_score: float | None = Field(
+        None,
+        description="Confidence score for this AI-generated reply (nullable, 0-100)",
+        examples=[92],
+    )
+    information_requested: str | None = Field(
+        None,
+        description="Text the AI used to request more information (nullable)",
+        examples=["Please confirm your availability."],
+    )
+    estimated_time_saved_seconds: float | None = Field(
+        None,
+        description="Estimated time (in seconds) saved by the AI in generating this reply (nullable)",
+        examples=[30],
+    )
+    action_pending: bool | None = Field(
+        None,
+        description="Whether this reply requires pending action from the user (nullable)",
+        examples=[True],
+    )
+    sending_status: SendingStatus | None = Field(
+        None, description="Status of the email sending process", examples=[1]
+    )
+    is_followup: bool | None = Field(
+        None,
+        description="Whether this reply is an automatic follow-up to a previous reply (nullable)",
+        examples=[True],
+    )
+    error_code: ErrorCode | None = Field(
+        None,
+        description="Error code for the email sending process (nullable)",
+        examples=["SEND_FAILED"],
+    )
+
+
+class ActionType(Enum):
+    """
+    Type of action performed
+    """
+
+    create_campaign = "create_campaign"
+    edit_campaign = "edit_campaign"
+    stop_campaign = "stop_campaign"
+    pause_campaign = "pause_campaign"
+    enrich_leads = "enrich_leads"
+    push_lead = "push_lead"
+    recommend_lead = "recommend_lead"
+    warning = "warning"
+    initial_setup_scrape = "initial_setup_scrape"
+    initial_setup_campaigns = "initial_setup_campaigns"
+    initial_setup_enrich = "initial_setup_enrich"
+    email_sent = "email_sent"
+    lead_meeting_booked = "lead_meeting_booked"
+    lead_closed = "lead_closed"
+    email_opened = "email_opened"
+    reply_received = "reply_received"
+    opportunity_received = "opportunity_received"
+    campaign_completed = "campaign_completed"
+    imported_leads = "imported_leads"
+
+
+class ActionStatus(Enum):
+    """
+    Status of the activity
+    """
+
+    pending = "pending"
+    approved = "approved"
+    rejected = "rejected"
+    in_progress = "in_progress"
+    completed = "completed"
+    failed = "failed"
+
+
+class ErrorCode1(Enum):
+    """
+    Stable error category if the activity failed
+    """
+
+    insufficient_credits = "insufficient_credits"
+    insufficient_upload_limit = "insufficient_upload_limit"
+    no_leads_with_email = "no_leads_with_email"
+    scrape_site_not_supported = "scrape_site_not_supported"
+    campaign_operation_failed = "campaign_operation_failed"
+    lead_move_failed = "lead_move_failed"
+    enrichment_failed = "enrichment_failed"
+    configuration_error = "configuration_error"
+    master_list_missing = "master_list_missing"
+    temporary_failure = "temporary_failure"
+    prospecting_incomplete = "prospecting_incomplete"
+    internal_error = "internal_error"
+
+
+class AISalesAgentActivity(BaseModel):
+    """
+    An activity performed by an AI Sales Agent
+    """
+
+    model_config = ConfigDict(
+        extra="forbid",
+    )
+    id: UUID = Field(
+        ...,
+        description="Unique identifier for the activity",
+        examples=["01a09c6f-785c-75c5-91ce-869bb29e8ce6"],
+    )
+    ai_sdr_id: UUID = Field(
+        ...,
+        description="ID of the AI Sales Agent that performed this activity",
+        examples=["01a09c6f-785c-75c5-91ce-869dfe951c13"],
+    )
+    workspace_id: UUID = Field(
+        ...,
+        description="Workspace ID that owns this activity",
+        examples=["01a09c6f-785c-75c5-91ce-869f06898615"],
+    )
+    action_type: ActionType = Field(
+        ..., description="Type of action performed", examples=["create_campaign"]
+    )
+    action_status: ActionStatus = Field(
+        ..., description="Status of the activity", examples=["pending"]
+    )
+    action_payload: dict[str, Any] | None = Field(
+        None, description="Payload data for the activity action"
+    )
+    action_output: dict[str, Any] | None = Field(
+        None,
+        description="Output data for frontend display (e.g., lead_email, campaign_name, etc.)",
+    )
+    email_id: UUID | None = Field(
+        None, examples=["01a09c6f-785c-75c5-91ce-86a00b830999"]
+    )
+    approved_by: UUID | None = Field(
+        None,
+        description="User ID who approved this activity",
+        examples=["01a09c6f-785c-75c5-91ce-86a2c9ce50e6"],
+    )
+    approved_at: AwareDatetime | None = Field(
+        None,
+        description="Timestamp when the activity was approved",
+        examples=["2026-09-13T20:22:26.140Z"],
+    )
+    rejected_by: UUID | None = Field(
+        None,
+        description="User ID who rejected this activity",
+        examples=["01a09c6f-785c-75c5-91ce-86a473e5f4b3"],
+    )
+    rejected_at: AwareDatetime | None = Field(
+        None,
+        description="Timestamp when the activity was rejected",
+        examples=["2026-09-13T20:22:26.140Z"],
+    )
+    rejection_reason: str | None = Field(
+        None,
+        description="Reason for rejecting the activity",
+        examples=["Not aligned with current strategy"],
+    )
+    ai_reasoning: str | None = Field(
+        None,
+        description="AI reasoning for this activity",
+        examples=["This lead matches the ICP criteria and has shown interest"],
+    )
+    ai_confidence: float | None = Field(
+        None, description="AI confidence score for this activity (0-1)", examples=[0.85]
+    )
+    result: dict[str, Any] | None = Field(
+        None, description="Result data from executing the activity"
+    )
+    error_message: str | None = Field(
+        None,
+        description="Error message if the activity failed",
+        examples=["Failed to create campaign: Invalid email list"],
+    )
+    error_code: ErrorCode1 | None = Field(
+        None,
+        description="Stable error category if the activity failed",
+        examples=["insufficient_credits"],
+    )
+    timestamp_created: AwareDatetime = Field(
+        ...,
+        description="Timestamp when the activity was created",
+        examples=["2026-09-13T20:22:26.140Z"],
+    )
+    timestamp_updated: AwareDatetime = Field(
+        ...,
+        description="Timestamp when the activity was last updated",
+        examples=["2026-09-13T20:22:26.140Z"],
+    )
+    timestamp_executed: AwareDatetime | None = Field(
+        None,
+        description="Timestamp when the activity was executed",
+        examples=["2026-09-13T20:22:26.140Z"],
+    )
+    timestamp_completed: AwareDatetime | None = Field(
+        None,
+        description="Timestamp when the activity was completed",
+        examples=["2026-09-13T20:22:26.140Z"],
+    )
+
+
 class EventType(Enum):
     """
     Type of event to trigger the webhook (null for custom label events). Set to "all_events" to subscribe to all events - including custom label events
@@ -3460,17 +5217,17 @@ class Webhook(BaseModel):
     id: UUID = Field(
         ...,
         description="Unique identifier for the webhook (UUID)",
-        examples=["019fbaf8-3aca-7465-8af9-3084bf6b1986"],
+        examples=["01a09c6f-7860-71ad-a44a-0283bb941358"],
     )
     organization: UUID = Field(
         ...,
         description="Organization (workspace) UUID that owns this webhook",
-        examples=["019fbaf8-3acb-7553-ba7a-af5317de08ee"],
+        examples=["01a09c6f-7860-71ad-a44a-028424d6d2b6"],
     )
     campaign: UUID | None = Field(
         None,
         description="Optional campaign UUID to filter events (null = all campaigns in workspace)",
-        examples=["019fbaf8-3acb-7553-ba7a-af54c88f5129"],
+        examples=["01a09c6f-7860-71ad-a44a-02856c2216a4"],
     )
     name: str | None = Field(
         None,
@@ -3500,7 +5257,7 @@ class Webhook(BaseModel):
     timestamp_created: AwareDatetime = Field(
         ...,
         description="Timestamp when the webhook was created",
-        examples=["2026-08-01T01:37:37.995Z"],
+        examples=["2026-09-13T20:22:26.144Z"],
     )
     status: float | None = Field(
         None,
@@ -3510,7 +5267,7 @@ class Webhook(BaseModel):
     timestamp_error: AwareDatetime | None = Field(
         None,
         description="Timestamp when webhook was disabled due to delivery failures (null if active)",
-        examples=["2026-08-01T01:37:37.995Z"],
+        examples=["2026-09-13T20:22:26.144Z"],
     )
 
 
@@ -3525,12 +5282,12 @@ class WebhookEvent(BaseModel):
     id: UUID = Field(
         ...,
         description="Unique identifier for the webhook event (UUID)",
-        examples=["019fbaf8-3acf-74d8-8c7c-e718de185865"],
+        examples=["01a09c6f-7864-76d5-bba9-cbd0e3b01e94"],
     )
     timestamp_created: AwareDatetime = Field(
         ...,
         description="Timestamp when the webhook event was created",
-        examples=["2026-08-01T01:37:37.999Z"],
+        examples=["2026-09-13T20:22:26.148Z"],
     )
     timestamp_created_date: date = Field(
         ...,
@@ -3540,7 +5297,7 @@ class WebhookEvent(BaseModel):
     organization_id: UUID = Field(
         ...,
         description="Organization (workspace) UUID that owns this webhook event",
-        examples=["019fbaf8-3acf-74d8-8c7c-e71922999c79"],
+        examples=["01a09c6f-7864-76d5-bba9-cbd17740089b"],
     )
     payload: dict[str, Any] | None = Field(
         None, description="JSON payload that was sent/attempted to be sent"
@@ -3572,12 +5329,12 @@ class WebhookEvent(BaseModel):
     timestamp_next_retry: AwareDatetime | None = Field(
         None,
         description="Timestamp for the next retry attempt (if applicable)",
-        examples=["2026-08-01T01:37:37.999Z"],
+        examples=["2026-09-13T20:22:26.148Z"],
     )
     retry_group_id: UUID | None = Field(
         None,
         description="UUID for grouping retry attempts",
-        examples=["019fbaf8-3acf-74d8-8c7c-e71a8f6ec9d2"],
+        examples=["01a09c6f-7864-76d5-bba9-cbd29408479a"],
     )
     retry_successful: bool | None = Field(
         None,
@@ -3638,16 +5395,41 @@ class DFYEmailAccountOrder(BaseModel):
     timestamp_cancelled: AwareDatetime | None = Field(
         None,
         description="Timestamp when the order was cancelled, if applicable",
-        examples=["2026-08-01T01:37:38.003Z"],
+        examples=["2026-09-13T20:22:26.152Z"],
     )
     timestamp_created: AwareDatetime = Field(
         ...,
         description="Timestamp when the order was created",
-        examples=["2026-08-01T01:37:38.003Z"],
+        examples=["2026-09-13T20:22:26.152Z"],
     )
 
 
-class Category(Enum):
+class DomainForwarding(BaseModel):
+    """
+    Web forwarding configuration for a domain ordered through Instantly
+    """
+
+    model_config = ConfigDict(
+        extra="forbid",
+    )
+    domain: str = Field(
+        ...,
+        description="The domain the forwarding configuration applies to",
+        examples=["example.com"],
+    )
+    forwarding_domain: str | None = Field(
+        None,
+        description="Destination domain visitors are forwarded to. Null when no forwarding is configured.",
+        examples=["mycompany.com"],
+    )
+    forwarding_mode: ForwardingMode | None = Field(
+        None,
+        description="How the forwarding domain is applied. Null when no forwarding is configured.",
+        examples=["redirect"],
+    )
+
+
+class Category1(Enum):
     """
     Prompt Custom template category
     """
@@ -3669,29 +5451,6 @@ class Property(BaseModel):
     )
 
 
-class ModelVersion(Enum):
-    field_3_5 = "3.5"
-    gpt_5 = "gpt-5"
-    gpt_5_4 = "gpt-5.4"
-    gpt_5_mini = "gpt-5-mini"
-    gpt_5_nano = "gpt-5-nano"
-    field_4_0 = "4.0"
-    field_4_0_Omni = "4.0-Omni"
-    gpt_4o = "gpt-4o"
-    o3 = "o3"
-    gpt_4_1 = "gpt-4.1"
-    gpt_4_1_mini = "gpt-4.1-mini"
-    claude_4_5_sonnet = "claude-4.5-sonnet"
-    claude_4_6_sonnet = "claude-4.6-sonnet"
-    r1 = "r1"
-    grok_4_3 = "grok-4.3"
-    gemini_3_0_flash = "gemini-3.0-flash"
-    gemini_3_5_flash = "gemini-3.5-flash"
-    instantly_ai_lightspeed_agent = "instantly-ai-lightspeed-agent"
-    sonar = "sonar"
-    sonar_pro = "sonar-pro"
-
-
 class TemplateType(Enum):
     """
     Custom Prompt template type
@@ -3710,17 +5469,17 @@ class Name1(BaseModel):
     )
 
 
-class Payload1(BaseModel):
+class Payload9(BaseModel):
     name: Name1 | None = None
 
 
 class Creator(BaseModel):
     id: str | None = Field(
         None,
-        examples=["019fbaf8-3ae4-78da-bffd-76bf257aa4b2"],
-        json_schema_extra={"example": "019fbaf8-3ae4-78da-bffd-76bf257aa4b2"},
+        examples=["01a09c6f-787e-7451-bf4a-581486c164c5"],
+        json_schema_extra={"example": "01a09c6f-787e-7451-bf4a-581486c164c5"},
     )
-    payload: Payload1 | None = None
+    payload: Payload9 | None = None
 
 
 class CustomPromptTemplate(BaseModel):
@@ -3732,11 +5491,11 @@ class CustomPromptTemplate(BaseModel):
         extra="forbid",
     )
     id: str = Field(..., examples=["1"])
-    workspace_id: UUID = Field(..., examples=["019fbaf8-3ae4-78da-bffd-76bd17ae597a"])
-    created_by: UUID = Field(..., examples=["019fbaf8-3ae4-78da-bffd-76be3a332d9e"])
+    workspace_id: UUID = Field(..., examples=["01a09c6f-787e-7451-bf4a-5812b35a11c9"])
+    created_by: UUID = Field(..., examples=["01a09c6f-787e-7451-bf4a-58139e70b107"])
     name: str = Field(..., examples=["Prompt template name"])
     description: str | None = Field(None, examples=["Prompt template description"])
-    category: Category = Field(
+    category: Category1 = Field(
         ..., description="Prompt Custom template category", examples=[1]
     )
     properties: list[Property] | None = None
@@ -3747,7 +5506,7 @@ class CustomPromptTemplate(BaseModel):
         ],
     )
     is_public: bool = Field(..., examples=[True])
-    model_version: ModelVersion | None = Field(None, examples=["3.5"])
+    model_version: str | None = Field(None, examples=["3.5"])
     from_shared: bool | None = Field(None, examples=[False])
     like_count: float | None = Field(None, examples=[50])
     execution_count: float | None = Field(None, examples=[20])
@@ -3759,7 +5518,7 @@ class CustomPromptTemplate(BaseModel):
     creator: Creator | None = None
 
 
-class ActionType(Enum):
+class ActionType1(Enum):
     reply = "reply"
     email_open = "email-open"
     last_contacted = "last-contacted"
@@ -3800,7 +5559,7 @@ class Query(BaseModel):
     Smart view query to filter leads
     """
 
-    actionType: ActionType = Field(..., examples=["email-open"])
+    actionType: ActionType1 = Field(..., examples=["email-open"])
     values: Values
 
 
@@ -3812,16 +5571,16 @@ class SalesFlow(BaseModel):
     model_config = ConfigDict(
         extra="forbid",
     )
-    id: UUID = Field(..., examples=["019fbaf8-3ad7-744f-ba5a-c762624d35aa"])
+    id: UUID = Field(..., examples=["01a09c6f-7870-7bff-b41b-be27ba51800b"])
     timestamp_created: AwareDatetime = Field(
         ...,
         description="Date and time when sales flow created",
-        examples=["2026-08-01T01:37:38.007Z"],
+        examples=["2026-09-13T20:22:26.160Z"],
     )
     organization_id: UUID = Field(
         ...,
         description="Organization ID associated with the sales flow",
-        examples=["019fbaf8-3ad7-744f-ba5a-c76381c1e030"],
+        examples=["01a09c6f-7870-7bff-b41b-be28cb4406f4"],
     )
     name: str = Field(
         ..., description="Name of the sales flow", examples=["Smart view name"]
@@ -3837,17 +5596,17 @@ class SalesFlow(BaseModel):
     created_by: UUID = Field(
         ...,
         description="UUID of the user who created the sales flow.",
-        examples=["019fbaf8-3ad7-744f-ba5a-c764af0acb9d"],
+        examples=["01a09c6f-7870-7bff-b41b-be29cd602d6a"],
     )
     list_id: str | None = Field(
         None,
         description='The ID of the list, can be "all-lists" in case of all.',
-        examples=["019fbaf8-3ad7-744f-ba5a-c7657e1bdcd2"],
+        examples=["01a09c6f-7870-7bff-b41b-be2a618ec0d3"],
     )
     campaign_id: str | None = Field(
         None,
         description='The ID of the campaign. Set to null when "all-campaigns" is passed.',
-        examples=["019fbaf8-3ad7-744f-ba5a-c76695cefeea"],
+        examples=["01a09c6f-7870-7bff-b41b-be2be297794f"],
     )
     list_name: str | None = Field(
         None, description="The name of the list. ", examples=["List name"]
@@ -3868,12 +5627,12 @@ class EmailTemplate(BaseModel):
     id: UUID = Field(
         ...,
         description="A Unique identifier",
-        examples=["019fbaf8-3aed-7160-bc88-9929ed5904e9"],
+        examples=["01a09c6f-788a-7a7a-beed-37547fbbac47"],
     )
     timestamp_created: AwareDatetime = Field(
         ...,
         description="Timestamp when the email template was added to our database.",
-        examples=["2026-08-01T01:37:38.029Z"],
+        examples=["2026-09-13T20:22:26.186Z"],
     )
     body: str = Field(
         ...,
@@ -3891,7 +5650,7 @@ class EmailTemplate(BaseModel):
     organization: UUID = Field(
         ...,
         description="The workspace ID",
-        examples=["019fbaf8-3aed-7160-bc88-992ae4a854ca"],
+        examples=["01a09c6f-788a-7a7a-beed-3755a84dea39"],
     )
 
 
@@ -3912,4 +5671,62 @@ class CRMActions(BaseModel):
 
     model_config = ConfigDict(
         extra="forbid",
+    )
+
+
+class Metadata1(BaseModel):
+    """
+    Additional metadata for the outreach item
+    """
+
+    original_status: int | None = Field(
+        None, description="Original integer status from the source entity", examples=[1]
+    )
+    ai_agent_type: int | None = Field(
+        None, description="AI agent type identifier", examples=[2]
+    )
+    pause_reason: str | None = Field(
+        None,
+        description="Reason the automation was paused, if applicable",
+        examples=["out_of_credits"],
+    )
+
+
+class EngageItem(BaseModel):
+    """
+    A unified Engage item representing a campaign, AI agent, automation workflow, broadcast, or journey.
+    """
+
+    model_config = ConfigDict(
+        extra="forbid",
+    )
+    resource_id: UUID = Field(
+        ...,
+        description="Original Postgres entity ID",
+        examples=["01a09c6f-78c4-7d66-9685-1cc25f2eccee"],
+    )
+    type: str = Field(
+        ...,
+        description="The type of Engage item: ai_agent, campaign, automation, broadcast, or journey",
+        examples=["campaign"],
+    )
+    workspace_id: UUID = Field(
+        ...,
+        description="Workspace ID that owns this item",
+        examples=["01a09c6f-78c4-7d66-9685-1cc37991e951"],
+    )
+    name: str = Field(
+        ..., description="Display name of the item", examples=["My Campaign"]
+    )
+    status: str = Field(
+        ..., description="Status of the outreach item", examples=["Draft"]
+    )
+    metadata: Metadata1 = Field(
+        ..., description="Additional metadata for the outreach item"
+    )
+    timestamp_created: AwareDatetime = Field(
+        ..., description="Creation timestamp", examples=["2026-09-13T20:22:26.244Z"]
+    )
+    timestamp_updated: AwareDatetime = Field(
+        ..., description="Last update timestamp", examples=["2026-09-13T20:22:26.244Z"]
     )
