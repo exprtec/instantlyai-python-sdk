@@ -5,6 +5,28 @@ All notable changes to this project are documented here. Format follows
 [Semantic Versioning](https://semver.org/) (`0.x` -- minor bumps may break, see
 [README](https://github.com/exprtec/instantlyai-python-sdk#readme)).
 
+## [0.4.0] - 2026-09-30
+
+### Fixed
+
+- Response models no longer reject real API responses. Previously a single
+  undocumented value anywhere in a response raised a `ValidationError` for the
+  whole call -- or a whole page of a paginated list. For example `Lead.esp_code`
+  of `4`, or a non-UUID `Email.thread_id`.
+  - Generated enums now subclass `OpenEnum`: a value missing from the spec, of the
+    same type as the documented ones, becomes an `UNKNOWN_<value>` pseudo-member
+    (`EspCode(4).value == 4`) instead of failing validation.
+  - Generated models now use `extra="allow"` instead of `extra="forbid"`, so fields
+    Instantly adds ahead of its spec are kept on `model_extra` instead of failing.
+
+### Changed
+
+- `Email.thread_id` is now `str | None` rather than `UUID | None`; the API returns
+  non-UUID thread ids such as `ac-zBzLypIpygE_mNHeHdg0-Ss`.
+- `Lead.lt_interest_status` is now `LtInterestStatus | None`. Custom numeric
+  interest statuses, previously returned as a bare `float`, are now
+  `LtInterestStatus` pseudo-members; read the number from `.value`.
+
 ## [0.3.0] - 2026-09-14
 
 ### Added

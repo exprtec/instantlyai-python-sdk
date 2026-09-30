@@ -6,9 +6,10 @@ import httpx
 import pytest
 import respx
 from conftest import SCHEDULE_JSON, campaign_json, lead_json, uuid_fixture
+from pydantic import ValidationError
 
 from instantlyai import AsyncInstantly, Instantly, NotFoundError
-from instantlyai.models import CampaignSchedule, Payload8
+from instantlyai.models import CampaignSchedule, EspCode, Lead, Payload8
 
 
 @respx.mock
@@ -145,8 +146,62 @@ def test_leads_list_accepts_custom_interest_status() -> None:
     client = Instantly(api_key="key")
     leads = list(client.leads.list())
 
-    assert leads[0].lt_interest_status == -29999
+    assert leads[0].lt_interest_status is not None
+    assert leads[0].lt_interest_status.value == -29999
     client.close()
+
+
+@respx.mock
+def test_leads_list_accepts_undocumented_enum_values_and_fields() -> None:
+    lead = lead_json()
+    lead["esp_code"] = 4  # not in the published schema
+    lead["field_added_after_spec"] = "value"
+    respx.post("https://api.instantly.ai/api/v2/leads/list").mock(
+        return_value=httpx.Response(200, json={"items": [lead]})
+    )
+
+    client = Instantly(api_key="key")
+    leads = list(client.leads.list())
+
+    assert leads[0].esp_code is EspCode(4)
+    assert leads[0].esp_code.value == 4
+    assert leads[0].model_dump(mode="json")["esp_code"] == 4
+    assert leads[0].model_extra == {"field_added_after_spec": "value"}
+    client.close()
+
+
+@respx.mock
+def test_emails_retrieve_accepts_non_uuid_thread_id() -> None:
+    email = {
+        "id": uuid_fixture("1"),
+        "timestamp_created": "2026-01-01T00:00:00.000Z",
+        "timestamp_email": "2026-01-01T00:00:00.000Z",
+        "message_id": "<message@example.com>",
+        "subject": "Hi",
+        "to_address_email_list": "a@example.com",
+        "body": {"text": "Hello"},
+        "organization_id": uuid_fixture("999"),
+        "eaccount": "me@example.com",
+        "thread_id": "ac-zBzLypIpygE_mNHeHdg0-Ss",
+    }
+    respx.get(f"https://api.instantly.ai/api/v2/emails/{uuid_fixture('1')}").mock(
+        return_value=httpx.Response(200, json=email)
+    )
+
+    client = Instantly(api_key="key")
+    assert client.emails.retrieve(uuid_fixture("1")).thread_id == "ac-zBzLypIpygE_mNHeHdg0-Ss"
+    client.close()
+
+
+def test_open_enum_accepts_unknown_values_from_json_and_python() -> None:
+    lead = lead_json()
+    lead["esp_code"] = 4
+    assert Lead.model_validate_json(json.dumps(lead)).esp_code is EspCode(4)
+    assert Lead.model_validate(lead).esp_code is EspCode(4)
+    assert EspCode(0) is EspCode.number_0
+    assert EspCode(4) not in list(EspCode)
+    with pytest.raises(ValidationError):
+        Lead.model_validate({**lead, "esp_code": "not-a-number"})
 
 
 @respx.mock

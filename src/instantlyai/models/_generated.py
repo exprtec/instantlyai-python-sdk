@@ -4,7 +4,7 @@
 from __future__ import annotations
 
 from datetime import date
-from enum import Enum, IntEnum
+from enum import IntEnum
 from typing import Any, Dict, Literal
 from uuid import UUID
 
@@ -18,12 +18,17 @@ from pydantic import (
     RootModel,
 )
 
+from .._open_enum import OpenEnum
+
 
 class Advanced(BaseModel):
     """
     Advanced settings for the account
     """
 
+    model_config = ConfigDict(
+        extra="allow",
+    )
     warm_ctd: bool | None = Field(
         None, description="Whether the account is in warm CTD mode", examples=[False]
     )
@@ -44,7 +49,7 @@ class Advanced(BaseModel):
     )
 
 
-class Increment(Enum):
+class Increment(OpenEnum):
     """
     Daily increment added to the sending limit, starting from 0, until the full daily limit is reached (slow ramp). Gradually increases sending volume to improve deliverability. Set to `disabled` to send at the full daily limit from day one.
     """
@@ -62,6 +67,9 @@ class Warmup(BaseModel):
     Warmup configuration for the account
     """
 
+    model_config = ConfigDict(
+        extra="allow",
+    )
     limit: float | None = Field(
         None, description="Email sending limit for the account", examples=[100]
     )
@@ -81,7 +89,7 @@ class Warmup(BaseModel):
     )
 
 
-class Status(Enum):
+class Status(OpenEnum):
     """
     Current status of the account
     """
@@ -94,7 +102,7 @@ class Status(Enum):
     number__3 = -3
 
 
-class WarmupStatus(Enum):
+class WarmupStatus(OpenEnum):
     """
     Current warmup status of the account
     """
@@ -131,7 +139,7 @@ class StatusMessage(BaseModel):
     responseCode: float | None = Field(None, examples=[550])
 
 
-class ProviderCode(Enum):
+class ProviderCode(OpenEnum):
     """
     Provider code for the account. Please make sure to specify the right provider code, otherwise your account will not work.
     """
@@ -146,7 +154,7 @@ class ProviderCode(Enum):
 
 class Tag(BaseModel):
     model_config = ConfigDict(
-        extra="forbid",
+        extra="allow",
     )
     id: str | None = Field(None, description="Unique identifier for the custom tag")
     label: str | None = Field(None, description="Display label for the custom tag")
@@ -161,7 +169,7 @@ class Account(BaseModel):
     """
 
     model_config = ConfigDict(
-        extra="forbid",
+        extra="allow",
     )
     email: EmailStr = Field(
         ..., description="Email address of the account", examples=["user@example.com"]
@@ -283,7 +291,7 @@ class Account(BaseModel):
     )
 
 
-class Status1(Enum):
+class Status1(OpenEnum):
     """
     Campaign Status
     """
@@ -299,6 +307,9 @@ class Status1(Enum):
 
 
 class Timing(BaseModel):
+    model_config = ConfigDict(
+        extra="allow",
+    )
     from_: str = Field(
         ...,
         alias="from",
@@ -311,6 +322,9 @@ class Timing(BaseModel):
 
 
 class Days(BaseModel):
+    model_config = ConfigDict(
+        extra="allow",
+    )
     field_0: bool | None = Field(None, alias="0", examples=[True])
     field_1: bool | None = Field(None, alias="1", examples=[True])
     field_2: bool | None = Field(None, alias="2", examples=[True])
@@ -320,7 +334,7 @@ class Days(BaseModel):
     field_6: bool | None = Field(None, alias="6", examples=[False])
 
 
-class Timezone(Enum):
+class Timezone(OpenEnum):
     Etc_GMT_12 = "Etc/GMT+12"
     Etc_GMT_11 = "Etc/GMT+11"
     Etc_GMT_10 = "Etc/GMT+10"
@@ -426,6 +440,9 @@ class Timezone(Enum):
 
 
 class Schedule(BaseModel):
+    model_config = ConfigDict(
+        extra="allow",
+    )
     name: str = Field(..., examples=["My Schedule"])
     timing: Timing
     days: Days
@@ -437,6 +454,9 @@ class CampaignSchedule(BaseModel):
     Campaign schedule
     """
 
+    model_config = ConfigDict(
+        extra="allow",
+    )
     start_date: date | None = Field(
         None,
         description="Start date in YYYY-MM-DD format. Uses the campaign's timezone.",
@@ -450,7 +470,7 @@ class CampaignSchedule(BaseModel):
     schedules: list[Schedule] | None = Field([], validate_default=True)
 
 
-class DelayUnit(Enum):
+class DelayUnit(OpenEnum):
     """
     The unit of time for the delay value (minutes, hours, or days). Defaults to days for backward compatibility.
     """
@@ -460,7 +480,7 @@ class DelayUnit(Enum):
     days = "days"
 
 
-class PreDelayUnit(Enum):
+class PreDelayUnit(OpenEnum):
     """
     The unit of time for the pre_delay value (minutes, hours, or days). **Only applicable to subsequences** - this field is ignored for regular campaigns. Defaults to days for backward compatibility.
     """
@@ -471,6 +491,9 @@ class PreDelayUnit(Enum):
 
 
 class Variant(BaseModel):
+    model_config = ConfigDict(
+        extra="allow",
+    )
     subject: str = Field(..., examples=["Hello {{firstName}}"])
     body: str = Field(
         ...,
@@ -485,6 +508,9 @@ class Variant(BaseModel):
 
 
 class Step(BaseModel):
+    model_config = ConfigDict(
+        extra="allow",
+    )
     type: Literal["email"] = Field(
         ...,
         description="Type of step. This has to be 'email' always - it's the only supported type for now",
@@ -514,10 +540,13 @@ class Step(BaseModel):
 
 
 class Sequence(BaseModel):
+    model_config = ConfigDict(
+        extra="allow",
+    )
     steps: list[Step]
 
 
-class Trigger(Enum):
+class Trigger(OpenEnum):
     reply_rate = "reply_rate"
     click_rate = "click_rate"
     open_rate = "open_rate"
@@ -528,12 +557,15 @@ class AutoVariantSelect(BaseModel):
     Auto variant select settings
     """
 
+    model_config = ConfigDict(
+        extra="allow",
+    )
     trigger: Trigger = Field(
         ..., examples=["click_rate"], json_schema_extra={"example": "click_rate"}
     )
 
 
-class NotSendingStatus(Enum):
+class NotSendingStatus(OpenEnum):
     """
     Campaign not sending status
     """
@@ -545,12 +577,12 @@ class NotSendingStatus(Enum):
     int_99 = 99
 
 
-class Mode(Enum):
+class Mode(OpenEnum):
     custom = "custom"
     disabled = "disabled"
 
 
-class Scope(Enum):
+class Scope(OpenEnum):
     per_campaign = "per_campaign"
     across_workspace = "across_workspace"
 
@@ -560,6 +592,9 @@ class LimitEmailsPerCompanyOverride(BaseModel):
     Overrides the workspace-wide limit emails per company setting for this campaign.
     """
 
+    model_config = ConfigDict(
+        extra="allow",
+    )
     mode: Mode = Field(
         ..., examples=["custom"], json_schema_extra={"example": "custom"}
     )
@@ -571,19 +606,19 @@ class LimitEmailsPerCompanyOverride(BaseModel):
     )
 
 
-class Action(Enum):
+class Action(OpenEnum):
     send = "send"
     do_not_send = "do_not_send"
 
 
-class RecipientEspEnum(Enum):
+class RecipientEspEnum(OpenEnum):
     all = "all"
     google = "google"
     outlook = "outlook"
     other = "other"
 
 
-class SenderEspEnum(Enum):
+class SenderEspEnum(OpenEnum):
     all = "all"
     google = "google"
     outlook = "outlook"
@@ -591,6 +626,9 @@ class SenderEspEnum(Enum):
 
 
 class ProviderRoutingRule(BaseModel):
+    model_config = ConfigDict(
+        extra="allow",
+    )
     action: Action | None = Field(None, examples=["send"])
     recipient_esp: list[RecipientEspEnum] | None = None
     sender_esp: list[SenderEspEnum] | None = None
@@ -602,7 +640,7 @@ class Campaign(BaseModel):
     """
 
     model_config = ConfigDict(
-        extra="forbid",
+        extra="allow",
     )
     id: UUID = Field(
         ...,
@@ -744,6 +782,9 @@ class Body(BaseModel):
     An object containing the email body in HTML and text format
     """
 
+    model_config = ConfigDict(
+        extra="allow",
+    )
     text: str | None = Field(
         None,
         description="Plain-text representation of the email body. Newline characters are preserved as line breaks in this text view.",
@@ -756,7 +797,7 @@ class Body(BaseModel):
     )
 
 
-class UeType(Enum):
+class UeType(OpenEnum):
     """
     Email type based on the life cycle of the email
     """
@@ -769,7 +810,7 @@ class UeType(Enum):
 
 class File(BaseModel):
     model_config = ConfigDict(
-        extra="forbid",
+        extra="allow",
     )
     filename: str = Field(
         ...,
@@ -811,7 +852,7 @@ class AttachmentJson(BaseModel):
     """
 
     model_config = ConfigDict(
-        extra="forbid",
+        extra="allow",
     )
     files: list[File]
 
@@ -822,7 +863,7 @@ class Email(BaseModel):
     """
 
     model_config = ConfigDict(
-        extra="forbid",
+        extra="allow",
     )
     id: UUID = Field(
         ...,
@@ -947,7 +988,7 @@ class Email(BaseModel):
     i_status: float | None = Field(
         None, description="Indicates the interest status of the email", examples=[0]
     )
-    thread_id: UUID | None = Field(
+    thread_id: str | None = Field(
         None,
         description="Identifier for the email thread. All the emails in the same thread have the same thread ID",
         examples=["01a09c6f-77ff-7af6-99a0-5fa61bf5bd76"],
@@ -990,7 +1031,7 @@ class Email(BaseModel):
     )
 
 
-class Status2(Enum):
+class Status2(OpenEnum):
     """
     The request status. Do not use this field to determine the verification status. Please use `verification_status` instead to check the verification status
     """
@@ -999,7 +1040,7 @@ class Status2(Enum):
     error = "error"
 
 
-class VerificationStatus(Enum):
+class VerificationStatus(OpenEnum):
     """
     The verification status.
     """
@@ -1009,7 +1050,7 @@ class VerificationStatus(Enum):
     invalid = "invalid"
 
 
-class CatchAll(Enum):
+class CatchAll(OpenEnum):
     """
     Whether this is a catch-all email address
     """
@@ -1025,7 +1066,7 @@ class EmailVerification(BaseModel):
     """
 
     model_config = ConfigDict(
-        extra="forbid",
+        extra="allow",
     )
     status: Status2 | None = Field(
         None,
@@ -1057,7 +1098,7 @@ class LeadList(BaseModel):
     """
 
     model_config = ConfigDict(
-        extra="forbid",
+        extra="allow",
     )
     id: UUID = Field(
         ...,
@@ -1089,7 +1130,7 @@ class LeadList(BaseModel):
     )
 
 
-class DeliveryMode(Enum):
+class DeliveryMode(OpenEnum):
     """
     Whether to send emails one by one or all together
     """
@@ -1104,6 +1145,9 @@ class Timing1(BaseModel):
     Timing configuration for the scheduled test.
     """
 
+    model_config = ConfigDict(
+        extra="allow",
+    )
     from_: str | None = Field(
         None,
         alias="from",
@@ -1112,7 +1156,7 @@ class Timing1(BaseModel):
     )
 
 
-class Timezone1(Enum):
+class Timezone1(OpenEnum):
     """
     Timezone in which the schedule is set, in IANA timezone format.
     """
@@ -1226,6 +1270,9 @@ class Schedule1(BaseModel):
     Specifies the date and time when the automated inbox placement tests will be sent.
     """
 
+    model_config = ConfigDict(
+        extra="allow",
+    )
     days: dict[str, bool] | None = Field(
         None,
         description="Days of the week when the test will run, where keys are integers (0-6, 0 = Sunday) and values are booleans indicating active days.",
@@ -1251,7 +1298,7 @@ class Schedule1(BaseModel):
     )
 
 
-class Type(Enum):
+class Type(OpenEnum):
     """
     Whether the inbox placement test is a one-time test or an automated test
     """
@@ -1260,7 +1307,7 @@ class Type(Enum):
     number_2 = 2
 
 
-class SendingMethod(Enum):
+class SendingMethod(OpenEnum):
     """
     Whether the inbox placement test will be sent from Instantly or from outside Instantly
     """
@@ -1270,6 +1317,9 @@ class SendingMethod(Enum):
 
 
 class RecipientsLabel(BaseModel):
+    model_config = ConfigDict(
+        extra="allow",
+    )
     region: str = Field(
         ..., description="The region to send emails to", examples=["North America"]
     )
@@ -1286,7 +1336,7 @@ class RecipientsLabel(BaseModel):
     )
 
 
-class Condition(Enum):
+class Condition(OpenEnum):
     """
     Condition for automation trigger
     """
@@ -1298,6 +1348,9 @@ class Condition(Enum):
 
 
 class When(BaseModel):
+    model_config = ConfigDict(
+        extra="allow",
+    )
     condition: Condition = Field(
         ...,
         description="Condition for automation trigger",
@@ -1317,6 +1370,9 @@ class Then(BaseModel):
     Actions to take when condition is met
     """
 
+    model_config = ConfigDict(
+        extra="allow",
+    )
     webhook_url: str | None = Field(
         None,
         examples=["https://example.com/webhook"],
@@ -1346,11 +1402,14 @@ class Then(BaseModel):
 
 
 class Automation(BaseModel):
+    model_config = ConfigDict(
+        extra="allow",
+    )
     when: When
     then: Then = Field(..., description="Actions to take when condition is met")
 
 
-class Status3(Enum):
+class Status3(OpenEnum):
     """
     Status of the inbox placement test
     """
@@ -1360,7 +1419,7 @@ class Status3(Enum):
     int_3 = 3
 
 
-class NotSendingStatus1(Enum):
+class NotSendingStatus1(OpenEnum):
     """
     Why the inbox placement test is currently not sending. It will be an empty string if there are no issues.
     """
@@ -1375,7 +1434,7 @@ class InboxPlacementTest(BaseModel):
     """
 
     model_config = ConfigDict(
-        extra="forbid",
+        extra="allow",
         regex_engine="python-re",
     )
     id: UUID = Field(
@@ -1484,7 +1543,7 @@ class InboxPlacementTest(BaseModel):
     )
 
 
-class SenderEsp(Enum):
+class SenderEsp(OpenEnum):
     """
     The sender ESP (Email Service Provider). Only present when record_type is 2 (received).
     """
@@ -1496,7 +1555,7 @@ class SenderEsp(Enum):
     int_13 = 13
 
 
-class RecipientEsp(Enum):
+class RecipientEsp(OpenEnum):
     """
     The recipient ESP (Email Service Provider)
     """
@@ -1508,7 +1567,7 @@ class RecipientEsp(Enum):
     int_13 = 13
 
 
-class RecipientGeo(Enum):
+class RecipientGeo(OpenEnum):
     """
     The geographic location of the recipient
     """
@@ -1519,7 +1578,7 @@ class RecipientGeo(Enum):
     int_4 = 4
 
 
-class RecipientType(Enum):
+class RecipientType(OpenEnum):
     """
     The type of recipient
     """
@@ -1533,6 +1592,9 @@ class AuthenticationFailureResults(BaseModel):
     Details of authentication failures for SPF, DKIM, and DMARC. Only present when record_type is 2 (received).
     """
 
+    model_config = ConfigDict(
+        extra="allow",
+    )
     authentication_results: str | None = Field(
         None,
         description="Authentication results",
@@ -1561,7 +1623,7 @@ class AuthenticationFailureResults(BaseModel):
     )
 
 
-class RecordType(Enum):
+class RecordType(OpenEnum):
     """
     The type of record (sent or received)
     """
@@ -1576,7 +1638,7 @@ class InboxPlacementAnalytics(BaseModel):
     """
 
     model_config = ConfigDict(
-        extra="forbid",
+        extra="allow",
     )
     id: UUID = Field(
         ...,
@@ -1664,6 +1726,9 @@ class InboxPlacementAnalytics(BaseModel):
 
 
 class ReportItem(BaseModel):
+    model_config = ConfigDict(
+        extra="allow",
+    )
     description: str = Field(
         ..., description="The section or type of the rule triggered", examples=["BODY"]
     )
@@ -1680,6 +1745,9 @@ class SpamAssassinReport(BaseModel):
     Detailed SpamAssassin analysis report
     """
 
+    model_config = ConfigDict(
+        extra="allow",
+    )
     is_spam: bool | None = Field(
         None,
         description="Indicates if the message is classified as spam by SpamAssassin",
@@ -1696,6 +1764,9 @@ class SpamAssassinReport(BaseModel):
 
 
 class Detail(BaseModel):
+    model_config = ConfigDict(
+        extra="allow",
+    )
     blacklist: str | None = Field(
         None, description="The name of the blacklist", examples=["zen.spamhaus.org"]
     )
@@ -1712,6 +1783,9 @@ class BlacklistReport(BaseModel):
     Detailed blacklist report for the domain or IP
     """
 
+    model_config = ConfigDict(
+        extra="allow",
+    )
     address: str | None = Field(
         None,
         description="The address or domain associated with the report",
@@ -1746,7 +1820,7 @@ class InboxPlacementBlacklistAndSpamAssassinReport(BaseModel):
     """
 
     model_config = ConfigDict(
-        extra="forbid",
+        extra="allow",
     )
     id: UUID = Field(
         ...,
@@ -1800,7 +1874,7 @@ class InboxPlacementBlacklistAndSpamAssassinReport(BaseModel):
     )
 
 
-class OnExhaustion(Enum):
+class OnExhaustion(OpenEnum):
     """
     What the agent does when the search runs out of new leads
     """
@@ -1908,6 +1982,9 @@ class Payload1(BaseModel):
 
 
 class Keywords(BaseModel):
+    model_config = ConfigDict(
+        extra="allow",
+    )
     include: str | None = Field(
         None,
         examples=["automation, efficiency, AI"],
@@ -1921,11 +1998,17 @@ class Keywords(BaseModel):
 
 
 class JobTitle(BaseModel):
+    model_config = ConfigDict(
+        extra="allow",
+    )
     include: list[str] | None = None
     exclude: list[str] | None = None
 
 
 class Icp(BaseModel):
+    model_config = ConfigDict(
+        extra="allow",
+    )
     name: str | None = Field(
         None, examples=["Enterprise"], json_schema_extra={"example": "Enterprise"}
     )
@@ -1949,6 +2032,9 @@ class Memory(BaseModel):
     Business context and memory for the AI Sales Agent
     """
 
+    model_config = ConfigDict(
+        extra="allow",
+    )
     company: str | None = Field(
         None, examples=["Acme Inc"], json_schema_extra={"example": "Acme Inc"}
     )
@@ -1964,7 +2050,7 @@ class Memory(BaseModel):
     active_business_offers_indexes: list[float] | None = None
 
 
-class SignalTargetingCategory(Enum):
+class SignalTargetingCategory(OpenEnum):
     linkedin_post_company = "linkedin_post_company"
     linkedin_post_contact = "linkedin_post_contact"
     linkedin_comment = "linkedin_comment"
@@ -1998,6 +2084,9 @@ class EnrichmentSettings(BaseModel):
     Settings for lead enrichment
     """
 
+    model_config = ConfigDict(
+        extra="allow",
+    )
     enrichment_limit_per_run: float | None = Field(
         None,
         description="Maximum number of leads to enrich per run",
@@ -2018,6 +2107,9 @@ class EnrichmentSettings(BaseModel):
 
 
 class Timing2(BaseModel):
+    model_config = ConfigDict(
+        extra="allow",
+    )
     from_: str | None = Field(
         None, alias="from", examples=["09:00"], json_schema_extra={"example": "09:00"}
     )
@@ -2027,6 +2119,9 @@ class Timing2(BaseModel):
 
 
 class Schedule2(BaseModel):
+    model_config = ConfigDict(
+        extra="allow",
+    )
     name: str | None = Field(
         None, examples=["Default"], json_schema_extra={"example": "Default"}
     )
@@ -2040,6 +2135,9 @@ class Schedule2(BaseModel):
 
 
 class CampaignSchedule1(BaseModel):
+    model_config = ConfigDict(
+        extra="allow",
+    )
     schedules: list[Schedule2] | None = None
 
 
@@ -2048,6 +2146,9 @@ class OutreachSettings(BaseModel):
     Settings for email outreach
     """
 
+    model_config = ConfigDict(
+        extra="allow",
+    )
     campaign_schedule: CampaignSchedule1 | None = None
     email_list: list[EmailStr] | None = None
     email_tag_list: list[str] | None = None
@@ -2076,6 +2177,9 @@ class AutonomySettings(BaseModel):
     Settings for AI Sales Agent autonomy
     """
 
+    model_config = ConfigDict(
+        extra="allow",
+    )
     autopilot_mode: bool | None = Field(
         None,
         description="Whether autopilot mode is enabled",
@@ -2095,6 +2199,9 @@ class AiSdrConfig(BaseModel):
     AI Sales Agent agent config
     """
 
+    model_config = ConfigDict(
+        extra="allow",
+    )
     memory: Memory | None = Field(
         None, description="Business context and memory for the AI Sales Agent"
     )
@@ -2109,7 +2216,7 @@ class AiSdrConfig(BaseModel):
     )
 
 
-class Type1(Enum):
+class Type1(OpenEnum):
     """
     SDR source type
     """
@@ -2123,6 +2230,9 @@ class Payload2(BaseModel):
     Sales agent (SDR) payload
     """
 
+    model_config = ConfigDict(
+        extra="allow",
+    )
     ai_sdr_config: AiSdrConfig = Field(..., description="AI Sales Agent agent config")
     type: Type1 | None = Field(
         None,
@@ -2168,7 +2278,7 @@ class Payload2(BaseModel):
     )
 
 
-class ConfigurationType(Enum):
+class ConfigurationType(OpenEnum):
     """
     Type of the AI agent configuration
     """
@@ -2178,6 +2288,9 @@ class ConfigurationType(Enum):
 
 
 class FallbackSendingAccounts(BaseModel):
+    model_config = ConfigDict(
+        extra="allow",
+    )
     accounts: list[EmailStr] | None = None
     tag_ids: list[str] | None = None
 
@@ -2187,6 +2300,9 @@ class NoShow(BaseModel):
     No-show recovery feature configuration
     """
 
+    model_config = ConfigDict(
+        extra="allow",
+    )
     enabled: bool | None = Field(
         None,
         description="Enable no-show recovery mode",
@@ -2208,7 +2324,7 @@ class NoShow(BaseModel):
     )
 
 
-class TriggerOnLabelsMode(Enum):
+class TriggerOnLabelsMode(OpenEnum):
     """
     Whether to include or exclude the selected labels. Defaults to include.
     """
@@ -2222,6 +2338,9 @@ class Payload3(BaseModel):
     Reply agent (Inbox Manager) payload
     """
 
+    model_config = ConfigDict(
+        extra="allow",
+    )
     configuration_type: ConfigurationType | None = Field(
         None,
         description="Type of the AI agent configuration",
@@ -2310,7 +2429,7 @@ class Payload3(BaseModel):
 
 class Slack(BaseModel):
     model_config = ConfigDict(
-        extra="forbid",
+        extra="allow",
     )
     connection_id: str | None = Field(None, description="Slack app connection ID")
     enabled: bool | None = Field(
@@ -2337,7 +2456,7 @@ class Integrations(BaseModel):
     """
 
     model_config = ConfigDict(
-        extra="forbid",
+        extra="allow",
     )
     slack: Slack | None = None
 
@@ -2348,14 +2467,14 @@ class Payload4(BaseModel):
     """
 
     model_config = ConfigDict(
-        extra="forbid",
+        extra="allow",
     )
     integrations: Integrations | None = Field(
         None, description="Configurations for Deliverability Agent app integrations"
     )
 
 
-class Type2(Enum):
+class Type2(OpenEnum):
     """
     Type of the AI Agent
     """
@@ -2372,7 +2491,7 @@ class Type2(Enum):
     int_11 = 11
 
 
-class Status4(Enum):
+class Status4(OpenEnum):
     """
     Status of the AI Agent
     """
@@ -2388,7 +2507,7 @@ class AIAgent(BaseModel):
     """
 
     model_config = ConfigDict(
-        extra="forbid",
+        extra="allow",
     )
     id: UUID = Field(
         ...,
@@ -2434,7 +2553,7 @@ class AIAgent(BaseModel):
     )
 
 
-class ConfigurationMode(Enum):
+class ConfigurationMode(OpenEnum):
     """
     How much autonomy the agent runs with. Null for agent types that have no autonomy setting, and for agents whose mode is not configured yet.
     """
@@ -2450,7 +2569,7 @@ class AIAgentSummary(BaseModel):
     """
 
     model_config = ConfigDict(
-        extra="forbid",
+        extra="allow",
     )
     id: UUID = Field(
         ...,
@@ -2484,6 +2603,9 @@ class NoShow1(BaseModel):
     No-show recovery feature configuration
     """
 
+    model_config = ConfigDict(
+        extra="allow",
+    )
     enabled: bool | None = Field(
         None, description="Enable no-show recovery mode", examples=[True]
     )
@@ -2504,6 +2626,9 @@ class Payload5(BaseModel):
     Reply agent (Inbox Manager) payload
     """
 
+    model_config = ConfigDict(
+        extra="allow",
+    )
     configuration_type: ConfigurationType | None = Field(
         None, description="Type of the AI agent configuration", examples=[1]
     )
@@ -2567,6 +2692,9 @@ class Payload5(BaseModel):
 
 
 class Tags(BaseModel):
+    model_config = ConfigDict(
+        extra="allow",
+    )
     id: str = Field(..., examples=["tag-id"], json_schema_extra={"example": "tag-id"})
     label: str = Field(
         ..., examples=["Tag Label"], json_schema_extra={"example": "Tag Label"}
@@ -2574,6 +2702,9 @@ class Tags(BaseModel):
 
 
 class Integrations1(BaseModel):
+    model_config = ConfigDict(
+        extra="allow",
+    )
     id: str = Field(..., examples=["tag-id"], json_schema_extra={"example": "tag-id"})
     label: str = Field(
         ..., examples=["Tag Label"], json_schema_extra={"example": "Tag Label"}
@@ -2587,6 +2718,9 @@ class Metadata(BaseModel):
     Included only when the `with_metadata` parameter is `true`. Contains additional information about the ai agent as tags.
     """
 
+    model_config = ConfigDict(
+        extra="allow",
+    )
     tags: dict[str, Tags] | None = Field(
         None, description="The tags associated with the ai agent"
     )
@@ -2601,7 +2735,7 @@ class AIInboxManager(BaseModel):
     """
 
     model_config = ConfigDict(
-        extra="forbid",
+        extra="allow",
     )
     id: UUID = Field(
         ...,
@@ -2655,7 +2789,7 @@ class Integrations2(BaseModel):
     """
 
     model_config = ConfigDict(
-        extra="forbid",
+        extra="allow",
     )
     slack: Slack | None = None
 
@@ -2666,7 +2800,7 @@ class Payload6(BaseModel):
     """
 
     model_config = ConfigDict(
-        extra="forbid",
+        extra="allow",
     )
     integrations: Integrations2 | None = Field(
         None, description="Configurations for Deliverability Agent app integrations"
@@ -2679,7 +2813,7 @@ class AIDeliverabilityAgent(BaseModel):
     """
 
     model_config = ConfigDict(
-        extra="forbid",
+        extra="allow",
     )
     id: UUID = Field(
         ...,
@@ -2772,7 +2906,7 @@ class AILeadFinderAgent(BaseModel):
     """
 
     model_config = ConfigDict(
-        extra="forbid",
+        extra="allow",
     )
     id: UUID = Field(
         ...,
@@ -2817,7 +2951,7 @@ class AILeadFinderAgent(BaseModel):
     )
 
 
-class Scope1(Enum):
+class Scope1(OpenEnum):
     all_all = "all:all"
     all_create = "all:create"
     all_read = "all:read"
@@ -3004,7 +3138,7 @@ class APIKey(BaseModel):
     """
 
     model_config = ConfigDict(
-        extra="forbid",
+        extra="allow",
     )
     id: UUID = Field(..., examples=["01a09c6f-7782-7965-9b49-a72bc914d191"])
     name: str = Field(..., examples=["My API Key"])
@@ -3017,7 +3151,7 @@ class APIKey(BaseModel):
     timestamp_updated: AwareDatetime = Field(..., examples=["2026-09-13T20:22:25.938Z"])
 
 
-class Status9(Enum):
+class Status9(OpenEnum):
     """
     Campaign Status
     """
@@ -3038,7 +3172,7 @@ class AccountCampaignMapping(BaseModel):
     """
 
     model_config = ConfigDict(
-        extra="forbid",
+        extra="allow",
     )
     campaign_id: UUID = Field(..., examples=["01a09c6f-777f-75e5-9bf7-41fc566333b6"])
     campaign_name: str = Field(..., examples=["Campaign Name"])
@@ -3050,7 +3184,7 @@ class AccountCampaignMapping(BaseModel):
     status: Status9 | None = Field(None, description="Campaign Status", examples=[1])
 
 
-class Status10(Enum):
+class Status10(OpenEnum):
     """
     Status of the lead
     """
@@ -3064,6 +3198,9 @@ class Status10(Enum):
 
 
 class LastStep(BaseModel):
+    model_config = ConfigDict(
+        extra="allow",
+    )
     from_: str | None = Field(None, alias="from", examples=["campaign"])
     stepID: str | None = Field(None, examples=["01a09c6f-6dcb-71b5-a8cc-3a66b83912e7"])
     timestamp_executed: AwareDatetime | None = Field(
@@ -3076,6 +3213,9 @@ class StatusSummary(BaseModel):
     Status summary of the lead
     """
 
+    model_config = ConfigDict(
+        extra="allow",
+    )
     lastStep: LastStep | None = None
     domain_complete: bool | None = Field(None, examples=[True])
 
@@ -3127,6 +3267,9 @@ class StatusSummarySubseq(BaseModel):
     Subsequence status summary of the lead
     """
 
+    model_config = ConfigDict(
+        extra="allow",
+    )
     from_: str | None = Field(None, alias="from", examples=["campaign"])
     stepID: str | None = Field(None, examples=["01a09c6f-6dcb-71b5-a8cc-3a6788cda04d"])
     timestampExecuted: AwareDatetime | None = Field(
@@ -3134,7 +3277,7 @@ class StatusSummarySubseq(BaseModel):
     )
 
 
-class LtInterestStatus(Enum):
+class LtInterestStatus(OpenEnum):
     """
     Lead interest status. It can be either a static value (check below), or a custom status interest value
     """
@@ -3150,7 +3293,7 @@ class LtInterestStatus(Enum):
     number__4 = -4
 
 
-class VerificationStatus1(Enum):
+class VerificationStatus1(OpenEnum):
     """
     Verification status of the lead
     """
@@ -3164,7 +3307,7 @@ class VerificationStatus1(Enum):
     number_12 = 12
 
 
-class EnrichmentStatus(Enum):
+class EnrichmentStatus(OpenEnum):
     """
     Enrichment status of the lead
     """
@@ -3175,7 +3318,7 @@ class EnrichmentStatus(Enum):
     number__2 = -2
 
 
-class UploadMethod(Enum):
+class UploadMethod(OpenEnum):
     """
     Method used to upload the lead
     """
@@ -3185,7 +3328,7 @@ class UploadMethod(Enum):
     website_visitor = "website-visitor"
 
 
-class EspCode(Enum):
+class EspCode(OpenEnum):
     """
     ESP code associated with the lead
     """
@@ -3205,7 +3348,7 @@ class EspCode(Enum):
     number_7 = 7
 
 
-class EsgCode(Enum):
+class EsgCode(OpenEnum):
     """
     ESG code associated with the lead
     """
@@ -3223,7 +3366,7 @@ class Lead(BaseModel):
     """
 
     model_config = ConfigDict(
-        extra="forbid",
+        extra="allow",
     )
     id: UUID = Field(
         ...,
@@ -3328,7 +3471,7 @@ class Lead(BaseModel):
     email_clicked_variant: float | None = Field(
         None, description="Last step variant the lead has clicked", examples=[1]
     )
-    lt_interest_status: LtInterestStatus | float | None = Field(
+    lt_interest_status: LtInterestStatus | None = Field(
         None,
         description="Lead interest status. It can be either a static value (check below), or a custom status interest value",
         examples=[1],
@@ -3414,7 +3557,7 @@ class Lead(BaseModel):
     )
 
 
-class Type6(Enum):
+class Type6(OpenEnum):
     """
     Type of background job
     """
@@ -3430,7 +3573,7 @@ class Type6(Enum):
     resync_subscriber_crm_tags = "resync-subscriber-crm-tags"
 
 
-class EntityType(Enum):
+class EntityType(OpenEnum):
     """
     Type of entity
     """
@@ -3458,7 +3601,7 @@ class Data(BaseModel):
     )
 
 
-class Status11(Enum):
+class Status11(OpenEnum):
     """
     Job status
     """
@@ -3478,7 +3621,7 @@ class BackgroundJob(BaseModel):
     """
 
     model_config = ConfigDict(
-        extra="forbid",
+        extra="allow",
     )
     id: str = Field(
         ...,
@@ -3536,7 +3679,7 @@ class CustomTag(BaseModel):
     """
 
     model_config = ConfigDict(
-        extra="forbid",
+        extra="allow",
     )
     id: UUID = Field(
         ...,
@@ -3572,7 +3715,7 @@ class CustomTag(BaseModel):
     )
 
 
-class ResourceType(Enum):
+class ResourceType(OpenEnum):
     """
     Resource type of custom tag, can be 1 for accounts or 2 for campaigns
     """
@@ -3588,7 +3731,7 @@ class CustomTagMapping(BaseModel):
     """
 
     model_config = ConfigDict(
-        extra="forbid",
+        extra="allow",
     )
     id: UUID = Field(
         ...,
@@ -3628,7 +3771,7 @@ class BlockListEntry(BaseModel):
     """
 
     model_config = ConfigDict(
-        extra="forbid",
+        extra="allow",
     )
     id: UUID = Field(
         ...,
@@ -3653,7 +3796,7 @@ class BlockListEntry(BaseModel):
     )
 
 
-class InterestStatusLabel(Enum):
+class InterestStatusLabel(OpenEnum):
     """
     Interest status label associated with this label
     """
@@ -3663,7 +3806,7 @@ class InterestStatusLabel(Enum):
     neutral = "neutral"
 
 
-class AccessType(IntEnum):
+class AccessType(IntEnum, OpenEnum):
     """
     The access the member holds: 1 read, 2 edit, 3 full (edit and share), 4 owner.
     """
@@ -3675,6 +3818,9 @@ class AccessType(IntEnum):
 
 
 class AccessGrant(BaseModel):
+    model_config = ConfigDict(
+        extra="allow",
+    )
     user_id: UUID = Field(..., examples=["01a09c6f-7803-75b9-9fac-4dde8799a51f"])
     access_type: AccessType = Field(
         ...,
@@ -3689,7 +3835,7 @@ class LeadLabel(BaseModel):
     """
 
     model_config = ConfigDict(
-        extra="forbid",
+        extra="allow",
     )
     id: UUID = Field(
         ...,
@@ -3747,6 +3893,9 @@ class PlanIdVerification(BaseModel):
     Plan ID for verification service
     """
 
+    model_config = ConfigDict(
+        extra="allow",
+    )
     quantity: float | None = Field(None, examples=[5])
     product_id: str | None = Field(None, examples=["pid_verify_v1_monthly"])
     timestamp_updated: AwareDatetime | None = Field(
@@ -3760,7 +3909,7 @@ class Workspace(BaseModel):
     """
 
     model_config = ConfigDict(
-        extra="forbid",
+        extra="allow",
     )
     id: UUID = Field(
         ...,
@@ -3833,7 +3982,7 @@ class Workspace(BaseModel):
     )
 
 
-class Type7(Enum):
+class Type7(OpenEnum):
     """
     Enrichment type to add to the resource
     """
@@ -3850,7 +3999,7 @@ class Type7(Enum):
     custom_flow = "custom_flow"
 
 
-class ResourceType1(Enum):
+class ResourceType1(OpenEnum):
     """
     Type of the entity to enrich leads into
     """
@@ -3865,7 +4014,7 @@ class SuperSearchEnrichment(BaseModel):
     """
 
     model_config = ConfigDict(
-        extra="forbid",
+        extra="allow",
     )
     id: str = Field(
         ...,
@@ -3911,7 +4060,7 @@ class SuperSearchEnrichment(BaseModel):
     )
 
 
-class Status12(Enum):
+class Status12(OpenEnum):
     pending = "pending"
     accepted = "accepted"
     rejected = "rejected"
@@ -3923,7 +4072,7 @@ class WorkspaceGroupMember(BaseModel):
     """
 
     model_config = ConfigDict(
-        extra="forbid",
+        extra="allow",
     )
     id: UUID = Field(
         ...,
@@ -3952,6 +4101,9 @@ class WorkspaceGroupMember(BaseModel):
 
 
 class Name(BaseModel):
+    model_config = ConfigDict(
+        extra="allow",
+    )
     first: str | None = Field(
         None, description="Workspace member first name", examples=["John"]
     )
@@ -3960,7 +4112,7 @@ class Name(BaseModel):
     )
 
 
-class Role(Enum):
+class Role(OpenEnum):
     """
     THe role of the workspace member defining their access level. While the "owner" role is listed in the enum, it cannot be created via the API, and is only assigned to the user who creates the workspace.
     """
@@ -3972,7 +4124,7 @@ class Role(Enum):
     client = "client"
 
 
-class Permission(Enum):
+class Permission(OpenEnum):
     dashboard_view = "dashboard.view"
     campaigns_view = "campaigns.view"
     campaigns_create = "campaigns.create"
@@ -4012,7 +4164,7 @@ class WorkspaceMember(BaseModel):
     """
 
     model_config = ConfigDict(
-        extra="forbid",
+        extra="allow",
     )
     id: UUID = Field(
         ...,
@@ -4070,7 +4222,7 @@ class WorkspaceMember(BaseModel):
     )
 
 
-class Status13(Enum):
+class Status13(OpenEnum):
     """
     Status of the subsequence
     """
@@ -4089,7 +4241,7 @@ class CrmStatu(RootModel[float]):
     root: float = Field(..., examples=[1], ge=-30000.0, le=30000.0)
 
 
-class LeadActivityEnum(Enum):
+class LeadActivityEnum(OpenEnum):
     number_4 = 4
     number_91 = 91
     number_2 = 2
@@ -4100,6 +4252,9 @@ class Conditions(BaseModel):
     Conditions that trigger the subsequence
     """
 
+    model_config = ConfigDict(
+        extra="allow",
+    )
     crm_status: list[CrmStatu] | None = Field(
         None,
         description="Lead CRM statuses that trigger the subsequence. Accepts the built-in statuses listed below, or the interest status of a custom lead label.",
@@ -4111,6 +4266,9 @@ class Conditions(BaseModel):
 
 
 class Timing3(BaseModel):
+    model_config = ConfigDict(
+        extra="allow",
+    )
     from_: str = Field(
         ...,
         alias="from",
@@ -4122,7 +4280,7 @@ class Timing3(BaseModel):
     )
 
 
-class Timezone2(Enum):
+class Timezone2(OpenEnum):
     Etc_GMT_12 = "Etc/GMT+12"
     Etc_GMT_11 = "Etc/GMT+11"
     Etc_GMT_10 = "Etc/GMT+10"
@@ -4228,6 +4386,9 @@ class Timezone2(Enum):
 
 
 class Schedule3(BaseModel):
+    model_config = ConfigDict(
+        extra="allow",
+    )
     name: str = Field(..., examples=["My Schedule"])
     timing: Timing3
     days: Days
@@ -4239,6 +4400,9 @@ class SubsequenceSchedule(BaseModel):
     Schedule configuration for the subsequence. When omitted on create, inherits the parent campaign's schedule.
     """
 
+    model_config = ConfigDict(
+        extra="allow",
+    )
     start_date: date | None = Field(
         None,
         description="Start date in YYYY-MM-DD format. Uses the campaign's timezone.",
@@ -4253,6 +4417,9 @@ class SubsequenceSchedule(BaseModel):
 
 
 class Step1(BaseModel):
+    model_config = ConfigDict(
+        extra="allow",
+    )
     type: Literal["email"] = Field(
         ...,
         description="Type of step. This has to be 'email' always - it's the only supported type for now",
@@ -4282,6 +4449,9 @@ class Step1(BaseModel):
 
 
 class Sequence1(BaseModel):
+    model_config = ConfigDict(
+        extra="allow",
+    )
     steps: list[Step1]
 
 
@@ -4290,12 +4460,15 @@ class AutoVariantSelect1(BaseModel):
     Automatically select the winning variant for each step using open, click, or reply rate. Set to `null` to disable automatic selection.
     """
 
+    model_config = ConfigDict(
+        extra="allow",
+    )
     trigger: Trigger = Field(
         ..., examples=["click_rate"], json_schema_extra={"example": "click_rate"}
     )
 
 
-class DailyLimitMode(Enum):
+class DailyLimitMode(OpenEnum):
     """
     Daily limit mode for the subsequence. "inherit" uses the parent campaign limit, "custom" uses a subsequence-specific limit, "unlimited" bypasses the campaign-level daily limit.
     """
@@ -4311,7 +4484,7 @@ class CampaignSubsequence(BaseModel):
     """
 
     model_config = ConfigDict(
-        extra="forbid",
+        extra="allow",
     )
     id: UUID = Field(
         ...,
@@ -4374,7 +4547,7 @@ class CampaignSubsequence(BaseModel):
     )
 
 
-class ActivityType(Enum):
+class ActivityType(OpenEnum):
     """
     Type of activity performed
     """
@@ -4426,7 +4599,7 @@ class AuditLog(BaseModel):
     """
 
     model_config = ConfigDict(
-        extra="forbid",
+        extra="allow",
     )
     id: UUID = Field(..., examples=["01234567-89ab-cdef-0123-456789abcdef"])
     timestamp: AwareDatetime = Field(
@@ -4498,7 +4671,7 @@ class AuditLog(BaseModel):
     )
 
 
-class Status14(Enum):
+class Status14(OpenEnum):
     """
     Status of the AI agent guidance
     """
@@ -4507,7 +4680,7 @@ class Status14(Enum):
     number_0 = 0
 
 
-class Category(Enum):
+class Category(OpenEnum):
     """
     Category of the AI agent guidance
     """
@@ -4519,7 +4692,7 @@ class Category(Enum):
     number_4 = 4
 
 
-class Tone(Enum):
+class Tone(OpenEnum):
     """
     Tone of voice for the AI agent
     """
@@ -4531,7 +4704,7 @@ class Tone(Enum):
     humorous = "humorous"
 
 
-class Length(Enum):
+class Length(OpenEnum):
     """
     Response length preference
     """
@@ -4546,6 +4719,9 @@ class BasicGuidanceOptions(BaseModel):
     Basic guidance options (tone, length, etc.) - only for BASICS category
     """
 
+    model_config = ConfigDict(
+        extra="allow",
+    )
     tone: Tone = Field(
         ..., description="Tone of voice for the AI agent", examples=["professional"]
     )
@@ -4560,7 +4736,7 @@ class AIAgentGuidance(BaseModel):
     """
 
     model_config = ConfigDict(
-        extra="forbid",
+        extra="allow",
     )
     id: UUID = Field(
         ...,
@@ -4609,7 +4785,7 @@ class AIAgentGuidance(BaseModel):
     )
 
 
-class Type8(Enum):
+class Type8(OpenEnum):
     """
     The type of business details extraction method used (website scraping or pitch deck). Required unless memory_from_workspace is true.
     """
@@ -4618,7 +4794,7 @@ class Type8(Enum):
     pitch_deck = "pitch_deck"
 
 
-class Status15(Enum):
+class Status15(OpenEnum):
     """
     Status of the AI Sales Agent
     """
@@ -4633,6 +4809,9 @@ class EnrichmentSettings1(BaseModel):
     Settings for lead enrichment
     """
 
+    model_config = ConfigDict(
+        extra="allow",
+    )
     enrichment_limit_per_run: float | None = Field(
         None, description="Maximum number of leads to enrich per run", examples=[30]
     )
@@ -4653,6 +4832,9 @@ class OptOutSettings(BaseModel):
     Opt-out settings appended to outgoing emails
     """
 
+    model_config = ConfigDict(
+        extra="allow",
+    )
     text_opt_out_enabled: bool | None = Field(
         True,
         description="Append a plain-text opt-out line to every email",
@@ -4750,7 +4932,7 @@ class Config(BaseModel):
     )
 
 
-class AgentType(Enum):
+class AgentType(OpenEnum):
     """
     The agent type. 2 = Sales Agent, 4 = Affiliate Agent, 7 = Recruiting Agent, 8 = Investment Agent, 9 = User Research Agent, 10 = Partnership Agent. Defaults to 2 (Sales Agent) if not provided.
     """
@@ -4769,7 +4951,7 @@ class AISalesAgent(BaseModel):
     """
 
     model_config = ConfigDict(
-        extra="forbid",
+        extra="allow",
     )
     id: UUID = Field(
         ...,
@@ -4860,7 +5042,7 @@ class AISalesAgent(BaseModel):
     )
 
 
-class SendingStatus(Enum):
+class SendingStatus(OpenEnum):
     """
     Status of the email sending process
     """
@@ -4870,7 +5052,7 @@ class SendingStatus(Enum):
     number_2 = 2
 
 
-class ErrorCode(Enum):
+class ErrorCode(OpenEnum):
     """
     Error code for the email sending process (nullable)
     """
@@ -4894,7 +5076,7 @@ class AISalesAgentReply(BaseModel):
     """
 
     model_config = ConfigDict(
-        extra="forbid",
+        extra="allow",
     )
     id: UUID = Field(
         ...,
@@ -5015,7 +5197,7 @@ class AISalesAgentReply(BaseModel):
     )
 
 
-class ActionType(Enum):
+class ActionType(OpenEnum):
     """
     Type of action performed
     """
@@ -5041,7 +5223,7 @@ class ActionType(Enum):
     imported_leads = "imported_leads"
 
 
-class ActionStatus(Enum):
+class ActionStatus(OpenEnum):
     """
     Status of the activity
     """
@@ -5054,7 +5236,7 @@ class ActionStatus(Enum):
     failed = "failed"
 
 
-class ErrorCode1(Enum):
+class ErrorCode1(OpenEnum):
     """
     Stable error category if the activity failed
     """
@@ -5079,7 +5261,7 @@ class AISalesAgentActivity(BaseModel):
     """
 
     model_config = ConfigDict(
-        extra="forbid",
+        extra="allow",
     )
     id: UUID = Field(
         ...,
@@ -5180,7 +5362,7 @@ class AISalesAgentActivity(BaseModel):
     )
 
 
-class EventType(Enum):
+class EventType(OpenEnum):
     """
     Type of event to trigger the webhook (null for custom label events). Set to "all_events" to subscribe to all events - including custom label events
     """
@@ -5212,7 +5394,7 @@ class Webhook(BaseModel):
     """
 
     model_config = ConfigDict(
-        extra="forbid",
+        extra="allow",
     )
     id: UUID = Field(
         ...,
@@ -5277,7 +5459,7 @@ class WebhookEvent(BaseModel):
     """
 
     model_config = ConfigDict(
-        extra="forbid",
+        extra="allow",
     )
     id: UUID = Field(
         ...,
@@ -5353,7 +5535,7 @@ class WebhookEvent(BaseModel):
     )
 
 
-class ForwardingMode(Enum):
+class ForwardingMode(OpenEnum):
     """
     How the forwarding domain is applied. Null when no forwarding is configured.
     """
@@ -5369,7 +5551,7 @@ class DFYEmailAccountOrder(BaseModel):
     """
 
     model_config = ConfigDict(
-        extra="forbid",
+        extra="allow",
     )
     workspace_id: str = Field(
         ...,
@@ -5410,7 +5592,7 @@ class DomainForwarding(BaseModel):
     """
 
     model_config = ConfigDict(
-        extra="forbid",
+        extra="allow",
     )
     domain: str = Field(
         ...,
@@ -5429,7 +5611,7 @@ class DomainForwarding(BaseModel):
     )
 
 
-class Category1(Enum):
+class Category1(OpenEnum):
     """
     Prompt Custom template category
     """
@@ -5443,6 +5625,9 @@ class Category1(Enum):
 
 
 class Property(BaseModel):
+    model_config = ConfigDict(
+        extra="allow",
+    )
     name: str | None = Field(
         None, examples=["Property name"], json_schema_extra={"example": "Property name"}
     )
@@ -5451,7 +5636,7 @@ class Property(BaseModel):
     )
 
 
-class TemplateType(Enum):
+class TemplateType(OpenEnum):
     """
     Custom Prompt template type
     """
@@ -5461,6 +5646,9 @@ class TemplateType(Enum):
 
 
 class Name1(BaseModel):
+    model_config = ConfigDict(
+        extra="allow",
+    )
     first: str | None = Field(
         None, examples=["John"], json_schema_extra={"example": "John"}
     )
@@ -5470,10 +5658,16 @@ class Name1(BaseModel):
 
 
 class Payload9(BaseModel):
+    model_config = ConfigDict(
+        extra="allow",
+    )
     name: Name1 | None = None
 
 
 class Creator(BaseModel):
+    model_config = ConfigDict(
+        extra="allow",
+    )
     id: str | None = Field(
         None,
         examples=["01a09c6f-787e-7451-bf4a-581486c164c5"],
@@ -5488,7 +5682,7 @@ class CustomPromptTemplate(BaseModel):
     """
 
     model_config = ConfigDict(
-        extra="forbid",
+        extra="allow",
     )
     id: str = Field(..., examples=["1"])
     workspace_id: UUID = Field(..., examples=["01a09c6f-787e-7451-bf4a-5812b35a11c9"])
@@ -5518,7 +5712,7 @@ class CustomPromptTemplate(BaseModel):
     creator: Creator | None = None
 
 
-class ActionType1(Enum):
+class ActionType1(OpenEnum):
     reply = "reply"
     email_open = "email-open"
     last_contacted = "last-contacted"
@@ -5527,28 +5721,37 @@ class ActionType1(Enum):
     lead_status_change = "lead-status-change"
 
 
-class Condition1(Enum):
+class Condition1(OpenEnum):
     more = "more"
     less = "less"
     equal = "equal"
 
 
 class OccurrenceCount(BaseModel):
+    model_config = ConfigDict(
+        extra="allow",
+    )
     condition: Condition1 | None = Field(None, examples=["more"])
     count: float | None = Field(None, examples=[1])
 
 
-class Condition2(Enum):
+class Condition2(OpenEnum):
     is_ = "is"
     is_not = "is-not"
 
 
 class LeadStatus(BaseModel):
+    model_config = ConfigDict(
+        extra="allow",
+    )
     status: float | None = Field(None, examples=[1])
     condition: Condition2 | None = Field(None, examples=["is"])
 
 
 class Values(BaseModel):
+    model_config = ConfigDict(
+        extra="allow",
+    )
     occurrence_days: float | None = Field(None, alias="occurrence-days", examples=[1])
     occurrence_count: OccurrenceCount | None = Field(None, alias="occurrence-count")
     lead_status: LeadStatus | None = Field(None, alias="lead-status")
@@ -5559,6 +5762,9 @@ class Query(BaseModel):
     Smart view query to filter leads
     """
 
+    model_config = ConfigDict(
+        extra="allow",
+    )
     actionType: ActionType1 = Field(..., examples=["email-open"])
     values: Values
 
@@ -5569,7 +5775,7 @@ class SalesFlow(BaseModel):
     """
 
     model_config = ConfigDict(
-        extra="forbid",
+        extra="allow",
     )
     id: UUID = Field(..., examples=["01a09c6f-7870-7bff-b41b-be27ba51800b"])
     timestamp_created: AwareDatetime = Field(
@@ -5622,7 +5828,7 @@ class EmailTemplate(BaseModel):
     """
 
     model_config = ConfigDict(
-        extra="forbid",
+        extra="allow",
     )
     id: UUID = Field(
         ...,
@@ -5660,7 +5866,7 @@ class WorkspaceBilling(BaseModel):
     """
 
     model_config = ConfigDict(
-        extra="forbid",
+        extra="allow",
     )
 
 
@@ -5670,7 +5876,7 @@ class CRMActions(BaseModel):
     """
 
     model_config = ConfigDict(
-        extra="forbid",
+        extra="allow",
     )
 
 
@@ -5679,6 +5885,9 @@ class Metadata1(BaseModel):
     Additional metadata for the outreach item
     """
 
+    model_config = ConfigDict(
+        extra="allow",
+    )
     original_status: int | None = Field(
         None, description="Original integer status from the source entity", examples=[1]
     )
@@ -5698,7 +5907,7 @@ class EngageItem(BaseModel):
     """
 
     model_config = ConfigDict(
-        extra="forbid",
+        extra="allow",
     )
     resource_id: UUID = Field(
         ...,

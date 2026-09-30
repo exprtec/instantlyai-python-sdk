@@ -43,6 +43,10 @@ CODEGEN_ARGS = [
     "one",
     "--use-double-quotes",
     "--disable-timestamp",
+    # The API adds response fields ahead of its published spec; an unknown field
+    # must not fail validation of an otherwise usable response.
+    "--extra-fields",
+    "allow",
 ]
 
 
@@ -71,22 +75,13 @@ def patch_spec(spec_path: Path) -> None:
     # the spec only declares that on an anonymous inline extension of the
     # `Account` schema used by that one response, not on `Account` itself.
     # datamodel-code-generator drops the inline extension, so the generated
-    # `Account` model (which has `extra="forbid"`) has no `tags` field and
-    # raises a `ValidationError` on every `include_tags=True` call. Move the
-    # property onto `Account` directly, matching what the API actually sends.
+    # `Account` model has no typed `tags` field. Move the property onto
+    # `Account` directly, matching what the API actually sends.
     schemas["Account"]["properties"]["tags"] = {
         "type": ["array", "null"],
         "description": "Tags associated with the account, set to `include_tags` to populate",
         "items": {
             "type": "object",
-            # Explicit `additionalProperties: false` rather than relying on the
-            # generator's default for a nested anonymous object without one --
-            # that default isn't stable across generator versions (0.69.0 stopped
-            # emitting `extra="forbid"` for this exact shape between the last
-            # regen and this one, though nothing else in the spec changed), and
-            # silently losing strictness here would reopen the exact class of bug
-            # this patch exists to fix (an unannounced field breaking validation).
-            "additionalProperties": False,
             "properties": {
                 "id": {
                     "type": "string",
@@ -120,10 +115,13 @@ def patch_spec(spec_path: Path) -> None:
     # the field is a plain string whose shape depends on `resource_type`.
     schemas["CustomTagMapping"]["properties"]["resource_id"].pop("format", None)
 
+    # `Email.thread_id` is declared `format: uuid`, but the API also returns
+    # non-UUID thread ids (e.g. `ac-zBzLypIpygE_mNHeHdg0-Ss`), so it's a string.
+    schemas["Email"]["properties"]["thread_id"].pop("format", None)
+
     # The API returns ESP codes 5 and 7 for some live leads, but the published
-    # schema omits them. Keep Lead model validation aligned with the values
-    # returned by the API so paginated lead reads do not fail on an otherwise
-    # usable page.
+    # schema omits them. Unknown codes are accepted anyway (see `OpenEnum`);
+    # listing these gives them named members.
     esp_code = schemas["Lead"]["properties"]["esp_code"]
     for value in (5, 7):
         if value not in esp_code["enum"]:
@@ -160,15 +158,27 @@ def run_codegen(spec_path: Path) -> None:
         ],
         check=True,
     )
-    # The API documents the standard statuses as an enum, but also returns
-    # arbitrary numeric values for custom interest statuses. Preserve the
-    # enum for known values while allowing those documented custom values.
-    generated = GENERATED_FILE.read_text()
-    generated = generated.replace(
-        "lt_interest_status: LtInterestStatus | None = Field(",
-        "lt_interest_status: LtInterestStatus | float | None = Field(",
+    GENERATED_FILE.write_text(open_enums(GENERATED_FILE.read_text()))
+
+
+def open_enums(source: str) -> str:
+    """Base every generated enum on `OpenEnum` so undocumented values validate.
+
+    The API returns enum values missing from its spec often enough (ESP codes,
+    statuses) that a closed enum turns routine responses into `ValidationError`s.
+    """
+    source, count = re.subn(r"^(class \w+)\(Enum\):", r"\1(OpenEnum):", source, flags=re.M)
+    source, int_count = re.subn(
+        r"^(class \w+)\(IntEnum\):", r"\1(IntEnum, OpenEnum):", source, flags=re.M
     )
-    GENERATED_FILE.write_text(generated)
+    if not count + int_count:
+        raise RuntimeError("no generated enums found -- has the codegen output changed?")
+    import_line = "from enum import Enum, IntEnum\n"
+    first_class = source.find("\n\nclass ")
+    if import_line not in source or first_class == -1:
+        raise RuntimeError("enum import not found -- has the codegen output changed?")
+    source = source[:first_class] + "\nfrom .._open_enum import OpenEnum\n" + source[first_class:]
+    return source.replace(import_line, "from enum import IntEnum\n", 1)
 
 
 def top_level_names(source: str) -> list[str]:
