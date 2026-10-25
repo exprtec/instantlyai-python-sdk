@@ -5,6 +5,14 @@ All notable changes to this project are documented here. Format follows
 [Semantic Versioning](https://semver.org/) (`0.x` -- minor bumps may break, see
 [README](https://github.com/exprtec/instantlyai-python-sdk#readme)).
 
+## [0.7.0] - 2026-10-25
+
+### Changed
+
+- `campaigns.analytics()` returns a list of `CampaignAnalytics` instead of bare dicts.
+- `CampaignAnalyticsOverview`'s counts are required, as the API always returns them (`completed_count` aside); 0.6.0
+  shipped them optional.
+
 ## [0.6.0] - 2026-10-25
 
 ### Changed

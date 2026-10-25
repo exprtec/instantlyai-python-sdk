@@ -157,6 +157,13 @@ def patch_spec(spec_path: Path) -> None:
         if "$ref" not in content["schema"]:
             schemas[name] = content["schema"]
             content["schema"] = {"$ref": f"#/components/schemas/{name}"}
+    # Each campaign's analytics comes back as an inline array item.
+    analytics = spec["paths"]["/api/v2/campaigns/analytics"]["get"]["responses"]["200"]["content"][
+        "application/json"
+    ]
+    if "$ref" not in analytics["schema"]["items"]:
+        schemas["CampaignAnalytics"] = analytics["schema"]["items"]
+        analytics["schema"]["items"] = {"$ref": "#/components/schemas/CampaignAnalytics"}
     # The import summary's counts vary by import type; only the created leads are always there.
     schemas["BulkAddLeadsResult"]["required"] = ["created_leads"]
     # The overview returns every count but `completed_count`, which is only there for campaigns that have finished.

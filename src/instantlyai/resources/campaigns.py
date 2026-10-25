@@ -10,6 +10,7 @@ from .._types import JSONObject
 from ..models import (
     AutoVariantSelect,
     Campaign,
+    CampaignAnalytics,
     CampaignAnalyticsOverview,
     CampaignSchedule,
     LimitEmailsPerCompanyOverride,
@@ -241,9 +242,9 @@ class Campaigns(SyncAPIResource):
         start_date: str | NotGiven = NOT_GIVEN,
         end_date: str | NotGiven = NOT_GIVEN,
         exclude_total_leads_count: bool | NotGiven = NOT_GIVEN,
-    ) -> _list[JSONObject]:
+    ) -> _list[CampaignAnalytics]:
         """Get analytics for one or more campaigns."""
-        return self._get(
+        rows = self._get(
             "/api/v2/campaigns/analytics",
             params={
                 "id": id,
@@ -253,6 +254,7 @@ class Campaigns(SyncAPIResource):
                 "exclude_total_leads_count": exclude_total_leads_count,
             },
         )
+        return [CampaignAnalytics.model_validate(row) for row in rows]
 
     def analytics_overview(
         self,
@@ -560,9 +562,9 @@ class AsyncCampaigns(AsyncAPIResource):
         start_date: str | NotGiven = NOT_GIVEN,
         end_date: str | NotGiven = NOT_GIVEN,
         exclude_total_leads_count: bool | NotGiven = NOT_GIVEN,
-    ) -> _list[JSONObject]:
+    ) -> _list[CampaignAnalytics]:
         """Get analytics for one or more campaigns."""
-        return await self._get(
+        rows = await self._get(
             "/api/v2/campaigns/analytics",
             params={
                 "id": id,
@@ -572,6 +574,7 @@ class AsyncCampaigns(AsyncAPIResource):
                 "exclude_total_leads_count": exclude_total_leads_count,
             },
         )
+        return [CampaignAnalytics.model_validate(row) for row in rows]
 
     async def analytics_overview(
         self,
