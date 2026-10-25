@@ -5939,3 +5939,211 @@ class EngageItem(BaseModel):
     timestamp_updated: AwareDatetime = Field(
         ..., description="Last update timestamp", examples=["2026-09-13T20:22:26.244Z"]
     )
+
+
+class CreatedLead(BaseModel):
+    model_config = ConfigDict(
+        extra="allow",
+    )
+    index: int = Field(
+        ...,
+        description="The index of the lead in the input array. For leads that have no email address you can use this field as the key to your input leads.",
+        examples=[0],
+    )
+    id: UUID = Field(
+        ...,
+        description="The ID of the lead. Use it for GET, DELETE or PATCH operations.",
+        examples=["01a09c6f-c21e-7425-99c6-47d53b109ac3"],
+    )
+    email: str | None = Field(None, examples=["test@example.com"])
+    first_name: str | None = Field(None, examples=["John"])
+    last_name: str | None = Field(None, examples=["Doe"])
+    phone: str | None = Field(None, examples=["+1234567890"])
+
+
+class BulkAddLeadsResult(BaseModel):
+    """
+    A summary of the bulk import operation.
+    """
+
+    model_config = ConfigDict(
+        extra="allow",
+    )
+    status: str | None = Field(
+        None, description="Indicates the request was processed.", examples=["success"]
+    )
+    total_sent: int | None = Field(
+        None,
+        description="The total number of leads included in the request payload.",
+        examples=[10],
+    )
+    leads_uploaded: int | None = Field(
+        None,
+        description="The number of leads that were successfully created.",
+        examples=[7],
+    )
+    in_blocklist: int | None = Field(
+        None,
+        description="The number of leads that were skipped because their email was found on the blocklist.",
+        examples=[1],
+    )
+    blocklist_used: str | None = Field(
+        None,
+        description="The ID of the blocklist that was used for the check.",
+        examples=["01a09c6f-c21e-7425-99c6-47d4e06d3dcb"],
+    )
+    duplicated_leads: int | None = Field(
+        None,
+        description="The number of leads that were already in this specific campaign or list and were not re-added.",
+        examples=[0],
+    )
+    skipped_count: int | None = Field(
+        None,
+        description="The number of leads skipped due to the `skip_if_in_...` flags being enabled.",
+        examples=[1],
+    )
+    invalid_email_count: int | None = Field(
+        None,
+        description="The number of leads skipped due to an invalid email format or a missing email address.",
+        examples=[1],
+    )
+    incomplete_count: int | None = Field(
+        None,
+        description="The number of leads skipped due to missing email and names. Only calculated for lists.",
+        examples=[1],
+    )
+    duplicate_email_count: int | None = Field(
+        None,
+        description="The number of leads skipped because their email was duplicated within the request payload itself.",
+        examples=[0],
+    )
+    remaining_in_plan: int | None = Field(
+        None,
+        description="The remaining lead uploads in the current billing plan. This value is only present in the response when a `campaign_id` is provided.",
+        examples=[9993],
+    )
+    created_leads: list[CreatedLead] = Field(
+        ...,
+        description="A list of created leads with their summary information. You can use this to map your input to the created leads.",
+        examples=[
+            [
+                {
+                    "id": "01a09c6f-c21e-7425-99c6-47d73aa0e0fa",
+                    "email": "test@example.com",
+                    "index": 0,
+                }
+            ]
+        ],
+    )
+
+
+class CampaignAnalyticsOverview(BaseModel):
+    model_config = ConfigDict(
+        extra="allow",
+    )
+    open_count: int | None = Field(
+        None,
+        description="The total number of times the emails were opened, including duplicates",
+        examples=[800],
+    )
+    open_count_unique: int | None = Field(
+        None,
+        description="The number of emails that got opened (for the first time only)",
+        examples=[800],
+    )
+    open_count_unique_by_step: int | None = Field(
+        None,
+        description="The unique number of times the emails were opened (counted once per lead, step, and campaign)",
+        examples=[800],
+    )
+    link_click_count: int | None = Field(
+        None, description="The number of links that got clicked", examples=[800]
+    )
+    link_click_count_unique: int | None = Field(
+        None,
+        description="The number of links that got clicked (for the first time)",
+        examples=[800],
+    )
+    link_click_count_unique_by_step: int | None = Field(
+        None,
+        description="The unique number of links that got clicked, per step (counted once per lead, step, and campaign)",
+        examples=[800],
+    )
+    reply_count: int | None = Field(
+        None,
+        description="The total number of replies received (if a lead replies multiple times, each reply is counted)",
+        examples=[300],
+    )
+    reply_count_unique: int | None = Field(
+        None,
+        description="The number of unique replies (first reply per lead). Excludes automatic replies.",
+        examples=[300],
+    )
+    reply_count_unique_by_step: int | None = Field(
+        None,
+        description="The number of unique replies per step (first reply per lead per step). Excludes automatic replies.",
+        examples=[300],
+    )
+    reply_count_automatic: int | None = Field(
+        None,
+        description="The total number of automatic replies received (e.g., out-of-office)",
+        examples=[50],
+    )
+    reply_count_automatic_unique: int | None = Field(
+        None,
+        description="The number of unique leads that sent automatic replies",
+        examples=[45],
+    )
+    reply_count_automatic_unique_by_step: int | None = Field(
+        None,
+        description="The unique number of automatic replies per step (counted once per lead, step, and campaign)",
+        examples=[45],
+    )
+    bounced_count: int | None = Field(
+        None, description="The number of bounced leads", examples=[50]
+    )
+    unsubscribed_count: int | None = Field(
+        None, description="The number of unsubscribed leads", examples=[20]
+    )
+    completed_count: int | None = Field(
+        None,
+        description="The number of leads that the campaign was completed for",
+        examples=[1100],
+    )
+    emails_sent_count: int | None = Field(
+        None, description="The total number of sent emails", examples=[5000]
+    )
+    contacted_count: int | None = Field(
+        None, description="The total number of unique leads contacted", examples=[4500]
+    )
+    new_leads_contacted_count: int | None = Field(
+        None, description="The total number of new leads contacted", examples=[200]
+    )
+    total_opportunities: int | None = Field(
+        None,
+        description="The total number of unique opportunities created",
+        examples=[10],
+    )
+    total_opportunity_value: float | None = Field(
+        None, description="The total value of opportunities created", examples=[1000]
+    )
+    total_interested: int | None = Field(
+        None,
+        description="The total number of interested opportunities created",
+        examples=[103],
+    )
+    total_meeting_booked: int | None = Field(
+        None,
+        description="The total number of meeting booked opportunities created",
+        examples=[45],
+    )
+    total_meeting_completed: int | None = Field(
+        None,
+        description="The total number of meeting completed opportunities created",
+        examples=[12],
+    )
+    total_closed: int | None = Field(
+        None,
+        description="The total number of closed opportunities created",
+        examples=[10],
+    )

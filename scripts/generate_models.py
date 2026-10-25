@@ -146,6 +146,23 @@ def patch_spec(spec_path: Path) -> None:
     if "schedules" in campaign_schedule.get("required", []):
         campaign_schedule["required"].remove("schedules")
 
+    # Some responses are declared inline, which codegen leaves unnamed, so their methods returned a bare dict. Name the
+    # ones callers read, so they come back as models.
+    named_responses = {
+        ("/api/v2/leads/add", "post"): "BulkAddLeadsResult",
+        ("/api/v2/campaigns/analytics/overview", "get"): "CampaignAnalyticsOverview",
+    }
+    for (path, method), name in named_responses.items():
+        content = spec["paths"][path][method]["responses"]["200"]["content"]["application/json"]
+        if "$ref" not in content["schema"]:
+            schemas[name] = content["schema"]
+            content["schema"] = {"$ref": f"#/components/schemas/{name}"}
+    # The import summary's counts vary by import type; only the created leads are always there.
+    schemas["BulkAddLeadsResult"]["required"] = ["created_leads"]
+    # The overview returns every count but `completed_count`, which is only there for campaigns that have finished.
+    overview = schemas["CampaignAnalyticsOverview"]
+    overview["required"] = sorted(set(overview["properties"]) - {"completed_count"})
+
     spec_path.write_text(json.dumps(spec))
 
 

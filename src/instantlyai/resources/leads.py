@@ -7,7 +7,7 @@ from typing import Any, Literal
 from .._pagination import AsyncCursorPage, SyncCursorPage
 from .._transport import NOT_GIVEN, NotGiven
 from .._types import JSONObject
-from ..models import BackgroundJob, Lead
+from ..models import BackgroundJob, BulkAddLeadsResult, Lead
 from ..models import Payload8 as LeadPayload
 from ._base import AsyncAPIResource, SyncAPIResource
 
@@ -173,21 +173,23 @@ class Leads(SyncAPIResource):
         skip_if_in_workspace: bool | NotGiven = NOT_GIVEN,
         skip_if_in_campaign: bool | NotGiven = NOT_GIVEN,
         skip_if_in_list: bool | NotGiven = NOT_GIVEN,
-    ) -> JSONObject:
+    ) -> BulkAddLeadsResult:
         """Add leads in bulk to a campaign or list."""
-        return self._post(
-            "/api/v2/leads/add",
-            json={
-                "campaign_id": campaign_id,
-                "list_id": list_id,
-                "leads": leads,
-                "blocklist_id": blocklist_id,
-                "assigned_to": assigned_to,
-                "verify_leads_on_import": verify_leads_on_import,
-                "skip_if_in_workspace": skip_if_in_workspace,
-                "skip_if_in_campaign": skip_if_in_campaign,
-                "skip_if_in_list": skip_if_in_list,
-            },
+        return BulkAddLeadsResult.model_validate(
+            self._post(
+                "/api/v2/leads/add",
+                json={
+                    "campaign_id": campaign_id,
+                    "list_id": list_id,
+                    "leads": leads,
+                    "blocklist_id": blocklist_id,
+                    "assigned_to": assigned_to,
+                    "verify_leads_on_import": verify_leads_on_import,
+                    "skip_if_in_workspace": skip_if_in_workspace,
+                    "skip_if_in_campaign": skip_if_in_campaign,
+                    "skip_if_in_list": skip_if_in_list,
+                },
+            )
         )
 
     def bulk_assign(
@@ -500,21 +502,23 @@ class AsyncLeads(AsyncAPIResource):
         skip_if_in_workspace: bool | NotGiven = NOT_GIVEN,
         skip_if_in_campaign: bool | NotGiven = NOT_GIVEN,
         skip_if_in_list: bool | NotGiven = NOT_GIVEN,
-    ) -> JSONObject:
+    ) -> BulkAddLeadsResult:
         """Add leads in bulk to a campaign or list."""
-        return await self._post(
-            "/api/v2/leads/add",
-            json={
-                "campaign_id": campaign_id,
-                "list_id": list_id,
-                "leads": leads,
-                "blocklist_id": blocklist_id,
-                "assigned_to": assigned_to,
-                "verify_leads_on_import": verify_leads_on_import,
-                "skip_if_in_workspace": skip_if_in_workspace,
-                "skip_if_in_campaign": skip_if_in_campaign,
-                "skip_if_in_list": skip_if_in_list,
-            },
+        return BulkAddLeadsResult.model_validate(
+            await self._post(
+                "/api/v2/leads/add",
+                json={
+                    "campaign_id": campaign_id,
+                    "list_id": list_id,
+                    "leads": leads,
+                    "blocklist_id": blocklist_id,
+                    "assigned_to": assigned_to,
+                    "verify_leads_on_import": verify_leads_on_import,
+                    "skip_if_in_workspace": skip_if_in_workspace,
+                    "skip_if_in_campaign": skip_if_in_campaign,
+                    "skip_if_in_list": skip_if_in_list,
+                },
+            )
         )
 
     async def bulk_assign(

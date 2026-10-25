@@ -5,6 +5,15 @@ All notable changes to this project are documented here. Format follows
 [Semantic Versioning](https://semver.org/) (`0.x` -- minor bumps may break, see
 [README](https://github.com/exprtec/instantlyai-python-sdk#readme)).
 
+## [0.6.0] - 2026-10-25
+
+### Changed
+
+- `leads.bulk_add()` returns a `BulkAddLeadsResult` and `campaigns.analytics_overview()` a
+  `CampaignAnalyticsOverview`, instead of bare dicts. The spec declares both responses inline, which codegen left
+  unnamed; they are now named before codegen runs. Read `result.created_leads` / `overview.total_interested` rather
+  than indexing a dict.
+
 ## [0.5.0] - 2026-10-25
 
 ### Added

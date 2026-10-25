@@ -10,6 +10,7 @@ from .._types import JSONObject
 from ..models import (
     AutoVariantSelect,
     Campaign,
+    CampaignAnalyticsOverview,
     CampaignSchedule,
     LimitEmailsPerCompanyOverride,
     ProviderRoutingRule,
@@ -262,18 +263,20 @@ class Campaigns(SyncAPIResource):
         end_date: str | NotGiven = NOT_GIVEN,
         campaign_status: float | NotGiven = NOT_GIVEN,
         expand_crm_events: bool | NotGiven = NOT_GIVEN,
-    ) -> JSONObject:
+    ) -> CampaignAnalyticsOverview:
         """Get an aggregate analytics overview across campaigns."""
-        return self._get(
-            "/api/v2/campaigns/analytics/overview",
-            params={
-                "id": id,
-                "ids": ids,
-                "start_date": start_date,
-                "end_date": end_date,
-                "campaign_status": campaign_status,
-                "expand_crm_events": expand_crm_events,
-            },
+        return CampaignAnalyticsOverview.model_validate(
+            self._get(
+                "/api/v2/campaigns/analytics/overview",
+                params={
+                    "id": id,
+                    "ids": ids,
+                    "start_date": start_date,
+                    "end_date": end_date,
+                    "campaign_status": campaign_status,
+                    "expand_crm_events": expand_crm_events,
+                },
+            )
         )
 
     def analytics_daily(
@@ -579,18 +582,20 @@ class AsyncCampaigns(AsyncAPIResource):
         end_date: str | NotGiven = NOT_GIVEN,
         campaign_status: float | NotGiven = NOT_GIVEN,
         expand_crm_events: bool | NotGiven = NOT_GIVEN,
-    ) -> JSONObject:
+    ) -> CampaignAnalyticsOverview:
         """Get an aggregate analytics overview across campaigns."""
-        return await self._get(
-            "/api/v2/campaigns/analytics/overview",
-            params={
-                "id": id,
-                "ids": ids,
-                "start_date": start_date,
-                "end_date": end_date,
-                "campaign_status": campaign_status,
-                "expand_crm_events": expand_crm_events,
-            },
+        return CampaignAnalyticsOverview.model_validate(
+            await self._get(
+                "/api/v2/campaigns/analytics/overview",
+                params={
+                    "id": id,
+                    "ids": ids,
+                    "start_date": start_date,
+                    "end_date": end_date,
+                    "campaign_status": campaign_status,
+                    "expand_crm_events": expand_crm_events,
+                },
+            )
         )
 
     async def analytics_daily(
