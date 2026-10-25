@@ -5,7 +5,7 @@ All notable changes to this project are documented here. Format follows
 [Semantic Versioning](https://semver.org/) (`0.x` -- minor bumps may break, see
 [README](https://github.com/exprtec/instantlyai-python-sdk#readme)).
 
-## [Unreleased]
+## [0.5.0] - 2026-10-25
 
 ### Added
 
