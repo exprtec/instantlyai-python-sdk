@@ -862,6 +862,17 @@
 <a href="https://keepachangelog.com/en/1.1.0/">Keep a Changelog</a>; versioning follows
 <a href="https://semver.org/">Semantic Versioning</a> (<code>0.x</code> -- minor bumps may break, see
 <a href="https://github.com/exprtec/instantlyai-python-sdk#readme">README</a>).</p>
+<h2 id="050-2026-10-25">[0.5.0] - 2026-10-25<a class="headerlink" href="#050-2026-10-25" title="Permanent link">&para;</a></h2>
+<h3 id="added">Added<a class="headerlink" href="#added" title="Permanent link">&para;</a></h3>
+<ul>
+<li><code>NOT_GIVEN</code> and <code>NotGiven</code> are exported from <code>instantlyai</code>, so a caller can leave an optional parameter out
+  conditionally (<code>min_timestamp_created=since or NOT_GIVEN</code>) instead of building keyword arguments by hand.</li>
+</ul>
+<h3 id="changed">Changed<a class="headerlink" href="#changed" title="Permanent link">&para;</a></h3>
+<ul>
+<li><code>Email.is_unread</code>, <code>is_auto_reply</code>, <code>ai_assisted</code>, <code>is_focused</code> and <code>i_status</code> are now <code>int | None</code> rather than
+  <code>float | None</code>; the API sends whole numbers, which previously read back as <code>1.0</code>.</li>
+</ul>
 <h2 id="040-2026-09-30">[0.4.0] - 2026-09-30<a class="headerlink" href="#040-2026-09-30" title="Permanent link">&para;</a></h2>
 <h3 id="fixed">Fixed<a class="headerlink" href="#fixed" title="Permanent link">&para;</a></h3>
 <ul>
@@ -875,7 +886,7 @@
 <li>Generated models now use <code>extra="allow"</code> instead of <code>extra="forbid"</code>, so fields
     Instantly adds ahead of its spec are kept on <code>model_extra</code> instead of failing.</li>
 </ul>
-<h3 id="changed">Changed<a class="headerlink" href="#changed" title="Permanent link">&para;</a></h3>
+<h3 id="changed_1">Changed<a class="headerlink" href="#changed_1" title="Permanent link">&para;</a></h3>
 <ul>
 <li><code>Email.thread_id</code> is now <code>str | None</code> rather than <code>UUID | None</code>; the API returns
   non-UUID thread ids such as <code>ac-zBzLypIpygE_mNHeHdg0-Ss</code>.</li>
@@ -884,13 +895,13 @@
   <code>LtInterestStatus</code> pseudo-members; read the number from <code>.value</code>.</li>
 </ul>
 <h2 id="030-2026-09-14">[0.3.0] - 2026-09-14<a class="headerlink" href="#030-2026-09-14" title="Permanent link">&para;</a></h2>
-<h3 id="added">Added<a class="headerlink" href="#added" title="Permanent link">&para;</a></h3>
+<h3 id="added_1">Added<a class="headerlink" href="#added_1" title="Permanent link">&para;</a></h3>
 <ul>
 <li>Regenerated the public Pydantic models from Instantly's updated OpenAPI schema,
   including AI agents, agent configuration, Engage items, domain forwarding, signal
   targeting, and the latest campaign, email, and lead fields.</li>
 </ul>
-<h3 id="changed_1">Changed<a class="headerlink" href="#changed_1" title="Permanent link">&para;</a></h3>
+<h3 id="changed_2">Changed<a class="headerlink" href="#changed_2" title="Permanent link">&para;</a></h3>
 <ul>
 <li>Updated lead resource annotations to use the generated lead custom-variable model
   after the new API schemas caused it to be named <code>Payload8</code>.</li>
@@ -909,7 +920,7 @@
   validation.</li>
 </ul>
 <h2 id="023-2026-08-11">[0.2.3] - 2026-08-11<a class="headerlink" href="#023-2026-08-11" title="Permanent link">&para;</a></h2>
-<h3 id="added_1">Added<a class="headerlink" href="#added_1" title="Permanent link">&para;</a></h3>
+<h3 id="added_2">Added<a class="headerlink" href="#added_2" title="Permanent link">&para;</a></h3>
 <ul>
 <li><code>requests_per_minute</code> option on <code>Instantly</code>/<code>AsyncInstantly</code> (and the
   transport classes directly) to proactively pace requests -- e.g.
@@ -923,7 +934,7 @@
   the same workspace's limit).</li>
 </ul>
 <h2 id="022-2026-08-03">[0.2.2] - 2026-08-03<a class="headerlink" href="#022-2026-08-03" title="Permanent link">&para;</a></h2>
-<h3 id="added_2">Added<a class="headerlink" href="#added_2" title="Permanent link">&para;</a></h3>
+<h3 id="added_3">Added<a class="headerlink" href="#added_3" title="Permanent link">&para;</a></h3>
 <ul>
 <li>Basic logging in the transport layer (<code>logging.getLogger("instantlyai")</code>):
   debug-level on every request attempt and successful response, warning-level
@@ -950,7 +961,7 @@
   new provider previously failed to validate.</li>
 </ul>
 <h2 id="020-2026-07-25">[0.2.0] - 2026-07-25<a class="headerlink" href="#020-2026-07-25" title="Permanent link">&para;</a></h2>
-<h3 id="changed_2">Changed<a class="headerlink" href="#changed_2" title="Permanent link">&para;</a></h3>
+<h3 id="changed_3">Changed<a class="headerlink" href="#changed_3" title="Permanent link">&para;</a></h3>
 <ul>
 <li><strong>Breaking:</strong> <code>TagsItem</code> (the model for <code>Account.tags[]</code>) renamed to <code>Tag</code>.
   Surfaced by regenerating models against the pinned <code>datamodel-code-generator</code>
@@ -1029,7 +1040,7 @@
   before codegen runs, so future regenerations don't silently reintroduce them.</li>
 </ul>
 <h2 id="010-2026-07-22">[0.1.0] - 2026-07-22<a class="headerlink" href="#010-2026-07-22" title="Permanent link">&para;</a></h2>
-<h3 id="added_3">Added<a class="headerlink" href="#added_3" title="Permanent link">&para;</a></h3>
+<h3 id="added_4">Added<a class="headerlink" href="#added_4" title="Permanent link">&para;</a></h3>
 <ul>
 <li>Initial functional release: sync (<code>Instantly</code>) and async (<code>AsyncInstantly</code>) clients
   covering every Instantly.ai V2 API resource (campaigns, leads, accounts, workspaces,
@@ -1041,7 +1052,7 @@
 <li><code>py.typed</code> marker for downstream type-checking.</li>
 </ul>
 <h2 id="001-2026-07-22">[0.0.1] - 2026-07-22<a class="headerlink" href="#001-2026-07-22" title="Permanent link">&para;</a></h2>
-<h3 id="added_4">Added<a class="headerlink" href="#added_4" title="Permanent link">&para;</a></h3>
+<h3 id="added_5">Added<a class="headerlink" href="#added_5" title="Permanent link">&para;</a></h3>
 <ul>
 <li>Placeholder release to reserve the <code>instantlyai</code> name on PyPI.</li>
 </ul>
