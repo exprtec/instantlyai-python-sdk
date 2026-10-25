@@ -961,10 +961,10 @@ class Email(BaseModel):
         description="The campaign step that the email is associated with",
         examples=["step-123"],
     )
-    is_unread: float | None = Field(
+    is_unread: int | None = Field(
         None, description="Indicates if the email is unread", examples=[1]
     )
-    is_auto_reply: float | None = Field(
+    is_auto_reply: int | None = Field(
         None,
         description="Indicates if the email is an auto-reply. 0 (zero) - is false, and 1 is true",
         examples=[0],
@@ -977,15 +977,15 @@ class Email(BaseModel):
     ai_interest_value: float | None = Field(
         None, description="AI interest value", examples=[0.75]
     )
-    ai_assisted: float | None = Field(
+    ai_assisted: int | None = Field(
         None, description="Indicates if AI assistance was used", examples=[1]
     )
-    is_focused: float | None = Field(
+    is_focused: int | None = Field(
         None,
         description="Indicates if the email is focused (is in the primary tab in the Unibox)",
         examples=[1],
     )
-    i_status: float | None = Field(
+    i_status: int | None = Field(
         None, description="Indicates the interest status of the email", examples=[0]
     )
     thread_id: str | None = Field(

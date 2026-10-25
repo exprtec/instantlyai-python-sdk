@@ -119,6 +119,11 @@ def patch_spec(spec_path: Path) -> None:
     # non-UUID thread ids (e.g. `ac-zBzLypIpygE_mNHeHdg0-Ss`), so it's a string.
     schemas["Email"]["properties"]["thread_id"].pop("format", None)
 
+    # The Unibox flags and interest status are whole numbers, but the spec declares them `number`, so they came out
+    # as `float` and read back as `1.0`.
+    for flag in ("is_unread", "is_auto_reply", "ai_assisted", "is_focused", "i_status"):
+        schemas["Email"]["properties"][flag]["type"] = ["null", "integer"]
+
     # The API returns ESP codes 5 and 7 for some live leads, but the published
     # schema omits them. Unknown codes are accepted anyway (see `OpenEnum`);
     # listing these gives them named members.

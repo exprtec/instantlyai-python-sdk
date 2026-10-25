@@ -5,6 +5,18 @@ All notable changes to this project are documented here. Format follows
 [Semantic Versioning](https://semver.org/) (`0.x` -- minor bumps may break, see
 [README](https://github.com/exprtec/instantlyai-python-sdk#readme)).
 
+## [Unreleased]
+
+### Added
+
+- `NOT_GIVEN` and `NotGiven` are exported from `instantlyai`, so a caller can leave an optional parameter out
+  conditionally (`min_timestamp_created=since or NOT_GIVEN`) instead of building keyword arguments by hand.
+
+### Changed
+
+- `Email.is_unread`, `is_auto_reply`, `ai_assisted`, `is_focused` and `i_status` are now `int | None` rather than
+  `float | None`; the API sends whole numbers, which previously read back as `1.0`.
+
 ## [0.4.0] - 2026-09-30
 
 ### Fixed
