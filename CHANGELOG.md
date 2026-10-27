@@ -5,6 +5,15 @@ All notable changes to this project are documented here. Format follows
 [Semantic Versioning](https://semver.org/) (`0.x` -- minor bumps may break, see
 [README](https://github.com/exprtec/instantlyai-python-sdk#readme)).
 
+## [0.8.0] - 2026-10-27
+
+### Changed
+
+- `leads.bulk_add(leads=...)` takes each lead as a JSON object (`email`, `first_name`, ..., `custom_variables`); it
+  was typed as the custom-variables model, which no lead matches.
+- `leads.create()` / `leads.update()` take `custom_variables` as a plain JSON object as well as the model. A plain
+  object is what the API expects: the model also sends its unset fields as `null`.
+
 ## [0.7.0] - 2026-10-25
 
 ### Changed

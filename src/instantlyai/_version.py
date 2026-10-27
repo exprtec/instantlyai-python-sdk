@@ -4,4 +4,4 @@ Read by ``instantlyai/__init__.py`` (public ``__version__``) and by the
 build backend (``pyproject.toml`` -> ``[tool.hatch.version]``).
 """
 
-__version__ = "0.7.0"
+__version__ = "0.8.0"
