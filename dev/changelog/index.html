@@ -862,13 +862,36 @@
 <a href="https://keepachangelog.com/en/1.1.0/">Keep a Changelog</a>; versioning follows
 <a href="https://semver.org/">Semantic Versioning</a> (<code>0.x</code> -- minor bumps may break, see
 <a href="https://github.com/exprtec/instantlyai-python-sdk#readme">README</a>).</p>
+<h2 id="080-2026-10-27">[0.8.0] - 2026-10-27<a class="headerlink" href="#080-2026-10-27" title="Permanent link">&para;</a></h2>
+<h3 id="changed">Changed<a class="headerlink" href="#changed" title="Permanent link">&para;</a></h3>
+<ul>
+<li><code>leads.bulk_add(leads=...)</code> takes each lead as a JSON object (<code>email</code>, <code>first_name</code>, ..., <code>custom_variables</code>); it
+  was typed as the custom-variables model, which no lead matches.</li>
+<li><code>leads.create()</code> / <code>leads.update()</code> take <code>custom_variables</code> as a plain JSON object as well as the model. A plain
+  object is what the API expects: the model also sends its unset fields as <code>null</code>.</li>
+</ul>
+<h2 id="070-2026-10-25">[0.7.0] - 2026-10-25<a class="headerlink" href="#070-2026-10-25" title="Permanent link">&para;</a></h2>
+<h3 id="changed_1">Changed<a class="headerlink" href="#changed_1" title="Permanent link">&para;</a></h3>
+<ul>
+<li><code>campaigns.analytics()</code> returns a list of <code>CampaignAnalytics</code> instead of bare dicts.</li>
+<li><code>CampaignAnalyticsOverview</code>'s counts are required, as the API always returns them (<code>completed_count</code> aside); 0.6.0
+  shipped them optional.</li>
+</ul>
+<h2 id="060-2026-10-25">[0.6.0] - 2026-10-25<a class="headerlink" href="#060-2026-10-25" title="Permanent link">&para;</a></h2>
+<h3 id="changed_2">Changed<a class="headerlink" href="#changed_2" title="Permanent link">&para;</a></h3>
+<ul>
+<li><code>leads.bulk_add()</code> returns a <code>BulkAddLeadsResult</code> and <code>campaigns.analytics_overview()</code> a
+  <code>CampaignAnalyticsOverview</code>, instead of bare dicts. The spec declares both responses inline, which codegen left
+  unnamed; they are now named before codegen runs. Read <code>result.created_leads</code> / <code>overview.total_interested</code> rather
+  than indexing a dict.</li>
+</ul>
 <h2 id="050-2026-10-25">[0.5.0] - 2026-10-25<a class="headerlink" href="#050-2026-10-25" title="Permanent link">&para;</a></h2>
 <h3 id="added">Added<a class="headerlink" href="#added" title="Permanent link">&para;</a></h3>
 <ul>
 <li><code>NOT_GIVEN</code> and <code>NotGiven</code> are exported from <code>instantlyai</code>, so a caller can leave an optional parameter out
   conditionally (<code>min_timestamp_created=since or NOT_GIVEN</code>) instead of building keyword arguments by hand.</li>
 </ul>
-<h3 id="changed">Changed<a class="headerlink" href="#changed" title="Permanent link">&para;</a></h3>
+<h3 id="changed_3">Changed<a class="headerlink" href="#changed_3" title="Permanent link">&para;</a></h3>
 <ul>
 <li><code>Email.is_unread</code>, <code>is_auto_reply</code>, <code>ai_assisted</code>, <code>is_focused</code> and <code>i_status</code> are now <code>int | None</code> rather than
   <code>float | None</code>; the API sends whole numbers, which previously read back as <code>1.0</code>.</li>
@@ -886,7 +909,7 @@
 <li>Generated models now use <code>extra="allow"</code> instead of <code>extra="forbid"</code>, so fields
     Instantly adds ahead of its spec are kept on <code>model_extra</code> instead of failing.</li>
 </ul>
-<h3 id="changed_1">Changed<a class="headerlink" href="#changed_1" title="Permanent link">&para;</a></h3>
+<h3 id="changed_4">Changed<a class="headerlink" href="#changed_4" title="Permanent link">&para;</a></h3>
 <ul>
 <li><code>Email.thread_id</code> is now <code>str | None</code> rather than <code>UUID | None</code>; the API returns
   non-UUID thread ids such as <code>ac-zBzLypIpygE_mNHeHdg0-Ss</code>.</li>
@@ -901,7 +924,7 @@
   including AI agents, agent configuration, Engage items, domain forwarding, signal
   targeting, and the latest campaign, email, and lead fields.</li>
 </ul>
-<h3 id="changed_2">Changed<a class="headerlink" href="#changed_2" title="Permanent link">&para;</a></h3>
+<h3 id="changed_5">Changed<a class="headerlink" href="#changed_5" title="Permanent link">&para;</a></h3>
 <ul>
 <li>Updated lead resource annotations to use the generated lead custom-variable model
   after the new API schemas caused it to be named <code>Payload8</code>.</li>
@@ -961,7 +984,7 @@
   new provider previously failed to validate.</li>
 </ul>
 <h2 id="020-2026-07-25">[0.2.0] - 2026-07-25<a class="headerlink" href="#020-2026-07-25" title="Permanent link">&para;</a></h2>
-<h3 id="changed_3">Changed<a class="headerlink" href="#changed_3" title="Permanent link">&para;</a></h3>
+<h3 id="changed_6">Changed<a class="headerlink" href="#changed_6" title="Permanent link">&para;</a></h3>
 <ul>
 <li><strong>Breaking:</strong> <code>TagsItem</code> (the model for <code>Account.tags[]</code>) renamed to <code>Tag</code>.
   Surfaced by regenerating models against the pinned <code>datamodel-code-generator</code>
