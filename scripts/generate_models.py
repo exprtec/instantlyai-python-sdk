@@ -119,6 +119,12 @@ def patch_spec(spec_path: Path) -> None:
     # non-UUID thread ids (e.g. `ac-zBzLypIpygE_mNHeHdg0-Ss`), so it's a string.
     schemas["Email"]["properties"]["thread_id"].pop("format", None)
 
+    # `Account.added_by` / `modified_by` are declared `format: uuid`, but an
+    # account added or changed through the API holds `"api"` there instead of
+    # a user id, so they are strings.
+    for field in ("added_by", "modified_by"):
+        schemas["Account"]["properties"][field].pop("format", None)
+
     # The Unibox flags and interest status are whole numbers, but the spec declares them `number`, so they came out
     # as `float` and read back as `1.0`.
     for flag in ("is_unread", "is_auto_reply", "ai_assisted", "is_focused", "i_status"):

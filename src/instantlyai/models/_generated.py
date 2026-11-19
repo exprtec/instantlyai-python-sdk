@@ -193,7 +193,7 @@ class Account(BaseModel):
     warmup: Warmup | None = Field(
         None, description="Warmup configuration for the account"
     )
-    added_by: UUID | None = Field(
+    added_by: str | None = Field(
         None,
         description="User ID who added the account",
         examples=["01a09c6f-77f6-7634-a285-9ea581b967dd"],
@@ -211,7 +211,7 @@ class Account(BaseModel):
         description="Maximum daily warmup sending limit for AirMail accounts",
         examples=[100],
     )
-    modified_by: UUID | None = Field(
+    modified_by: str | None = Field(
         None,
         description="User ID who last modified the account",
         examples=["01a09c6f-77f6-7634-a285-9ea6843e757e"],

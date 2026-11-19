@@ -5,6 +5,13 @@ All notable changes to this project are documented here. Format follows
 [Semantic Versioning](https://semver.org/) (`0.x` -- minor bumps may break, see
 [README](https://github.com/exprtec/instantlyai-python-sdk#readme)).
 
+## [0.8.1] - 2026-11-19
+
+### Fixed
+
+- `Account.added_by` and `Account.modified_by` are strings: an account added or changed through the API holds
+  `"api"` there, which failed validation as a UUID and broke `accounts.list()`.
+
 ## [0.8.0] - 2026-10-27
 
 ### Changed
